@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Messinia Guide</title>
+<title>Goat Path Tycoon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -158,8 +158,8 @@
 <div class="wrap">
   <header class="appbar">
     <div class="brand">
-      <div class="kicker">Outdoor Activities Tycoon</div>
-      <h1>Messinia <em>Guide</em></h1>
+      <div class="kicker">A career in mountains, money, and minor catastrophes</div>
+      <h1>Goat Path <em>Tycoon</em></h1>
       <div class="sub" id="sub"></div>
     </div>
     <button class="iconbtn" id="menuBtn" onclick="toggleMenu()" aria-label="Menu" style="display:none">≡</button>
@@ -311,16 +311,16 @@ async function clearSave(){ try{ if(hasStorage()) await window.storage.delete(SA
 
 async function boot(){ renderTitle(null,true); const save=await loadSave(); cachedSave=save; renderTitle(save,false); }
 function renderTitle(save, loading){
-  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('Outdoor Activities Tycoon');
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('A career in mountains and minor catastrophes');
   const canCont=!!save && !loading;
   const sub = loading?'Checking for a saved season…' : save?`Resume — Year ${save.S.year||1} · ${save.S.season==='winter'?'Winter planning':(save.S.seasonDay?summerDate(save.S.seasonDay):'Day '+save.S.day)}, ${save.S.phase===2?'a team to run':'building your name'}` : 'No saved season yet';
   setScene(`<div class="end" style="padding-top:4px">
-    <div class="day-tag" style="color:var(--gold)">A guiding life</div>
-    <h2>Begin a season</h2>
-    <p class="verdict">Begin as one guide on the trails of Messinia and build the finest outdoor company in the Peloponnese.</p>
+    <div class="day-tag" style="color:var(--gold)">Right then</div>
+    <h2>Start a season</h2>
+    <p class="verdict">You graduated from your guide course because nothing else worked out. The Peloponnese is now your problem.</p>
     <div class="choices">
       ${simpleOpt('▸','Continue', sub, !canCont, 'doContinue()')}
-      ${simpleOpt('✦','New game','Build a new guide and start fresh', false, 'renderProfile()')}
+      ${simpleOpt('✦','New game','Roll a new idiot to send into the mountains', false, 'renderProfile()')}
     </div>
     ${hasStorage()?'':'<p style="font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:14px">Saving isn\u2019t available in this viewer, so progress won\u2019t survive a reload — but the game plays in full.</p>'}
   </div>`);
@@ -344,15 +344,15 @@ async function doContinue(){
   renderHUD(); renderCurrent();
 }
 function renderProfile(){
-  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('Outdoor Activities Tycoon');
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('A career in mountains and minor catastrophes');
   const kitChips=ITEM_ORDER.map(id=>{
     const on=pickedKit.includes(id), full=pickedKit.length>=3 && !on;
     return `<button class="opt ${on?'primary':''} ${full?'disabled':''}" onclick="${full?'':`toggleKit('${id}')`}">
       <span class="mark">${on?'✓':'+'}</span><span class="b-main">${ITEMS[id]}</span></button>`;
   }).join('');
-  setScene(`<div class="day-tag">Before you begin</div>
-    <h2>Build your guide</h2>
-    <p>Who are you, and what do you set out with? You begin with little — just grit and the kit you can afford.</p>
+  setScene(`<div class="day-tag">First the paperwork</div>
+    <h2>Who is this idiot, exactly?</h2>
+    <p>Pick a name, a backstory, and whatever kit you managed to scrape together. You start with very little — some grit, some questionable life choices, and a head full of routes.</p>
     <label style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your name</label>
     <input id="gname" type="text" maxlength="18" value="${(pendingName||'').replace(/[<>"]/g,'')}" placeholder="e.g. Alexios"
       style="width:100%;margin:6px 0 16px;padding:12px 14px;border-radius:11px;border:1px solid var(--edge);background:rgba(0,0,0,.18);color:var(--ink);font-family:'Fraunces',serif;font-size:18px;outline:none">
@@ -363,7 +363,7 @@ function renderProfile(){
     </div>
     <label style="display:block;margin-top:18px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Starting kit — pick up to 3 (${pickedKit.length}/3)</label>
     <div class="choices" style="margin-top:8px">${kitChips}</div>
-    <div class="actionbar"><button class="go ${pickedKit.length?'':'disabled'}" onclick="${pickedKit.length?'beginNewGame()':''}" ${pickedKit.length?'':'style="opacity:.45;pointer-events:none"'}>Begin your first season</button></div>`);
+    <div class="actionbar"><button class="go ${pickedKit.length?'':'disabled'}" onclick="${pickedKit.length?'beginNewGame()':''}" ${pickedKit.length?'':'style="opacity:.45;pointer-events:none"'}>Right, off you go</button></div>`);
 }
 function toggleKit(id){ const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value; const i=pickedKit.indexOf(id); if(i>=0)pickedKit.splice(i,1); else if(pickedKit.length<3)pickedKit.push(id); renderProfile(); }
 function pickBg(id){ const el=$('gname'); if(el && typeof el.value==='string') pendingName=el.value; pickedBg=id; renderProfile(); }
@@ -459,10 +459,10 @@ function closeMenu(){ $('drawer').classList.remove('open'); }
 function openMenu(){
   $('sheet').innerHTML=`<div class="grip"></div><div class="sh">Menu</div>
     <div class="choices">
-      ${simpleOpt('▦','Season summary','Earnings, record and standing', false, 'closeMenu(); renderSummary()')}
-      ${simpleOpt('☼','5-day forecast','How the week ahead looks', false, 'closeMenu(); renderForecast()')}
-      ${simpleOpt('❧','Logbook','Everything that has happened so far', false, 'closeMenu(); renderLog()')}
-      ${simpleOpt('⌂','Main menu','Save and return to the title', false, 'closeMenu(); goMenu()')}
+      ${simpleOpt('▦','Season summary','How rich, how famous, how doomed', false, 'closeMenu(); renderSummary()')}
+      ${simpleOpt('☼','5-day forecast','What the sky has lined up for you', false, 'closeMenu(); renderForecast()')}
+      ${simpleOpt('❧','Logbook','Every decision, lovingly recorded', false, 'closeMenu(); renderLog()')}
+      ${simpleOpt('⌂','Main menu','Save and slink back to the title', false, 'closeMenu(); goMenu()')}
       ${simpleOpt('✕','Close', '', false, 'closeMenu()')}
     </div>`;
   $('drawer').classList.add('open');
@@ -512,8 +512,8 @@ function renderMorning(){
   setScene(`
     <div class="day-tag">${dayTag()} · Dawn</div>
     <p class="weather">${w.name}<small>${w.note}</small></p>
-    <h2>Who will you take out today?</h2>
-    <p>Pick a trip to guide — or, below, build yourself up.</p>
+    <h2>Right, who is paying you today?</h2>
+    <p>Pick a trip — or, below, sort yourself out instead.</p>
     <div class="choices">${cards}</div>
     <div class="actionbar"><div class="lab">Between trips</div>
       <div class="choices">
@@ -560,7 +560,7 @@ function openShop(){
       ${head}<div style="display:flex;gap:6px">${tierBtns}</div></div>`;
   }).join('');
   setScene(`<div class="day-tag">${dayTag()} · Equipment shop</div>
-    <h2>The outdoor store</h2>
+    <h2>Geo's outdoor emporium</h2>
     <p>Three qualities for everything. <b>Pro</b> kit is dearer but lasts far longer — your boots, your bottles, all of it. Cash: <b style="color:var(--gold)">€${S.cash}</b>.</p>
     ${rows}
     <div class="choices" style="margin-top:6px">
@@ -885,7 +885,7 @@ function renderSeasonReport(){
   setScene(`<div class="end">
     <div class="day-tag" style="color:var(--gold)">Year ${S.year} · Season closed</div>
     <h2>The books for the year</h2>
-    <p class="verdict">October has run out. The Mediterranean cools, the cruise ships move on, and your office turns to planning for spring.</p>
+    <p class="verdict">October has run out. The cruise ships move on, the tavernas pull in their patios, and you stare at the books trying to remember what you did with all that money.</p>
     ${milestone}
     <div class="ledger">
       <div class="row"><span class="l">Fees</span><span class="v pos">+€${ys.fees}</span></div>
@@ -946,7 +946,7 @@ function renderOffSeason(){
     : '<div style="font-style:italic;color:var(--ink-faint);padding:8px 0">No guides on the books — hire after spring opens.</div>';
   setScene(`<div class="day-tag">Year ${S.year} · Winter</div>
     <h2>The winter office</h2>
-    <p>Five quiet months. You have <b>${left}</b> week${left===1?'':'s'} to spend on training and infrastructure before April. Cash <b style="color:var(--gold)">€${S.cash}</b>${S.cash<0?' — you are in the red':''}.</p>
+    <p>Five quiet months. Long enough to take a course, fix the truck, or develop a serious drinking problem. You have <b>${left}</b> week${left===1?'':'s'} before April pretends to be warm again. Cash <b style="color:var(--gold)">€${S.cash}</b>${S.cash<0?' — and you are in the red':''}.</p>
     <div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 6px">HATEOA cert school</div>
     <div class="choices">${certRows}</div>
     <div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 6px">Infrastructure projects</div>
@@ -982,10 +982,10 @@ function enterPhase2(){
   ['water'].forEach(id=>{ S.depot[id]=Math.max(S.depot[id]||0,4); });
   setScene(`<div class="end">
       <div class="day-tag" style="color:var(--sage)">A turning point · ${dayTag()}</div>
-      <h2>From guide to operator</h2>
-      <p class="verdict">Your name carries weight now, and your savings can finally buy you something precious: time off the trail. You take on your first guide — <b>Maria</b> — and hand her a radio.</p>
-      <p style="font-size:15px">From here you plan each day for a team. Assign people to trips, to rest, or to training, and keep a <b>gear depot</b> stocked so everyone heads out equipped for the conditions. When a guide hits trouble, they'll radio you for the call. Wages fall due every day — so keep good people working and keep your name spotless.</p>
-      <div class="choices"><button class="opt primary" onclick="advanceDay();"><span class="mark">▸</span><span class="b-main">Open the office</span></button></div>
+      <h2>Apparently you have a business now</h2>
+      <p class="verdict">Your name carries some weight now, which means people will pay you to send other people up mountains. You take on your first guide — <b>Maria</b> — and hand her a radio. She is, on paper, your responsibility now.</p>
+      <p style="font-size:15px">From here you plan each day for a team. Assign people to trips, to rest, or to training, and keep a <b>gear depot</b> stocked so nobody heads out short. When a guide hits trouble, they will radio in for your call. Wages fall due every day — so keep good people working, and try very hard not to lose anyone.</p>
+      <div class="choices"><button class="opt primary" onclick="advanceDay();"><span class="mark">▸</span><span class="b-main">Open the office. God help you.</span></button></div>
     </div>`);
 }
 
@@ -999,8 +999,8 @@ function renderAssign(){
   const tripsPlanned=people().filter(p=>p.task&&p.task.kind==='trip').length;
   setScene(`<div class="day-tag">${dayTag()} · Dawn</div>
     <p class="weather">${w.name}<small>${w.note}</small></p>
-    <h2>Plan your team's day</h2>
-    <p>Assign each person to a job, then run the day. Daily wages: <b style="color:var(--gold)">€${wages()}</b>.</p>
+    <h2>Right, where is everyone going?</h2>
+    <p>Park a person on each job, then push the button and let the day happen to them. Daily wages: <b style="color:var(--gold)">€${wages()}</b>.</p>
     <div class="team">${cards}</div>
     <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--ink-faint);margin:0 0 12px;line-height:1.7">${gearSummary()}</div>
     <div class="choices">
@@ -1046,7 +1046,7 @@ function openDepot(){
       <span class="mark">${have}</span><span class="b-main">${ITEMS[it.id]} <span style="color:var(--ink-faint);font-size:12px">· ${type}</span><span class="b-sub">In stock ${have} · buy ${it.batch} for €${total}${can?'':' — need more cash'}</span></span></button>`;
   }).join('');
   setScene(`<div class="day-tag">${dayTag()} · Gear depot</div>
-    <h2>Stock the depot</h2>
+    <h2>Stock the depot, again</h2>
     <p>Consumables are used up each trip; reusable kits stay, but only so many guides can carry them at once. Cash: <b style="color:var(--gold)">€${S.cash}</b>.</p>
     <div class="choices">${rows}
       ${packUpgradeOptP2()}
@@ -1219,13 +1219,13 @@ function showDailyReport(w, quit){
       <div class="row"><span class="l">In the bank</span><span class="v ${S.cash>=0?'pos':'neg'}">€${S.cash}</span></div>
       <div class="row"><span class="l">Reputation</span><span class="v">${S.rep}</span></div>
     </div>
-    <div class="choices"><button class="opt primary" onclick="nextDay()"><span class="mark">☾</span><span class="b-main">Begin the next day</span></button></div>`);
+    <div class="choices"><button class="opt primary" onclick="nextDay()"><span class="mark">☾</span><span class="b-main">On to tomorrow</span></button></div>`);
 }
 
 /* ---------------- endings ---------------- */
 function checkEnd(){
-  if(S.cash<0) return endGame('Bankrupt','The books would not balance. One refund — or one wage bill — too many, and the company folds. Every great operator has a first failed season. Begin again, wiser.',false);
-  if(S.rep<=5) return endGame('A ruined name','Word travels fast on small islands. With trust this low, the bookings simply stop. Reputation is the only currency that compounds — guard it next time.',false);
+  if(S.cash<0) return endGame('Bankrupt','The books are dust. One refund, one wage bill, one terrible decision — take your pick. The company has folded. Take a moment. Then roll a new idiot, slightly wiser.',false);
+  if(S.rep<=5) return endGame('A ruined name','Word travels fast in small towns. The TripAdvisor reviews have become a genre of their own. The phone has stopped ringing. Reputation is the only currency that actually matters — try to remember that next time.',false);
   if(S.phase===1 && S.cash>=1500 && S.rep>=70){ enterPhase2(); return true; }
   if(S.phase===2 && !S.phase3Ready && S.cash>=5000 && S.rep>=70 && S.guides.length>=3){
     S.phase3Ready=true; S.phase3UnlockedYear=S.year;
@@ -1258,7 +1258,7 @@ function openHire(){
   const cands=[0,1].map(()=>{ const skill=ri(40,70), wage=ri(28,52), fee=skill*3+ri(0,60);
     return {name:rnd(NAMES), skill, wage, fee, spec:rnd(SPECS)}; });
   S.cands=cands;
-  setScene(`<div class="day-tag">${dayTag()} · Hiring</div><h2>Today's candidates</h2>
+  setScene(`<div class="day-tag">${dayTag()} · Hiring</div><h2>Today's hopefuls</h2>
     <p>A signing fee now, then daily wages. Pick well — a cheap guide who botches a trip costs more than they save.</p>
     <div class="choices">
       ${cands.map((c,i)=>`<button class="opt ${S.cash<c.fee?'disabled':''}" onclick="${S.cash<c.fee?'':`hire(${i})`}">

@@ -1,30 +1,35 @@
-# Outdoor Guide Tycoon
+# Goat Path Tycoon
 
-A text-driven outdoor-activities tycoon game set in the Peloponnese. Start as a solo hiking guide in Messinia, build a team, and grow into the region's leading outdoor company — eventually expanding into water and air activities in Navarino Bay and over Taygetos.
+> A career in mountains, money, and minor catastrophes.
+
+A text-driven outdoor-guide career game set in the Peloponnese. You graduated from your guide course because nothing else worked out. Now the Peloponnese is your problem. Start as a solo hiking guide in Messinia, build a team that does the trails so you don't have to, and grow into something that, on paper, could be called an outdoor company. Eventually water and air activities open up across Navarino Bay and over Taygetos.
 
 ## Status
 
-**v0 — prototype.** Single self-contained HTML file (`aegean-guide.html`), vanilla JS, no build step. Playable end-to-end through Phase 1 (solo guiding) and Phase 2 (team management).
+**Pre‑alpha.** Single self‑contained HTML file (`aegean-guide.html`), vanilla JS, no build step. Playable end‑to‑end through Phase 1 (solo guiding) and Phase 2 (managing a team), inside a full April–October season with a winter office for cert school and infrastructure projects.
 
 ## Roadmap
 
-1. **Polish** the current build — low-stock warnings, season summary, richer logbook.
-2. **Seasons** — restructure days into seasons with off-season cert school.
-3. **Migrate** to Vite + TypeScript + Phaser 3 for a proper engine.
-4. **Pixel art** rollout per [PIXEL-ART.md](./PIXEL-ART.md).
-5. **Depth pass** — more routes, events, NPCs.
-6. **Phase 3** — water & air activities.
+1. **Polish** — gear shortfall, richer logbook, balance. ✓
+2. **Seasons** — April–October days, off‑season cert school, retainers. ✓
+3. **Content depth** — 17 routes (Messinia, Mani, Taygetos, Arcadia, Parnon, Achaia), 10 background characters, equipment quality tiers with lifetime. ✓
+4. **Migrate** to Vite + TypeScript + Phaser 3 for a proper engine.
+5. **Pixel art** rollout per [PIXEL-ART.md](./PIXEL-ART.md).
+6. **More events + NPC arcs** — deeper Phase 1/2 content.
+7. **Phase 3** — water & air activities (kayak, SUP, sailing, snorkel, paragliding).
 
 See [CLAUDE.md](./CLAUDE.md) for the working notes and project bible.
 
-## Run the prototype
+## Run
 
-Open `aegean-guide.html` in any modern browser. No build step. Save/continue uses `window.storage` when available (Claude.ai artifact context) and falls back to in-memory otherwise.
+Open `aegean-guide.html` in any modern browser. No build step. Save/continue uses `window.storage` when available (Claude.ai artifact context) and falls back to in‑memory otherwise.
 
 ## Test (headless harness)
 
 ```
-node scripts/harness.mjs
+node scripts/harness.mjs [N=300]   # random playthroughs; exits non-zero on exceptions
+node scripts/trace.mjs              # single playthrough with verbose end state
+node scripts/winter-test.mjs        # forces a game to end of summer to verify the off-season flow
 ```
 
-Drives hundreds of random playthroughs of the current build and reports any thrown exceptions. Target: 0.
+Target for the harness is always **0 thrown exceptions**.
