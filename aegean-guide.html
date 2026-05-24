@@ -238,12 +238,29 @@ function renderForecast(){
 }
 
 const ROUTES=[
+  // Messinia — the home patch
   {name:'Polylimnio waterfalls', diff:1, base:60, tags:['river','forest']},
   {name:'Voidokilia & Navarino dunes', diff:1, base:58, tags:['coast','exposed']},
-  {name:'Ancient Messene & Mavromati', diff:2, base:95, tags:['exposed','long']},
-  {name:'Neda Gorge & waterfalls', diff:2, base:110, tags:['river','remote']},
-  {name:'Menalon Trail — Lousios Gorge', diff:3, base:170, tags:['forest','remote','long']},
+  {name:'Ancient Messene & Mavromati', diff:2, base:95, tags:['exposed','long','historical']},
+  {name:'Neda Gorge & waterfalls', diff:2, base:110, tags:['river','gorge','remote']},
+  // Mani — the next peninsula east, immediate neighbour
+  {name:'Kardamyli & the old mule paths', diff:1, base:70, tags:['coast','forest']},
+  {name:'Vyros Gorge & stone bridges', diff:2, base:115, tags:['river','gorge','remote']},
+  {name:'Cape Tenaro lighthouse', diff:2, base:135, tags:['coast','exposed','long','remote']},
+  // Taygetos — the great range above
+  {name:'Mystras Byzantine path', diff:1, base:80, tags:['historical','forest']},
+  {name:'Saidona to the Taygetos refuge', diff:2, base:140, tags:['alpine','long']},
   {name:'Taygetos summit (Profitis Ilias)', diff:3, base:205, tags:['alpine','exposed','hard']},
+  // Arcadia
+  {name:'Lousios monasteries loop', diff:2, base:125, tags:['historical','river','forest']},
+  {name:'Menalon Trail — Lousios Gorge', diff:3, base:170, tags:['forest','remote','long','gorge']},
+  {name:'Mount Lykaion (Zeus altar)', diff:3, base:175, tags:['alpine','exposed','historical']},
+  // Lakonia — Parnon range
+  {name:'Parnon black-fir forest', diff:2, base:120, tags:['forest','remote']},
+  {name:'Mount Parnon summit (Megali Tourla)', diff:3, base:195, tags:['alpine','exposed','hard','remote']},
+  // Achaia — the far north
+  {name:'Vouraikos Gorge from Kalavrita', diff:2, base:130, tags:['river','gorge','long']},
+  {name:'Mount Chelmos & the Styx waterfall', diff:3, base:220, tags:['alpine','remote','hard','river']},
 ];
 const CLIENTS=[
   {label:'a family with two young children', type:'family', g:4, pm:1.0},
@@ -603,27 +620,31 @@ function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 function recommended(b,w){
   const r=new Set(['water']); const t=b.tags||[];
   if(w.heat||t.includes('exposed')) r.add('sunscreen');
-  if(t.includes('river')||t.includes('forest')) r.add('repellent');
-  if(b.diff>=2||t.includes('rock')||t.includes('alpine')) r.add('poles');
+  if(t.includes('river')||t.includes('forest')||t.includes('gorge')) r.add('repellent');
+  if(b.diff>=2||t.includes('rock')||t.includes('alpine')||t.includes('gorge')) r.add('poles');
   if(w.mist||w.storm||t.includes('remote')) r.add('map');
   if(w.mist||w.storm||w.wind||t.includes('alpine')) r.add('shell');
   if(b.diff>=2||t.includes('long')) r.add('snacks');
   if(b.diff>=3||t.includes('remote')) r.add('firstaid');
+  if(t.includes('long')&&t.includes('alpine')) r.add('lamp');
   return r;
 }
 function conditionsLine(b,w){
   const t=b.tags||[], bits=[];
-  if(t.includes('river')) bits.push('a river gorge where the bugs swarm');
+  if(t.includes('gorge')) bits.push('a deep gorge with cool air and slippery rock');
+  else if(t.includes('river')) bits.push('a river path where the bugs swarm');
   else if(t.includes('forest')) bits.push('shaded forest');
   else if(t.includes('coast')) bits.push('open coast and dunes');
   else if(t.includes('rock')) bits.push('exposed rock');
   else if(t.includes('alpine')) bits.push('high alpine ground');
+  if(t.includes('historical')) bits.push('ancient stones underfoot');
   if(w.heat) bits.push('a fierce sun');
   if(w.mist) bits.push('low cloud and damp footing');
   if(w.wind) bits.push('a snapping wind');
   if(w.storm) bits.push('a storm threatening');
   if(t.includes('long')||b.diff>=3) bits.push('a long day out');
   if(b.diff>=2 && !t.includes('rock')) bits.push('steep, rough ground');
+  if(t.includes('remote')) bits.push('miles from the nearest road');
   return bits.length ? cap(bits.join(', '))+'.' : 'A gentle outing in fair weather.';
 }
 function prepScore(){
