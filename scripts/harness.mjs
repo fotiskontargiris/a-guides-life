@@ -109,7 +109,8 @@ function pickHandler() {
   return pool[Math.floor(Math.random() * pool.length)].onc;
 }
 
-const BG_IDS = ['medic', 'charmer', 'outfitter', 'navigator'];
+const BG_IDS = ['medic', 'charmer', 'outfitter', 'navigator',
+  'shepherd', 'captain', 'goatherd', 'animator', 'chef', 'busker'];
 const KITS = [['water'], ['water', 'snacks'], ['water', 'firstaid', 'map']];
 
 function runOne(maxSteps = 600) {

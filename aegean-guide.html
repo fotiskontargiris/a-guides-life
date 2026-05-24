@@ -271,10 +271,16 @@ const CLIENTS=[
 const NAMES=['Maria','Nikos','Eleni','Yannis','Sofia','Dimitris','Katerina','Petros','Alexios','Thalia','Kostas','Ariadne'];
 const SPECS=['sure-footed on scree','calm in foul weather','wonderful with families','a born navigator','tireless on long days'];
 const BACKGROUNDS=[
-  {id:'medic',     name:'Mountain-rescue medic', perk:'Injuries on the trail almost always end well.'},
-  {id:'charmer',   name:'Village charmer',        perk:'You earn extra reputation and bigger tips.'},
-  {id:'outfitter', name:'Seasoned outfitter',    perk:'Start with a 6-slot pack and €150 extra.'},
-  {id:'navigator', name:'Born of the mountains',  perk:'You read weather and lost paths far better.'},
+  {id:'medic',     name:'Mountain-rescue medic',  perk:'Injuries on the trail almost always end well.'},
+  {id:'charmer',   name:'Village charmer',         perk:'You earn extra reputation and bigger tips.'},
+  {id:'outfitter', name:'Seasoned outfitter',     perk:'Start with a 6-slot pack and €150 extra.'},
+  {id:'navigator', name:'Born of the mountains',   perk:'You read weather and lost paths far better.'},
+  {id:'shepherd',  name:'Old shepherd',            perk:'Forty years on these slopes. You read weather and ground like an old book.'},
+  {id:'captain',   name:'Retired ferry captain',   perk:'Tourists trust the uniform. Coastal trips pay sweeter. Start with €200 extra.'},
+  {id:'goatherd',  name:'Goat-tracker turned guide', perk:'Thirty years finding stray goats in the mist. You do not get lost.'},
+  {id:'animator',  name:'Ex-cruise-ship animator', perk:'Two thousand Zorba routines for Royal Caribbean. Tourist groups tip you double.'},
+  {id:'chef',      name:'Disgraced TV chef',       perk:'Your show ended after the incident with the goat. You can stretch snacks like nobody else.'},
+  {id:'busker',    name:'Bouzouki busker',         perk:'The tavernas kept calling the cops. Tips love you — but the instrument takes a slot in your pack.'},
 ];
 
 /* ---------------- setup ---------------- */
@@ -381,6 +387,8 @@ function initGame(name, bgId, kit){
       you:{id:'you', name:name, isYou:true, skill:90, morale:100, wage:0, spec:bg.name, perk:bg.id, task:null},
       guides:[], queue:null, dayReports:[], trip:null, yearLogs:[] };
   if(bg.id==='outfitter'){ S.packSize=6; S.cash+=150; ['firstaid','map'].forEach(id=>{ if(!ownsItem(id)) S.owned[id]=freshOwned(id,'standard'); }); }
+  if(bg.id==='captain'){ S.cash+=200; }
+  if(bg.id==='busker'){ S.packSize=3; }
   ensureForecast();
   setSub('Year 1 · Phase I — '+name+', a guide making a name in Messinia.');
   startDay();
@@ -755,7 +763,12 @@ function runEvent(){
     <div class="choices">${ev.choices.map((c,i)=>`<button class="opt ${i===0?'primary':''}" onclick="resolveP(${i})">
       <span class="mark">${i+1}</span><span class="b-main">${c.label}<span class="b-sub">${c.hint||''}</span></span></button>`).join('')}</div>`);
 }
-function charm(r){ if(S.you&&S.you.perk==='charmer'){ if(r.rep&&r.rep>0) r.rep+=2; if(r.tips) r.tips=Math.round(r.tips*1.25); } return r; }
+function perkIs(...types){ return S.you && types.includes(S.you.perk); }
+function charm(r){
+  if(perkIs('charmer')){ if(r.rep&&r.rep>0) r.rep+=2; if(r.tips) r.tips=Math.round(r.tips*1.25); }
+  if(perkIs('busker') && r.tips) r.tips=Math.round(r.tips*1.3);
+  return r;
+}
 function resolveP(ci){
   const r=charm(S.trip.cur.choices[ci].run(S.trip.b,S));
   if(r.cash) S.cash+=r.cash;
@@ -795,18 +808,25 @@ function finishPlayerTrip(){
     else { S.rep=clamp(S.rep-4,0,100); t.repDelta=(t.repDelta||0)-4; prepLine=`You were caught under-equipped${ps.miss.length?` — no ${ITEMS[ps.miss[0]].toLowerCase().replace('&amp;','&')}`:''}, and it showed.`; }
   }
   if(t.prepRisk && chance(Math.min(t.prepRisk,0.8))){ S.rep=clamp(S.rep-5,0,100); t.repDelta=(t.repDelta||0)-5; S.cash-=20; prepLine+=' A problem you waved off at the trailhead came back to bite (−€20).'; }
-  const fee=Math.round(b.pay*t.payMul)+(hasInfra('pickup')?10:0), tip=t.tips, earned=fee+tip;
+  // Background perks at trip completion:
+  //   animator — tourist groups tip double (cruise-show charm)
+  //   captain  — coastal routes pay a touch more, locals respect the uniform
+  if(perkIs('animator') && b.ctype==='tourist') t.tips=Math.round(t.tips*1.5);
+  let coastBonus=0;
+  if(perkIs('captain') && (b.tags||[]).includes('coast')){ coastBonus=12; applyRep(2); t.repDelta=(t.repDelta||0)+2; }
+  const fee=Math.round(b.pay*t.payMul)+(hasInfra('pickup')?10:0)+coastBonus, tip=t.tips, earned=fee+tip;
   S.cash+=earned;
   S.energy=clamp(S.energy-(b.diff===3?36:b.diff===2?28:20)-(S.weather.drain||0),0,100);
   S.gear=clamp(S.gear-(6+b.diff*3),0,100);
   note(`${b.route}: fee €${fee}${tip?` + €${tip} tips`:''}.`);
   if(S.stats){ S.stats.earned+=earned; S.stats.fees+=fee; S.stats.tips+=tip; S.stats.tripsYou++; }
   if(S.yearStats){ S.yearStats.fees+=fee; S.yearStats.tips+=tip; S.yearStats.tripsYou++; }
-  // Wear down each packed item by one trip; anything that hits zero breaks
+  // Wear down each packed item by one trip; chef makes snacks last half-rate.
   const broken=[];
   (S.loadout||[]).forEach(id=>{
     if(!S.owned[id]) return;
-    S.owned[id].trips--;
+    const skipWear = perkIs('chef') && id==='snacks' && chance(0.5);
+    if(!skipWear) S.owned[id].trips--;
     if(S.owned[id].trips<=0){ broken.push({id, tier:S.owned[id].tier}); delete S.owned[id]; }
   });
   if(broken.length){
@@ -1443,7 +1463,7 @@ const EVENTS=[
    text:()=>`On a patch of loose scree, one of the party slips and goes down hard. The ankle is swelling fast — they cannot carry on unaided.`,
    choices:[
      {label:'Splint it and walk them down yourself', hint:'Costs energy · a first-aid kit helps',
-      run:(b,S)=>chance(0.62+S.gear/400+(S.energy>50?0.08:0)+(hasItem('firstaid')?0.18:0)+(S.you&&S.you.perk==='medic'?0.25:0)+(hasCert('firstaid')?0.2:0))
+      run:(b,S)=>chance(0.62+S.gear/400+(S.energy>50?0.08:0)+(hasItem('firstaid')?0.18:0)+(perkIs('medic')?0.25:0)+(hasCert('firstaid')?0.2:0))
         ?{lines:[hasItem('firstaid')?'You clean and strap the ankle properly from your first-aid kit, then walk them down with quiet competence.':'You strap the ankle and take their weight the whole way. Slow, but safe — they are full of thanks.'],rep:hasItem('firstaid')?7:6,energy:-22}
         :{lines:['The descent is harder than you judged. You get them down, but it costs time and a few scrapes of your own.'],rep:-3,energy:-26,cash:-25}},
      {label:'Radio the mountain rescue team', hint:'Safe but expensive',
@@ -1456,7 +1476,7 @@ const EVENTS=[
      {label:'Turn the group back early', hint:'Lower pay, but no one is hurt',
       run:(b)=>({lines:[b.ctype==='thrill'?'The climbers are let down, but you hold the line. Better that than a stretcher.':'You shepherd everyone down ahead of the weather. They trust your judgement.'], payMul:0.6, rep:b.ctype==='thrill'?2:5})},
      {label:'Push for the viewpoint before it hits', hint:'Big reward if you beat it',
-      run:(b,S)=>chance(0.78-S.weather.risk-b.diff*0.05+(S.you&&S.you.perk==='navigator'?0.15:0))
+      run:(b,S)=>chance(0.78-S.weather.risk-b.diff*0.05+(perkIs('navigator','shepherd','goatherd')?0.15:0))
         ?{lines:['You make the viewpoint with minutes to spare — a wild, dramatic moment they will retell for years.'], rep:9, tips:30}
         :{lines:['The weather catches you exposed on the ridge. Everyone gets back, soaked and shaken, but the day is a scramble.'], rep:-11, cash:-50, energy:-12}},
    ]},
@@ -1483,7 +1503,7 @@ const EVENTS=[
    text:()=>`The trail markers dissolve into the murk. The party looks to you — do you know the way from here, or not?`,
    choices:[
      {label:'Trust your knowledge of the mountain', hint:'A map &amp; compass makes this near-certain',
-      run:()=>chance(0.66+(hasItem('map')?0.28:0)+(S.you&&S.you.perk==='navigator'?0.2:0))?{lines:[hasItem('map')?'You take a careful bearing with map and compass and bring them out exactly where you meant to.':'You read the land like a page and bring them out exactly where you meant to. Quietly impressive.'], rep:6}:{lines:['A wrong fork costs you a long, tiring backtrack. You get there — eventually.'], rep:-4, energy:-15}},
+      run:()=>chance(0.66+(hasItem('map')?0.28:0)+(perkIs('navigator','shepherd','goatherd')?0.2:0))?{lines:[hasItem('map')?'You take a careful bearing with map and compass and bring them out exactly where you meant to.':'You read the land like a page and bring them out exactly where you meant to. Quietly impressive.'], rep:6}:{lines:['A wrong fork costs you a long, tiring backtrack. You get there — eventually.'], rep:-4, energy:-15}},
      {label:'Backtrack to the last sure marker', hint:'Safe, costs time', run:()=>({lines:['You retrace your steps to certainty before continuing. Cautious and correct.'], payMul:0.85, energy:-6})},
    ]},
   {id:'client', w:1.5, when:(b)=>b.ctype==='corporate', title:'The boss wants a shortcut',
