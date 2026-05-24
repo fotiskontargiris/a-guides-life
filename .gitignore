@@ -1,0 +1,29 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Harness temp files
+scripts/.core.js
+scripts/.harness.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
