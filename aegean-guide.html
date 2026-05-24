@@ -397,13 +397,31 @@ function openMenu(){
     </div>`;
   $('drawer').classList.add('open');
 }
+function logEntryColor(t){
+  if(/Hired|resigned/.test(t)) return 'var(--sea)';
+  if(/Certified/.test(t)) return 'var(--gold)';
+  if(/[−-]€/.test(t)) return 'var(--danger)';
+  if(/\+€|fee €|tip/.test(t)) return 'var(--sage)';
+  if(/Bought|Serviced/.test(t)) return 'var(--olive)';
+  return 'var(--ink-dim)';
+}
 function renderLog(){
   const back=S.phase===1?'renderMorning()':'renderAssign()';
-  const items = (S.history&&S.history.length)
-    ? S.history.slice().reverse().map(h=>`<div class="row"><span class="l">${h.t}</span><span class="v">Day ${h.d}</span></div>`).join('')
-    : '<div class="row"><span class="l">Nothing logged yet.</span><span class="v"></span></div>';
+  const total=(S.history&&S.history.length)||0;
+  let items='';
+  if(total){
+    let lastDay=null;
+    items=S.history.slice().reverse().map(h=>{
+      const col=logEntryColor(h.t);
+      const dayTag = h.d!==lastDay ? `<div style="font-family:'Spline Sans Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra);margin:10px 0 4px">Day ${h.d}</div>` : '';
+      lastDay=h.d;
+      return dayTag+`<div class="row"><span class="l" style="color:${col}">${h.t}</span><span class="v"></span></div>`;
+    }).join('');
+  } else {
+    items='<div class="row"><span class="l">Nothing logged yet.</span><span class="v"></span></div>';
+  }
   setScene(`<div class="day-tag">Day ${S.day} · Logbook</div><h2>The logbook</h2>
-    <p>Every day's doings, most recent first.</p>
+    <p>Every day's doings, most recent first.${total?` <span style="color:var(--ink-faint);font-style:italic">${total} ${total===1?'entry':'entries'}</span>`:''}</p>
     <div class="ledger" style="max-height:none">${items}</div>
     <div class="actionbar"><button class="go" onclick="${back}">Back to the day</button></div>`);
 }
@@ -722,14 +740,34 @@ function renderAssign(){
       ${simpleOpt('▣','Stock the gear depot','Buy water, kits and durable gear for your guides', false, 'openDepot()')}
       ${simpleOpt('+','Hire a guide', S.guides.length>=5?'Your team is full (5)':'Recruit from the candidate pool', S.guides.length>=5, 'openHire()')}
     </div>
-    <div class="actionbar"><button class="go" onclick="runDay()">Run the day <span class="gs">${tripsPlanned} trip(s) · ${4-availBookings()}/4 booked</span></button></div>`);
+    <div class="actionbar"><button class="go" onclick="runDay()">Run the day <span class="gs">${tripsPlanned} trip(s) · ${4-availBookings()}/4 booked${gearShortfall().severe?' · short on kit':''}</span></button></div>`);
   paintForecast();
 }
+function gearShortfall(){
+  const trips=people().filter(p=>p.task&&p.task.kind==='trip').map(p=>({p,b:S.bookings[p.task.bIdx]})).filter(t=>t.b);
+  if(!trips.length) return {missing:{}, severe:false, total:0};
+  const conS={}; CON.forEach(id=>conS[id]=S.depot[id]||0);
+  const durS={}; DUR.forEach(id=>durS[id]=S.depot[id]||0);
+  const missing={};
+  trips.forEach(t=>{
+    for(const id of [...recommended(t.b,S.weather)]){
+      if(CON.includes(id)){ if(conS[id]>0)conS[id]--; else missing[id]=(missing[id]||0)+1; }
+      else if(DUR.includes(id)){ if(durS[id]>0)durS[id]--; else missing[id]=(missing[id]||0)+1; }
+    }
+  });
+  const total=Object.values(missing).reduce((a,b)=>a+b,0);
+  const severe=(missing.water||0)>=2 || total>=4;
+  return {missing, severe, total};
+}
 function gearSummary(){
-  const planned=people().filter(p=>p.task&&p.task.kind==='trip').length;
   const con=CON.map(id=>{ const n=S.depot[id]||0; return `<span style="color:${n>0?'var(--ink-dim)':'var(--danger)'}">${ITEMS[id]} ×${n}</span>`; }).join(' · ');
   const dur=DUR.map(id=>`${ITEMS[id]} ${S.depot[id]||0}`).join(' · ');
-  const warn = planned>0 && (S.depot.water||0)<planned ? '<div style="color:var(--danger)">⚠ Low on water for the trips you have planned.</div>' : '';
+  const sf=gearShortfall(); const missList=Object.keys(sf.missing);
+  let warn='';
+  if(missList.length){
+    const parts=missList.map(id=>`${ITEMS[id]}${sf.missing[id]>1?` ×${sf.missing[id]}`:''}`);
+    warn=`<div style="color:${sf.severe?'var(--danger)':'var(--gold)'};margin-top:4px">⚠ Short for today's plan: ${parts.join(', ')}.</div>`;
+  }
   return `Depot — consumables: ${con}<br>reusable kits: ${dur}${warn}`;
 }
 function openDepot(){
