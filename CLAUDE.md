@@ -16,29 +16,27 @@ A text-driven **outdoor-activities tycoon game**, set in the **Peloponnese (Mess
 
 ## 2. How to run and test (IMPORTANT — this method caught every real bug)
 
-There is no framework. To test, **extract the script and check it, then drive it headlessly.**
+There is no framework. Tests live in `scripts/`:
 
-```bash
-# 1. Extract the inline script and syntax-check it exactly as a browser would parse it
-python3 -c "
-import re
-html=open('aegean-guide.html').read()
-m=re.search(r'<script>(.*)</script>', html, re.S)
-open('/tmp/core.js','w').write(m.group(1))
-"
-node --check /tmp/core.js   # MUST pass
-
-# 2. Then run a headless simulation harness (see below) that drives random playthroughs
+```
+node scripts/harness.mjs [N=300]   # syntax-check + N random playthroughs
+node scripts/trace.mjs              # single playthrough with verbose end-state
+node scripts/winter-test.mjs        # forces a game to end of summer to verify the off-season flow
 ```
 
-**Headless harness approach** (write to `/tmp/h.js`, run with `node`):
-- Stub a fake DOM: `globalThis.document = { getElementById: id => els[id] || (els[id] = fakeEl()) }`, where `fakeEl()` has settable `innerHTML`, a `style` object, `value`, `offsetWidth`, and a `classList` stub (add/remove/contains/toggle backed by a `Set`).
-- Stub `globalThis.setTimeout = () => {}` and a fake `globalThis.window.storage` (async `get`/`set`/`delete`; `get` throws on a missing key, mirroring the real API).
-- Load the script with **indirect eval** after two substitutions so globals are reachable from the harness scope: `src.replace('boot();','').replace('let S, gCounter=0;','var S; var gCounter=0;')` then `(0,eval)(src)`.
-- Drive the game by regex-parsing `onclick="..."` out of `els['scene'].innerHTML` and `(0,eval)`-ing the calls. Bias toward progression calls (`runDay`, `processNext`, `setOff`, `resolve*`, `advanceDay`) so games reach an end; cap steps; loop hundreds of games; count thrown exceptions (target: 0).
-- Call `initGame('Name','medic',['water'])` directly to start a game (bypasses the title/profile UI).
+`scripts/harness.mjs` does it all:
+1. Reads `aegean-guide.html`, regex-extracts the inline `<script>`, writes to `scripts/.core.js`.
+2. `node --check` on the extracted file. MUST pass.
+3. Stubs a fake DOM: `document.getElementById` returns a `fakeEl()` (settable `innerHTML`, a `style` object, `value`, `offsetWidth`, and a `classList` stub backed by a `Set`).
+4. Stubs `setTimeout` and a fake `window.storage` (async `get`/`set`/`delete`; `get` throws on a missing key).
+5. Loads the script via **indirect eval** after two substitutions so globals are reachable from the harness scope: `src.replace('boot();','').replace('let S, gCounter=0;','var S; var gCounter=0;')` then `(0,eval)(src)`.
+6. Drives the game by regex-parsing `onclick="..."` out of `els.scene.innerHTML` and `(0,eval)`-ing the calls. Biases toward **(a) `class="primary"` buttons** (a cautious-player proxy) and **(b) progression verbs** (`runDay`, `processNext`, `setOff`, `resolve*`, `advanceDay`, `enterSpring`, `enrollCertSchool`, …).
+7. Calls `initGame('Name','medic',['water'])` directly to start a game (bypasses title/profile UI).
+8. Reports: avg steps, % reaching Phase 2 / winter / Year 2, end-kind split (bankrupt / ruined / won / unknown), exceptions.
 
-**Scope gotcha for the harness:** top-level `const` tables (`ROUTES`, `WEATHER`, `ITEM_COST`, `CON`, `DUR`, `GEAR`, `CERTS`, …) are **not** reachable by bare name from the harness module scope. But `var S` and every `function` declaration **are** global. So in tests: reference `S`, call functions (`allocateGear`, `recommended`, `buyItem`, …), and inspect `S.*` for assertions — never reference the const tables directly.
+**Scope gotcha for the harness:** top-level `const` tables (`ROUTES`, `WEATHER`, `ITEM_COST`, `CON`, `DUR`, `GEAR`, `CERTS`, `INFRA`, …) are **not** reachable by bare name from the harness module scope. But `var S` and every `function` declaration **are** global. So in tests: reference `S`, call functions (`allocateGear`, `recommended`, `buyItem`, `enrollCertSchool`, …), and inspect `S.*` for assertions — never reference the const tables directly.
+
+**Note on reach-Phase-2 %:** the harness uses `seasonDay`-bounded games and won't reach winter naturally inside its 600-step budget (would need ~1500+ steps for one 214-day summer). `scripts/winter-test.mjs` is the authoritative test for the off-season → spring flow. Use the harness for regression-on-exceptions and rough Phase 2 reach %; use `winter-test` for the season transitions.
 
 Always run both checks before handing a build back. Several bugs only surface this way (see §7).
 
@@ -47,7 +45,9 @@ Always run both checks before handing a build back. Several bugs only surface th
 ## 3. Architecture
 
 **Single global state object `S`** (created in `initGame`). Fields:
-`phase` (1|2), `day`, `cash`, `rep` (0–100), `energy` (0–100, the player), `gear` (0–100, equipment condition), `packSize` (4/6/8), `loadout` (item ids packed for the current trip), `owned` (item ids the player owns — Phase 1), `depot` (`{itemId: count}` — Phase 2 company stock), `certs` (cert ids), `weather` (current, = `forecast[0]`), `forecast` (array of upcoming weather), `bookings`, `history` (logbook entries `{d, t}`), `stats` (`{earned, fees, tips, wagesPaid, tripsYou, tripsGuides, hires, bestRep}`), `you` (`{id:'you', name, isYou:true, skill, morale, wage:0, spec, perk, task}`), `guides[]`, `queue`, `dayReports[]`, `trip` (active trip working object).
+`phase` (1|2), `year` (1+, increments each spring), `season` (`'summer'|'winter'`), `seasonDay` (1–214 in summer; off in winter), `day` (cumulative day counter for `note()` & legacy), `cash`, `rep` (0–100), `energy` (0–100, the player), `gear` (0–100, equipment condition), `packSize` (4/6/8), `loadout` (item ids packed for the current trip), `owned` (item ids the player owns — Phase 1), `depot` (`{itemId: count}` — Phase 2 company stock), `certs` (cert ids), `infra` (off-season project ids the player has built), `weather` (current, = `forecast[0]`), `forecast` (array of upcoming weather), `bookings`, `history` (logbook entries `{d, t}`), `stats` (`{earned, fees, tips, wagesPaid, retainersPaid, tripsYou, tripsGuides, hires, bestRep, yearsCompleted}`), `yearStats` (`{fees, tips, wages, retainers, certs, infra, tripsYou, tripsGuides, bestRep, worstRep, startCash, openingRep}` — reset each spring), `winterWeeksUsed` (0–22), `bestRepEverThisYear`, `you` (`{id:'you', name, isYou:true, skill, morale, wage:0, spec, perk, task}`), `guides[]`, `queue`, `dayReports[]`, `trip` (active trip working object).
+
+**Season cycle:** April 1 → October 31 is `SUMMER_DAYS=214` days of normal play. `advanceDay()` increments `seasonDay`; when it exceeds 214, fires `enterOffSeason()` → `renderSeasonReport()` → `renderOffSeason()`. Winter is a single planning screen with `WINTER_WEEKS=22` to spend on cert school (each cert has `weeks` and `cost`) and infra projects (`INFRA` array). `enterSpring()` increments `year`, resets `seasonDay=1`, refreshes weather & energy, and starts the next summer. The player is **expected to run a 15-year+ career**; current win condition is still €5000+rep70+3-guides ("ready for Phase III") but should evolve once Phase 3 ships.
 
 **Rendering:** everything draws into `#scene` via `setScene(html)` (which also clears the `#fcast` forecast card and replays a CSS rise animation). The persistent chrome lives outside `#scene`:
 - `.appbar` — title + a `≡` menu button (`toggleMenu`).
@@ -81,7 +81,9 @@ Always run both checks before handing a build back. Several bugs only surface th
 - *Phase 1 (personal ownership):* you **own** items (`S.owned`); packing only offers owned gear. Buy more in the **shop** (`openShop` → `buyItem`, one-time `ITEM_COST` prices). `recommended(route, weather)` returns the items that matter; `prepScore()`/preparedness drives reputation & tips at trip end.
 - *Phase 2 (company depot):* `S.depot` of `CON` consumables (water, snacks, sunscreen, repellent — used up per trip) and `DUR` durables (firstaid, poles, map, shell, lamp — reusable, limit concurrent trips). `allocateGear(trips)` distributes kit across the day's trips; coverage modifies guide outcomes. Stock it via `openDepot`/`buyGear` (`GEAR` unit costs).
 
-**Certifications (`CERTS`, "HATEOA"):** Basic Hiking Guide (€120) → unlocks the rest; Wilderness First Aid (€180) improves injuries; Canyon & Gorge Leader (€160) boosts river/forest routes; Mountain Leader (€300, needs rep ≥ 60) **unlocks diff-3 routes**. Each costs a fee **and a day** (`enrollCert` → `advanceDay`). `hasCert(id)` gates routes and modifies event odds.
+**Certifications (`CERTS`, "HATEOA"):** Basic Hiking Guide (€120, 2 weeks) → unlocks the rest; Wilderness First Aid (€180, 3 weeks) improves injuries; Canyon & Gorge Leader (€160, 3 weeks) boosts river/forest routes; Mountain Leader (€300, 4 weeks, needs rep ≥ 60 — measured against the player's *peak* rep that year) **unlocks diff-3 routes**. Each course is a HATEOA **off-season** programme run November–March: `enrollCertSchool(id)` deducts cash + `weeks` from `WINTER_WEEKS=22` and adds the cert. Mid-summer the `openCerts()` screen is read-only — players see what's available and plan for winter. `hasCert(id)` gates routes and modifies event odds.
+
+**Infrastructure (`INFRA`, off-season projects):** Each project has `id`, `name`, `cost`, `weeks`, `effect`. v1 ships with one placeholder (`pickup` — battered pickup truck, €1800, 3 weeks, +€10 to fees on every trip the player guides) so the pattern exists. Real Messinia-specific projects fill in later from Fotis's domain knowledge — likely candidates: base/office lease in Kalamata, proper website, hotel partner deals, 4×4 or minibus, second location for Taygetos access, equipment workshop, insurance upgrade, off-season marketing.
 
 **Backgrounds (`BACKGROUNDS`, chosen at profile):** medic (injuries go well), charmer (`charm()` boosts rep & tips), outfitter (starts with 6-slot pack, +€150, extra owned items), navigator (better weather/nav outcomes).
 
@@ -91,7 +93,7 @@ Always run both checks before handing a build back. Several bugs only surface th
 
 **Phase 2 management:** assign each person (you + guides) to a trip / rest / training; `runDay()` → `processNext()` queue. Guides auto-resolve (`autoResolve`, skill + gear coverage) or **radio in a crisis** (`RADIO` events) for your management decision. Daily **wages**, **morale** (quit at 0), **fatigue**, training, and hiring (`openHire`). The player still personally guides via the same packing/trailhead/event flow.
 
-**Save/continue:** `window.storage` (async, artifact-only; guarded by `typeof window!=='undefined' && window.storage`). Autosaves at the start of each day under `SAVE_KEY` (currently `aegean_save_v4`). Title screen offers Continue / New game; `doContinue()` applies defensive defaults for older saves.
+**Save/continue:** `window.storage` (async, artifact-only; guarded by `typeof window!=='undefined' && window.storage`). Autosaves at the start of each day under `SAVE_KEY` (currently `aegean_save_v5` — bumped when the season schema landed). Title screen offers Continue / New game; `doContinue()` applies defensive defaults for the new fields (`year`, `seasonDay`, `season`, `infra`, `yearStats`, `yearLogs`, `winterWeeksUsed`).
 
 **Content arrays:** `EVENTS` (trail events), `TRAILHEAD` (meet-the-group), `RADIO` (delegated crises). Each entry has `when(b,w)` eligibility and `choices` with `run(b,S)` returning deltas (`rep`, `cash`, `energy`, `gear`, `payMul`, `tips`, `morale`, `line`/`lines`).
 

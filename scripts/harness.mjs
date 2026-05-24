@@ -83,29 +83,37 @@ globalThis.clearTimeout = () => {};
 //    `function foo(){}` and `var X` becomes reachable on globalThis.
 (0, eval)(src);
 
-// 4) Drive a playthrough. Bias toward progression so games finish.
+// 4) Drive a playthrough. Bias toward progression AND toward the
+//    "primary" recommended option so we approximate a cautious player.
 const PROGRESS_VERBS = ['runDay', 'processNext', 'setOff', 'resolveMeet',
   'resolveP', 'resolveRadio', 'startTrailhead', 'finishPlayerTrip',
-  'afterPlayerTrip', 'advanceDay', 'nextDay', 'doContinue'];
+  'afterPlayerTrip', 'advanceDay', 'nextDay', 'doContinue',
+  'enterSpring', 'enrollCertSchool', 'enrollInfra'];
 
 function pickHandler() {
   const html = els.scene?.innerHTML || '';
-  const re = /onclick="([^"]+)"/g;
-  const out = [];
-  let mm;
-  while ((mm = re.exec(html))) out.push(mm[1]);
-  if (!out.length) return null;
-  // Prefer a progression-shaped click if any are available.
-  const prog = out.filter(s => PROGRESS_VERBS.some(v => s.includes(v)));
-  const pool = prog.length && Math.random() < 0.75 ? prog : out;
-  return pool[Math.floor(Math.random() * pool.length)];
+  const re = /<(?:button|div)\s+[^>]*?class="([^"]*?)"[^>]*?onclick="([^"]+)"/g;
+  const buttons = []; let mm;
+  while ((mm = re.exec(html))) buttons.push({ cls: mm[1], onc: mm[2] });
+  const re2 = /onclick="([^"]+)"/g;
+  while ((mm = re2.exec(html))) {
+    if (!buttons.some(b => b.onc === mm[1])) buttons.push({ cls: '', onc: mm[1] });
+  }
+  if (!buttons.length) return null;
+  const primaries = buttons.filter(b => /\bprimary\b/.test(b.cls));
+  const prog = buttons.filter(b => PROGRESS_VERBS.some(v => b.onc.includes(v)));
+  let pool;
+  if (primaries.length && Math.random() < 0.55) pool = primaries;
+  else if (prog.length && Math.random() < 0.75) pool = prog;
+  else pool = buttons;
+  return pool[Math.floor(Math.random() * pool.length)].onc;
 }
 
 const BG_IDS = ['medic', 'charmer', 'outfitter', 'navigator'];
 const KITS = [['water'], ['water', 'snacks'], ['water', 'firstaid', 'map']];
 
 function runOne(maxSteps = 600) {
-  const events = { steps: 0, exceptions: [], reachedP2: false, ended: false };
+  const events = { steps: 0, exceptions: [], reachedP2: false, reachedY2: false, reachedWinter: false, ended: false, endKind: null };
   const bg = BG_IDS[Math.floor(Math.random() * BG_IDS.length)];
   const kit = KITS[Math.floor(Math.random() * KITS.length)];
   try {
@@ -116,7 +124,10 @@ function runOne(maxSteps = 600) {
   }
   for (let i = 0; i < maxSteps; i++) {
     events.steps++;
-    if (globalThis.S?.phase === 2 && !events.reachedP2) events.reachedP2 = true;
+    const S = globalThis.S;
+    if (S?.phase === 2 && !events.reachedP2) events.reachedP2 = true;
+    if (S?.year >= 2 && !events.reachedY2) events.reachedY2 = true;
+    if (S?.season === 'winter' && !events.reachedWinter) events.reachedWinter = true;
     const h = pickHandler();
     if (!h) break;
     try {
@@ -124,11 +135,12 @@ function runOne(maxSteps = 600) {
     } catch (e) {
       events.exceptions.push({ where: 'click', click: h, msg: e.message, stack: e.stack });
     }
-    // Detect end-of-game screens (title or game-over)
     const scene = els.scene?.innerHTML || '';
-    if (/Begin a season|Play again|Try another season/.test(scene) && i > 5) {
-      events.ended = true;
-      break;
+    if (i > 5) {
+      if (/Bankrupt/.test(scene)) { events.ended = true; events.endKind = 'bankrupt'; break; }
+      if (/A ruined name/.test(scene)) { events.ended = true; events.endKind = 'ruined'; break; }
+      if (/Phase II complete/.test(scene)) { events.ended = true; events.endKind = 'won'; break; }
+      if (/Begin a season|Play again|Try another season/.test(scene)) { events.ended = true; events.endKind = events.endKind || 'unknown'; break; }
     }
   }
   return events;
@@ -136,7 +148,7 @@ function runOne(maxSteps = 600) {
 
 const N = parseInt(process.argv[2] || '300', 10);
 console.log(`Running ${N} random playthroughs…\n`);
-const summary = { runs: 0, exceptions: 0, reachedP2: 0, ended: 0, totalSteps: 0 };
+const summary = { runs: 0, exceptions: 0, reachedP2: 0, reachedY2: 0, reachedWinter: 0, ended: 0, totalSteps: 0, ends: { bankrupt: 0, ruined: 0, won: 0, unknown: 0 } };
 const exceptionSamples = new Map(); // dedupe by first line of stack
 const startedAt = Date.now();
 
@@ -145,7 +157,9 @@ for (let i = 0; i < N; i++) {
   summary.runs++;
   summary.totalSteps += r.steps;
   if (r.reachedP2) summary.reachedP2++;
-  if (r.ended) summary.ended++;
+  if (r.reachedY2) summary.reachedY2++;
+  if (r.reachedWinter) summary.reachedWinter++;
+  if (r.ended) { summary.ended++; if (r.endKind) summary.ends[r.endKind] = (summary.ends[r.endKind] || 0) + 1; }
   for (const ex of r.exceptions) {
     summary.exceptions++;
     const key = (ex.stack || ex.msg || '').split('\n').slice(0, 2).join(' | ');
@@ -161,7 +175,10 @@ console.log(`Done in ${dur}s.`);
 console.log(`  Runs:            ${summary.runs}`);
 console.log(`  Avg steps/run:   ${(summary.totalSteps / summary.runs).toFixed(1)}`);
 console.log(`  Reached Phase 2: ${summary.reachedP2} (${(100 * summary.reachedP2 / summary.runs).toFixed(0)}%)`);
+console.log(`  Reached winter:  ${summary.reachedWinter} (${(100 * summary.reachedWinter / summary.runs).toFixed(0)}%)`);
+console.log(`  Reached Year 2:  ${summary.reachedY2} (${(100 * summary.reachedY2 / summary.runs).toFixed(0)}%)`);
 console.log(`  Game ended:      ${summary.ended} (${(100 * summary.ended / summary.runs).toFixed(0)}%)`);
+console.log(`     bankrupt: ${summary.ends.bankrupt}  ruined: ${summary.ends.ruined}  won: ${summary.ends.won}  unknown: ${summary.ends.unknown}`);
 console.log(`  Exceptions:      ${summary.exceptions}`);
 if (summary.exceptions > 0) {
   console.log('\nException samples (deduped by stack):');
