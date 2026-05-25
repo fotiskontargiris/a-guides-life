@@ -1,6 +1,6 @@
 # PIXEL-ART.md — Art Direction & Asset Brief for *Messinia Guide*
 
-A spec for creating consistent pixel-art graphics for the game. Place alongside `aegean-guide.html` and `CLAUDE.md`. Goal: a cohesive set of crisp, readable pixel sprites that match the game's existing "Aegean/Mediterranean dusk field-journal" look and can be dropped into the HTML incrementally.
+A spec for creating consistent pixel-art graphics for the game. Place alongside `index.html` and `CLAUDE.md`. Goal: a cohesive set of crisp, readable pixel sprites that match the game's existing "Aegean/Mediterranean dusk field-journal" look and can be dropped into the HTML incrementally.
 
 ---
 
@@ -54,7 +54,7 @@ That's ~27 colours; a real working set of **16 mid+dark tones** is plenty for an
 
 ## 4. Asset list (what the game needs)
 
-Mapped to where each appears in `aegean-guide.html`.
+Mapped to where each appears in `index.html`.
 
 ### Weather — 24×24 (replaces the coloured dots in the forecast card / `weatherChip`)
 1. `weather_clear` — bright sun, gold rays on teal.

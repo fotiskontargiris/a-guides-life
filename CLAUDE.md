@@ -1,12 +1,12 @@
 # CLAUDE.md — Messinia Guide (Outdoor Activities Tycoon)
 
-Project context for continuing development in Claude Code. Read this first, then read `aegean-guide.html`.
+Project context for continuing development in Claude Code. Read this first, then read `index.html`.
 
 ---
 
 ## 1. What this is
 
-A text-driven **outdoor-activities tycoon game**, set in the **Peloponnese (Messinia and its neighbours)**. You start as a solo hiking guide with almost nothing and grow into the region's leading outdoor company. It is one self-contained HTML file (`aegean-guide.html`) — vanilla HTML/CSS/JS, no build step, no dependencies except Google Fonts via `<link>`. It is designed to be played on a phone and to run as a Claude.ai artifact.
+A text-driven **outdoor-activities tycoon game**, set in the **Peloponnese (Messinia and its neighbours)**. You start as a solo hiking guide with almost nothing and grow into the region's leading outdoor company. It is one self-contained HTML file (`index.html`) — vanilla HTML/CSS/JS, no build step, no dependencies except Google Fonts via `<link>`. It is designed to be played on a phone and to run as a Claude.ai artifact.
 
 **Tone & aesthetic:** an "Aegean/Mediterranean dusk field-journal" look — warm sand text on deep teal, a faint topographic-contour SVG backdrop, a serif narrative voice (Fraunces / Spectral) paired with a monospace "instruments" font (Spline Sans Mono) for stats. Second-person, literary, concise prose. No emojis (dingbat symbols like ▸ ▶ ✓ ☾ are fine).
 
@@ -25,7 +25,7 @@ node scripts/winter-test.mjs        # forces a game to end of summer to verify t
 ```
 
 `scripts/harness.mjs` does it all:
-1. Reads `aegean-guide.html`, regex-extracts the inline `<script>`, writes to `scripts/.core.js`.
+1. Reads `index.html`, regex-extracts the inline `<script>`, writes to `scripts/.core.js`.
 2. `node --check` on the extracted file. MUST pass.
 3. Stubs a fake DOM: `document.getElementById` returns a `fakeEl()` (settable `innerHTML`, a `style` object, `value`, `offsetWidth`, and a `classList` stub backed by a `Set`).
 4. Stubs `setTimeout` and a fake `window.storage` (async `get`/`set`/`delete`; `get` throws on a missing key).
@@ -146,7 +146,7 @@ Balance is a **first pass** — these are the dials to turn for a balance featur
 
 ## 9. Files
 
-- `aegean-guide.html` — the entire game.
+- `index.html` — the entire game.
 - `CLAUDE.md` — this document.
 
 Run `claude` in this folder; it will read both. When you make changes, re-run the extract + `node --check` and the headless simulation before considering them done.

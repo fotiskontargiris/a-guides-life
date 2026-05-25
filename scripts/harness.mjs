@@ -1,4 +1,4 @@
-// Headless simulation harness for aegean-guide.html.
+// Headless simulation harness for index.html.
 // Per CLAUDE.md §2: extract inline script, syntax-check it, then drive
 // many random playthroughs against a stubbed DOM. Reports exceptions
 // and surfaces a basic activity summary so we can see the player
@@ -11,7 +11,7 @@ import { execSync } from 'node:child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const HTML = path.join(ROOT, 'aegean-guide.html');
+const HTML = path.join(ROOT, 'index.html');
 const TMP_JS = path.join(__dirname, '.core.js');
 
 const html = fs.readFileSync(HTML, 'utf8');

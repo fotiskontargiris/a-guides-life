@@ -6,7 +6,7 @@ A text-driven outdoor-guide career game set in the Peloponnese. You graduated fr
 
 ## Status
 
-**Pre‑alpha.** Single self‑contained HTML file (`aegean-guide.html`), vanilla JS, no build step. Playable end‑to‑end through Phase 1 (solo guiding) and Phase 2 (managing a team), inside a full April–October season with a winter office for cert school and infrastructure projects.
+**Pre‑alpha.** Single self‑contained HTML file (`index.html`), vanilla JS, no build step. Playable end‑to‑end through Phase 1 (solo guiding) and Phase 2 (managing a team), inside a full April–October season with a winter office for cert school and infrastructure projects.
 
 ## Roadmap
 
@@ -22,7 +22,7 @@ See [CLAUDE.md](./CLAUDE.md) for the working notes and project bible.
 
 ## Run
 
-Open `aegean-guide.html` in any modern browser. No build step. Save/continue uses `window.storage` when available (Claude.ai artifact context) and falls back to in‑memory otherwise.
+Open `index.html` in any modern browser. No build step. Save/continue uses `window.storage` when available (Claude.ai artifact context) and falls back to in‑memory otherwise.
 
 ## Test (headless harness)
 
