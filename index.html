@@ -840,7 +840,7 @@ function buyItem(id, tier){
 function serviceGear(){ if(S.cash<40||S.gear>=100) return; S.cash-=40; S.gear=clamp(S.gear+35,0,100); note('Serviced your equipment (−€40).'); saveGame(); openShop(); }
 function openCerts(){
   renderHUD();
-  const rows=CERTS.map(c=>{
+  function infoCard(c){
     const have=hasCert(c.id), prereqOk=!c.prereq||hasCert(c.prereq), repOk=S.rep>=c.repReq;
     let sub;
     if(have) sub='Certified';
@@ -849,11 +849,23 @@ function openCerts(){
     else sub=`€${c.cost} · ${c.weeks||1} winter week${(c.weeks||1)===1?'':'s'}`;
     return `<div class="opt ${have?'':'disabled'}" style="cursor:default">
       <span class="mark">${have?'✓':'·'}</span><span class="b-main">${c.name} <span style="color:var(--ink-faint);font-size:11px">· ${c.org}</span><span class="b-sub">${c.effect} — ${sub}</span></span></div>`;
-  }).join('');
+  }
+  const offered = S.offeredDisciplines || ['hike'];
+  let html = certSectionHeader('General') + CERTS.filter(c=>c.discipline==='general').map(infoCard).join('');
+  for(const d of offered){
+    const certs = CERTS.filter(c=>c.discipline===d).sort((a,b)=>a.rung-b.rung);
+    if(!certs.length) continue;
+    const disc = DISCIPLINES.find(x=>x.id===d);
+    html += certSectionHeader(disc?disc.name:d, certs[0].org) + certs.map(infoCard).join('');
+  }
+  const otherEntries = CERTS.filter(c=>c.rung===1 && c.discipline!=='general' && !offered.includes(c.discipline));
+  if(otherEntries.length){
+    html += certSectionHeader('Take on a new discipline', 'enrol over winter; offer it next spring') + otherEntries.map(infoCard).join('');
+  }
   setScene(`<div class="day-tag">${dayTag()} · Certifications</div>
-    <h2>HATEOA courses</h2>
-    <p>The Hellenic hiking federation runs its courses through the winter months. The season is upon you — make a name now, sign up for school come November. Cash <b style="color:var(--gold)">€${S.cash}</b> · reputation ${S.rep}.</p>
-    <div class="choices">${rows}</div>
+    <h2>Cert school catalogue</h2>
+    <p>HATEOA, Paddle UK, ICOpro, IRF, IMBA, UIAA/MT — every scheme runs its courses through winter. Browse here, sign up come November. Cash <b style="color:var(--gold)">€${S.cash}</b> · reputation ${S.rep}.</p>
+    ${html}
     <div class="actionbar"><button class="go" onclick="renderMorning()">Back to the day</button></div>`);
 }
 function enrollCertSchool(id){
@@ -866,7 +878,18 @@ function enrollCertSchool(id){
   S.cash-=c.cost; S.certs.push(id);
   S.winterWeeksUsed=(S.winterWeeksUsed||0)+c.weeks;
   if(S.yearStats) S.yearStats.certs++;
-  note(`Certified — ${c.name} (HATEOA, −€${c.cost}, ${c.weeks} weeks).`);
+  note(`Certified — ${c.name} (${c.org}, −€${c.cost}, ${c.weeks} weeks).`);
+  // An L1 entry cert for a discipline you do not yet offer unlocks that
+  // discipline from next spring (PHASE-1 §7: "literally how 'master multiple
+  // activities' happens — take its entry award over winter and offer it next
+  // season").
+  if(c.rung===1 && c.discipline && c.discipline!=='general'){
+    if(!S.offeredDisciplines.includes(c.discipline)){
+      S.offeredDisciplines.push(c.discipline);
+      const d=DISCIPLINES.find(x=>x.id===c.discipline);
+      note(`You can offer ${d?d.name:c.discipline} from next spring — buy the kit at the shop.`);
+    }
+  }
   renderOffSeason();
 }
 function enrollInfra(id){
@@ -1340,28 +1363,52 @@ function renderSeasonReport(){
     <div class="actionbar"><button class="go" onclick="renderOffSeason()">Begin winter planning <span class="gs">${WINTER_WEEKS} weeks ahead</span></button></div>
   </div>`);
 }
+function certCard(c, left, bestRep){
+  const have = hasCert(c.id);
+  const prereqOk = !c.prereq || hasCert(c.prereq);
+  const repOk = bestRep >= c.repReq;
+  const cashOk = S.cash >= c.cost;
+  const weeksOk = c.weeks <= left;
+  const can = !have && prereqOk && repOk && cashOk && weeksOk;
+  let sub;
+  if(have) sub = 'Certified — done.';
+  else if(!prereqOk) sub = 'First earn ' + certName(c.prereq);
+  else if(!repOk) sub = `Needs reputation ${c.repReq} (your peak this year was ${bestRep})`;
+  else if(!cashOk) sub = `Need €${c.cost}`;
+  else if(!weeksOk) sub = `Needs ${c.weeks} weeks, only ${left} left`;
+  else sub = `€${c.cost} · ${c.weeks} weeks · ${c.effect}`;
+  return `<button class="opt ${have?'':can?'primary':'disabled'}" onclick="${can?`enrollCertSchool('${c.id}')`:''}" ${have?'style="opacity:.55"':''}>
+    <span class="mark">${have?'✓':c.weeks+'w'}</span><span class="b-main">${c.name}<span class="b-sub">${sub}</span></span></button>`;
+}
+function certSectionHeader(label, sub){
+  return `<div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 6px">${label}${sub?` <span style="color:var(--ink-faint);text-transform:none;letter-spacing:0;font-size:11px;font-style:italic">· ${sub}</span>`:''}</div>`;
+}
 function renderOffSeason(){
   renderHUD();
   const used=S.winterWeeksUsed||0, left=WINTER_WEEKS-used;
   const bestRep = S.bestRepEverThisYear || S.yearStats?.bestRep || S.rep;
-  // certs
-  const certRows = CERTS.map(c => {
-    const have = hasCert(c.id);
-    const prereqOk = !c.prereq || hasCert(c.prereq);
-    const repOk = bestRep >= c.repReq;
-    const cashOk = S.cash >= c.cost;
-    const weeksOk = c.weeks <= left;
-    const can = !have && prereqOk && repOk && cashOk && weeksOk;
-    let sub;
-    if(have) sub = 'Certified — done.';
-    else if(!prereqOk) sub = 'First earn ' + certName(c.prereq);
-    else if(!repOk) sub = `Needs reputation ${c.repReq} (your peak this year was ${bestRep})`;
-    else if(!cashOk) sub = `Need €${c.cost}`;
-    else if(!weeksOk) sub = `Needs ${c.weeks} weeks, only ${left} left`;
-    else sub = `€${c.cost} · ${c.weeks} weeks · ${c.effect}`;
-    return `<button class="opt ${have?'':can?'primary':'disabled'}" onclick="${can?`enrollCertSchool('${c.id}')`:''}" ${have?'style="opacity:.55"':''}>
-      <span class="mark">${have?'✓':c.weeks+'w'}</span><span class="b-main">${c.name}<span class="b-sub">${sub}</span></span></button>`;
-  }).join('');
+  // Cert school — grouped by discipline so the ladder shape is legible at 22 certs.
+  // Order: General → each offered discipline (with scheme tag) → "Take on a new
+  // discipline" (collapses L1 entries for disciplines you don't yet offer).
+  const offered = S.offeredDisciplines || ['hike'];
+  const general = CERTS.filter(c => c.discipline==='general');
+  const offeredCerts = offered.map(d => ({
+    disc: d,
+    discName: (DISCIPLINES.find(x=>x.id===d)||{}).name || d,
+    certs: CERTS.filter(c => c.discipline===d).sort((a,b)=>a.rung-b.rung),
+  })).filter(g => g.certs.length);
+  const newDisciplineCerts = CERTS.filter(c =>
+    c.rung===1 && c.discipline!=='general' && !offered.includes(c.discipline)
+  );
+  let certsHTML = certSectionHeader('General') + general.map(c=>certCard(c,left,bestRep)).join('');
+  for(const g of offeredCerts){
+    const org = (g.certs[0]||{}).org || '';
+    certsHTML += certSectionHeader(g.discName, org) + g.certs.map(c=>certCard(c,left,bestRep)).join('');
+  }
+  if(newDisciplineCerts.length){
+    certsHTML += certSectionHeader('Take on a new discipline', 'an L1 award lets you offer it from next spring')
+              + newDisciplineCerts.map(c=>certCard(c,left,bestRep)).join('');
+  }
   // infra
   const infraRows = INFRA.map(it => {
     const have = hasInfra(it.id);
@@ -1386,11 +1433,11 @@ function renderOffSeason(){
   setScene(`<div class="day-tag">Year ${S.year} · Winter</div>
     <h2>The winter office</h2>
     <p>Five quiet months. Long enough to take a course, fix the truck, or develop a serious drinking problem. You have <b>${left}</b> week${left===1?'':'s'} before April pretends to be warm again. Cash <b style="color:var(--gold)">€${S.cash}</b>${S.cash<0?' — and you are in the red':''}.</p>
-    <div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 6px">HATEOA cert school</div>
-    <div class="choices">${certRows}</div>
-    <div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 6px">Infrastructure projects</div>
+    <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin:8px 0 2px">Cert school</div>
+    <div class="choices">${certsHTML}</div>
+    <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin:22px 0 6px">Infrastructure projects</div>
     <div class="choices">${infraRows}</div>
-    <div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 6px">Your team</div>
+    <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin:22px 0 6px">Your team</div>
     <div class="team">${rosterRows}</div>
     <div class="actionbar"><button class="go" onclick="enterSpring()">Open spring — Year ${S.year+1} <span class="gs">${left} unused week${left===1?'':'s'}</span></button></div>`);
   paintForecast();
@@ -1904,36 +1951,40 @@ function ownedTrips(id){ return S.owned && S.owned[id] ? S.owned[id].trips : 0; 
 function ownsItem(id){ return ownedTrips(id) > 0; }
 function freshOwned(id, tier){ return {tier, trips:itemLifetime(id, tier)}; }
 
+// Cert rungs: 0 = general/cross-cutting, 1 = L1 (the gate to a discipline),
+// 2 = L2 (lead standard), 3 = L3 (the hardest routes). Rung is used for the
+// cert-school UI grouping; discipline tells the UI which section to slot it under.
 const CERTS=[
-  // HATEOA — hiking scheme
-  {id:'basic',          name:'Basic Hiking Guide',            org:'HATEOA',    cost:120, weeks:2, repReq:0,  prereq:null,          effect:'Official accreditation — clients trust you more.'},
-  {id:'firstaid',       name:'Wilderness First Aid',          org:'HATEOA',    cost:180, weeks:3, repReq:0,  prereq:'basic',       effect:'Injuries on the trail go far better.'},
-  {id:'gorge',          name:'Canyon &amp; Gorge Leader',     org:'HATEOA',    cost:160, weeks:3, repReq:0,  prereq:'basic',       effect:'You shine on river and gorge routes.'},
-  {id:'mountain',       name:'Mountain Leader',               org:'HATEOA',    cost:300, weeks:4, repReq:60, prereq:'basic',       effect:'Unlocks the hardest summit routes.'},
-  // Paddle UK — sea-kayak scheme (DISCIPLINES.md § SEA KAYAKING → cert ladder)
-  {id:'kayakBasic',     name:'Sea Kayak Award',               org:'Paddle UK', cost:140, weeks:2, repReq:0,  prereq:null,          effect:'The gate to guiding kayak at all.'},
-  {id:'kayakLeader',    name:'Sea Kayak Leader Award',        org:'Paddle UK', cost:220, weeks:3, repReq:30, prereq:'kayakBasic',  effect:'Lead groups on exposed water — the wreck, the caves.'},
-  {id:'kayakAdvanced',  name:'Advanced Sea Kayak Leader',     org:'Paddle UK', cost:320, weeks:4, repReq:60, prereq:'kayakLeader', effect:'Unlocks the open crossings (Proti, Tainaron, Sapientza).'},
-  // ICOpro — canyoning scheme (DISCIPLINES.md § CANYONING → cert)
-  {id:'canyonBasic',    name:'Canyon Guide',                  org:'ICOpro',    cost:150, weeks:2, repReq:0,  prereq:null,          effect:'Gate to guiding canyon at all. Gentle gorges only.'},
-  {id:'canyonLeader',   name:'Canyon Leader',                 org:'ICOpro',    cost:230, weeks:3, repReq:30, prereq:'canyonBasic', effect:'Lead standard gorges with water (Neda, Vyros, Lousios).'},
-  {id:'canyonAdvanced', name:'Advanced Canyon Leader',        org:'ICOpro',    cost:340, weeks:4, repReq:60, prereq:'canyonLeader',effect:'Technical/abseil canyons (Ridomo). Flash-flood judgement.'},
-  // IRF — rafting scheme
-  {id:'raftBasic',      name:'Raft Guide',                    org:'IRF',       cost:140, weeks:2, repReq:0,  prereq:null,          effect:'The gate; gentle / family runs (Alfeios).'},
-  {id:'raftLeader',     name:'Trip Leader',                   org:'IRF',       cost:220, weeks:3, repReq:30, prereq:'raftBasic',   effect:'Standard grade-2 rivers (Lousios, Ladonas).'},
-  {id:'raftAdvanced',   name:'Raft Instructor',               org:'IRF',       cost:320, weeks:4, repReq:60, prereq:'raftLeader',  effect:'High-water and harder rivers; rescue leadership.'},
-  // IMBA — cycling scheme
-  {id:'cycleBasic',     name:'Trail Cycle Leader',            org:'IMBA',      cost:130, weeks:2, repReq:0,  prereq:null,          effect:'The gate; easy lanes and coast loops.'},
-  {id:'cycleLeader',    name:'Mountain Bike Leader',          org:'IMBA',      cost:210, weeks:3, repReq:30, prereq:'cycleBasic',  effect:'Longer / exposed routes (Mani coast, Messene lanes).'},
-  {id:'cycleAdvanced',  name:'Advanced MTB Guide',            org:'IMBA',      cost:300, weeks:4, repReq:60, prereq:'cycleLeader', effect:'Technical / backcountry climbs (Taygetos foothills).'},
-  // Paddle UK — SUP scheme (DISCIPLINES.md § SUP)
-  {id:'supBasic',       name:'SUP Award',                     org:'Paddle UK', cost:130, weeks:2, repReq:0,  prereq:null,         effect:'The gate; flat sheltered water.'},
-  {id:'supLeader',      name:'SUP Leader',                    org:'Paddle UK', cost:200, weeks:3, repReq:30, prereq:'supBasic',   effect:'Livelier sheltered water and bigger groups.'},
-  {id:'supAdvanced',    name:'Advanced / Coastal SUP Leader', org:'Paddle UK', cost:300, weeks:4, repReq:60, prereq:'supLeader',  effect:'Open / exposed water — the Navarino crossing.'},
-  // UIAA / Mountain Training — climbing scheme
-  {id:'climbBasic',     name:'Single-Pitch Award',            org:'UIAA / MT', cost:160, weeks:2, repReq:0,  prereq:null,         effect:'The gate; bolted single-pitch crags.'},
-  {id:'climbLeader',    name:'Rock Climbing Instructor',      org:'UIAA / MT', cost:240, weeks:3, repReq:30, prereq:'climbBasic', effect:'Exposed sport crags (Mani sea crags).'},
-  {id:'climbAdvanced',  name:'Multi-Pitch / Mountaineering Instructor', org:'UIAA / MT', cost:360, weeks:4, repReq:60, prereq:'climbLeader', effect:'Multi-pitch & alpine (Taygetos).'},
+  // GENERAL — HATEOA core
+  {id:'basic',          name:'Basic Hiking Guide',            org:'HATEOA',    discipline:'hike',     rung:1, cost:120, weeks:2, repReq:0,  prereq:null,          effect:'Official accreditation — clients trust you more.'},
+  {id:'firstaid',       name:'Wilderness First Aid',          org:'HATEOA',    discipline:'general',  rung:0, cost:180, weeks:3, repReq:0,  prereq:'basic',       effect:'Injuries go far better — in every discipline.'},
+  // HIKING — HATEOA hike ladder (basic acts as L1 gate)
+  {id:'gorge',          name:'Canyon &amp; Gorge Leader',     org:'HATEOA',    discipline:'hike',     rung:2, cost:160, weeks:3, repReq:0,  prereq:'basic',       effect:'You shine on river and gorge hiking routes.'},
+  {id:'mountain',       name:'Mountain Leader',               org:'HATEOA',    discipline:'hike',     rung:3, cost:300, weeks:4, repReq:60, prereq:'basic',       effect:'Unlocks the hardest summit routes.'},
+  // SEA KAYAK — Paddle UK ladder
+  {id:'kayakBasic',     name:'Sea Kayak Award',               org:'Paddle UK', discipline:'seakayak', rung:1, cost:140, weeks:2, repReq:0,  prereq:null,          effect:'The gate to guiding kayak at all.'},
+  {id:'kayakLeader',    name:'Sea Kayak Leader Award',        org:'Paddle UK', discipline:'seakayak', rung:2, cost:220, weeks:3, repReq:30, prereq:'kayakBasic',  effect:'Lead groups on exposed water — the wreck, the caves.'},
+  {id:'kayakAdvanced',  name:'Advanced Sea Kayak Leader',     org:'Paddle UK', discipline:'seakayak', rung:3, cost:320, weeks:4, repReq:60, prereq:'kayakLeader', effect:'Unlocks the open crossings (Proti, Tainaron, Sapientza).'},
+  // CANYONING — ICOpro ladder
+  {id:'canyonBasic',    name:'Canyon Guide',                  org:'ICOpro',    discipline:'canyon',   rung:1, cost:150, weeks:2, repReq:0,  prereq:null,          effect:'Gate to guiding canyon at all. Gentle gorges only.'},
+  {id:'canyonLeader',   name:'Canyon Leader',                 org:'ICOpro',    discipline:'canyon',   rung:2, cost:230, weeks:3, repReq:30, prereq:'canyonBasic', effect:'Lead standard gorges with water (Neda, Vyros, Lousios).'},
+  {id:'canyonAdvanced', name:'Advanced Canyon Leader',        org:'ICOpro',    discipline:'canyon',   rung:3, cost:340, weeks:4, repReq:60, prereq:'canyonLeader',effect:'Technical/abseil canyons (Ridomo). Flash-flood judgement.'},
+  // RAFTING — IRF ladder
+  {id:'raftBasic',      name:'Raft Guide',                    org:'IRF',       discipline:'raft',     rung:1, cost:140, weeks:2, repReq:0,  prereq:null,          effect:'The gate; gentle / family runs (Alfeios).'},
+  {id:'raftLeader',     name:'Trip Leader',                   org:'IRF',       discipline:'raft',     rung:2, cost:220, weeks:3, repReq:30, prereq:'raftBasic',   effect:'Standard grade-2 rivers (Lousios, Ladonas).'},
+  {id:'raftAdvanced',   name:'Raft Instructor',               org:'IRF',       discipline:'raft',     rung:3, cost:320, weeks:4, repReq:60, prereq:'raftLeader',  effect:'High-water and harder rivers; rescue leadership.'},
+  // CYCLING — IMBA ladder
+  {id:'cycleBasic',     name:'Trail Cycle Leader',            org:'IMBA',      discipline:'cycle',    rung:1, cost:130, weeks:2, repReq:0,  prereq:null,          effect:'The gate; easy lanes and coast loops.'},
+  {id:'cycleLeader',    name:'Mountain Bike Leader',          org:'IMBA',      discipline:'cycle',    rung:2, cost:210, weeks:3, repReq:30, prereq:'cycleBasic',  effect:'Longer / exposed routes (Mani coast, Messene lanes).'},
+  {id:'cycleAdvanced',  name:'Advanced MTB Guide',            org:'IMBA',      discipline:'cycle',    rung:3, cost:300, weeks:4, repReq:60, prereq:'cycleLeader', effect:'Technical / backcountry climbs (Taygetos foothills).'},
+  // SUP — Paddle UK SUP ladder
+  {id:'supBasic',       name:'SUP Award',                     org:'Paddle UK', discipline:'sup',      rung:1, cost:130, weeks:2, repReq:0,  prereq:null,         effect:'The gate; flat sheltered water.'},
+  {id:'supLeader',      name:'SUP Leader',                    org:'Paddle UK', discipline:'sup',      rung:2, cost:200, weeks:3, repReq:30, prereq:'supBasic',   effect:'Livelier sheltered water and bigger groups.'},
+  {id:'supAdvanced',    name:'Advanced / Coastal SUP Leader', org:'Paddle UK', discipline:'sup',      rung:3, cost:300, weeks:4, repReq:60, prereq:'supLeader',  effect:'Open / exposed water — the Navarino crossing.'},
+  // CLIMBING — UIAA / Mountain Training ladder
+  {id:'climbBasic',     name:'Single-Pitch Award',            org:'UIAA / MT', discipline:'climb',    rung:1, cost:160, weeks:2, repReq:0,  prereq:null,         effect:'The gate; bolted single-pitch crags.'},
+  {id:'climbLeader',    name:'Rock Climbing Instructor',      org:'UIAA / MT', discipline:'climb',    rung:2, cost:240, weeks:3, repReq:30, prereq:'climbBasic', effect:'Exposed sport crags (Mani sea crags).'},
+  {id:'climbAdvanced',  name:'Multi-Pitch / Mountaineering Instructor', org:'UIAA / MT', discipline:'climb', rung:3, cost:360, weeks:4, repReq:60, prereq:'climbLeader', effect:'Multi-pitch & alpine (Taygetos).'},
 ];
 function hasCert(id){ return S.certs && S.certs.includes(id); }
 function certName(id){ const c=CERTS.find(x=>x.id===id); return c?c.name:id; }
