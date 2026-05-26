@@ -426,6 +426,8 @@ async function doContinue(){
   // Disciplines — pre-M1 saves only ran hiking, so default the offered list to that.
   S.offeredDisciplines=S.offeredDisciplines||['hike']; S.fleet=S.fleet||{};
   if(S.loan===undefined) S.loan=null;
+  if(S.turnedAwayThisYear==null) S.turnedAwayThisYear=0;
+  if(S.lastHirePromptDay==null) S.lastHirePromptDay=0;
   S.forecast=S.forecast||[]; ensureForecast();
   S.year=S.year||1; S.seasonDay=S.seasonDay||S.day||1; S.season=S.season||'summer';
   S.yearLogs=S.yearLogs||[]; if(S.phase3Ready==null) S.phase3Ready=false;
@@ -517,7 +519,7 @@ function initGame(name, bgId, kit, discipline, loanSourceId){
   S={ phase:1, day:1, year:1, seasonDay:1, season:'summer',
       cash:200, rep:50, energy:100, gear:90, packSize:4, loadout:[], depot:{},
       owned:initialOwned, certs:[], infra:[], offeredDisciplines:[disc], fleet:{},
-      loan:null,
+      loan:null, turnedAwayThisYear:0, lastHirePromptDay:0,
       weather:null, bookings:[], history:[], forecast:[WEATHER[0]],
       stats:{earned:0, fees:0, tips:0, wagesPaid:0, retainersPaid:0, tripsYou:0, tripsGuides:0, hires:0, bestRep:50, yearsCompleted:0},
       yearStats:freshYearStats(),
@@ -622,9 +624,53 @@ function startDay(){
   S.trip=null; S.queue=null; S.dayReports=[];
   S.you.task=null; S.guides.forEach(g=>g.task=null);
   S.bookings = mkBookings(S.phase===1?3:4);
-  renderHUD(); renderCurrent(); saveGame();
+  renderHUD();
+  // M7: demand-based hire trigger. If you've been turning bookings away,
+  // your name carries weight, and your savings can carry a wage — the game
+  // offers the hire as a scene at the morning, not a popup.
+  if(shouldOfferHire()){ renderHireScene(); }
+  else { renderCurrent(); }
+  saveGame();
+}
+function shouldOfferHire(){
+  if(S.phase!==1) return false;
+  if(S.cash < 1500) return false;
+  if(S.rep < 70) return false;
+  if((S.turnedAwayThisYear||0) < 5) return false;
+  // Don't re-prompt for 14 days after a defer (about half an in-game month)
+  if(S.lastHirePromptDay && (S.day - S.lastHirePromptDay) < 14) return false;
+  return true;
+}
+function renderHireScene(){
+  const turned = S.turnedAwayThisYear||0;
+  setScene(`<div class="end">
+    <div class="day-tag" style="color:var(--gold)">${dayTag()} · a turning point</div>
+    <h2>You can keep doing this, or you can stop being the only one.</h2>
+    <p class="verdict">You turned a family away at the trailhead this week. The third this month, if you are honest. You stood and watched them walk back to their car.</p>
+    <p><b>${turned}</b> booking${turned===1?'':'s'} have come and gone unrun this year. Your name carries weight enough now — and your savings, just enough — to take someone else on. <b>Maria</b> has been asking. She is steady, she is keen, she is local.</p>
+    <p style="font-size:14px;color:var(--ink-dim);font-style:italic">It will be the first morning you do not lace your own boots.</p>
+    <div class="choices">
+      <button class="opt primary" onclick="acceptHire()"><span class="mark">+</span><span class="b-main">Take Maria on<span class="b-sub">Begins Phase II — you assign instead of walking</span></span></button>
+      <button class="opt" onclick="declineHire()"><span class="mark">·</span><span class="b-main">Not yet — keep going solo<span class="b-sub">The squeeze stays. The question will come back.</span></span></button>
+    </div>
+  </div>`);
+}
+function acceptHire(){ enterPhase2(); }
+function declineHire(){
+  S.lastHirePromptDay = S.day;
+  note('You let Maria’s offer pass for now. The bookings still come.');
+  renderCurrent();
 }
 function advanceDay(){
+  // Count bookings the day rejected — Phase 1 only; Phase 2 already runs
+  // many trips per day via the team. A "turned away" booking is one that
+  // wasn't cancelled by weather but also wasn't run by the player.
+  if(S.phase===1 && S.season==='summer' && S.bookings){
+    const offered = S.bookings.filter(b => !b.cancelled).length;
+    const ranOne = (S.dayReports||[]).some(r => r.line && r.line.startsWith('You guided'));
+    const turned = Math.max(0, offered - (ranOne ? 1 : 0));
+    if(turned > 0) S.turnedAwayThisYear = (S.turnedAwayThisYear||0) + turned;
+  }
   S.day++; S.seasonDay++;
   if(S.forecast&&S.forecast.length) S.forecast.shift(); ensureForecast();
   if(S.season==='summer' && S.seasonDay>SUMMER_DAYS){ enterOffSeason(); return; }
@@ -1542,6 +1588,8 @@ function enterSpring(){
   S.yearStats = freshYearStats();
   S.yearStats.startCash = S.cash; S.yearStats.openingRep = S.rep;
   S.winterWeeksUsed=0; S.bestRepEverThisYear=null;
+  S.turnedAwayThisYear=0; // each year's turned-away tally is fresh
+  S.lastHirePromptDay=0;
   // Fresh weather and a new day
   S.forecast=[]; ensureForecast();
   S.weather = S.forecast[0];
@@ -1807,7 +1855,9 @@ function showDailyReport(w, quit){
 function checkEnd(){
   if(S.cash<0) return endGame('Bankrupt','The books are dust. One refund, one wage bill, one terrible decision — take your pick. The company has folded. Take a moment. Then roll a new idiot, slightly wiser.',false);
   if(S.rep<=5) return endGame('A ruined name','Word travels fast in small towns. The TripAdvisor reviews have become a genre of their own. The phone has stopped ringing. Reputation is the only currency that actually matters — try to remember that next time.',false);
-  if(S.phase===1 && S.cash>=1500 && S.rep>=70){ enterPhase2(); return true; }
+  // M7: Phase 1→2 transition is no longer automatic at €1500+rep70. The hire
+  // is now a player choice offered by renderHireScene() in startDay() when
+  // demand has been outgrowing one pair of legs.
   if(S.phase===2 && !S.phase3Ready && S.cash>=5000 && S.rep>=70 && S.guides.length>=3){
     S.phase3Ready=true; S.phase3UnlockedYear=S.year;
     note('Milestone — your outfit is ready for Phase III: water and air. The expansion will open in a future season.');
