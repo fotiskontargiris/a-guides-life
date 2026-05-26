@@ -238,29 +238,37 @@ function renderForecast(){
 }
 
 const ROUTES=[
-  // Messinia — the home patch
-  {name:'Polylimnio waterfalls', diff:1, base:60, tags:['river','forest']},
-  {name:'Voidokilia & Navarino dunes', diff:1, base:58, tags:['coast','exposed']},
-  {name:'Ancient Messene & Mavromati', diff:2, base:95, tags:['exposed','long','historical']},
-  {name:'Neda Gorge & waterfalls', diff:2, base:110, tags:['river','gorge','remote']},
-  // Mani — the next peninsula east, immediate neighbour
-  {name:'Kardamyli & the old mule paths', diff:1, base:70, tags:['coast','forest']},
-  {name:'Vyros Gorge & stone bridges', diff:2, base:115, tags:['river','gorge','remote']},
-  {name:'Cape Tenaro lighthouse', diff:2, base:135, tags:['coast','exposed','long','remote']},
-  // Taygetos — the great range above
-  {name:'Mystras Byzantine path', diff:1, base:80, tags:['historical','forest']},
-  {name:'Saidona to the Taygetos refuge', diff:2, base:140, tags:['alpine','long']},
-  {name:'Taygetos summit (Profitis Ilias)', diff:3, base:205, tags:['alpine','exposed','hard']},
-  // Arcadia
-  {name:'Lousios monasteries loop', diff:2, base:125, tags:['historical','river','forest']},
-  {name:'Menalon Trail — Lousios Gorge', diff:3, base:170, tags:['forest','remote','long','gorge']},
-  {name:'Mount Lykaion (Zeus altar)', diff:3, base:175, tags:['alpine','exposed','historical']},
-  // Lakonia — Parnon range
-  {name:'Parnon black-fir forest', diff:2, base:120, tags:['forest','remote']},
-  {name:'Mount Parnon summit (Megali Tourla)', diff:3, base:195, tags:['alpine','exposed','hard','remote']},
-  // Achaia — the far north
-  {name:'Vouraikos Gorge from Kalavrita', diff:2, base:130, tags:['river','gorge','long']},
-  {name:'Mount Chelmos & the Styx waterfall', diff:3, base:220, tags:['alpine','remote','hard','river']},
+  // HIKING — Messinia, Mani, Taygetos, Arcadia, Parnon, Achaia (17 routes)
+  {name:'Polylimnio waterfalls',                    activity:'hike',     diff:1, base:60,  tags:['river','forest']},
+  {name:'Voidokilia & Navarino dunes',              activity:'hike',     diff:1, base:58,  tags:['coast','exposed']},
+  {name:'Ancient Messene & Mavromati',              activity:'hike',     diff:2, base:95,  tags:['exposed','long','historical']},
+  {name:'Neda Gorge & waterfalls',                  activity:'hike',     diff:2, base:110, tags:['river','gorge','remote']},
+  {name:'Kardamyli & the old mule paths',           activity:'hike',     diff:1, base:70,  tags:['coast','forest']},
+  {name:'Vyros Gorge & stone bridges',              activity:'hike',     diff:2, base:115, tags:['river','gorge','remote']},
+  {name:'Cape Tenaro lighthouse',                   activity:'hike',     diff:2, base:135, tags:['coast','exposed','long','remote']},
+  {name:'Mystras Byzantine path',                   activity:'hike',     diff:1, base:80,  tags:['historical','forest']},
+  {name:'Saidona to the Taygetos refuge',           activity:'hike',     diff:2, base:140, tags:['alpine','long']},
+  {name:'Taygetos summit (Profitis Ilias)',         activity:'hike',     diff:3, base:205, tags:['alpine','exposed','hard']},
+  {name:'Lousios monasteries loop',                 activity:'hike',     diff:2, base:125, tags:['historical','river','forest']},
+  {name:'Menalon Trail — Lousios Gorge',            activity:'hike',     diff:3, base:170, tags:['forest','remote','long','gorge']},
+  {name:'Mount Lykaion (Zeus altar)',               activity:'hike',     diff:3, base:175, tags:['alpine','exposed','historical']},
+  {name:'Parnon black-fir forest',                  activity:'hike',     diff:2, base:120, tags:['forest','remote']},
+  {name:'Mount Parnon summit (Megali Tourla)',      activity:'hike',     diff:3, base:195, tags:['alpine','exposed','hard','remote']},
+  {name:'Vouraikos Gorge from Kalavrita',           activity:'hike',     diff:2, base:130, tags:['river','gorge','long']},
+  {name:'Mount Chelmos & the Styx waterfall',       activity:'hike',     diff:3, base:220, tags:['alpine','remote','hard','river']},
+  // SEA KAYAKING — the M1 vertical slice (DISCIPLINES.md → SEA KAYAKING)
+  // diff-3 open-water routes are gated on the Advanced Sea Kayak Leader Award.
+  {name:'Voidokilia Bay & the lagoon',              activity:'seakayak', diff:1, base:60,  tags:['coast','calm','scenic']},
+  {name:'Gialova lagoon & the Divari',              activity:'seakayak', diff:1, base:65,  tags:['calm','eco','family']},
+  {name:'Navarino Bay & the wreck',                 activity:'seakayak', diff:2, base:120, tags:['coast','exposed','historical']},
+  {name:'Pylos to the Methoni sea caves',           activity:'seakayak', diff:2, base:125, tags:['coast','caves','long']},
+  {name:'Kardamyli coast & sea caves',              activity:'seakayak', diff:2, base:130, tags:['coast','caves','remote']},
+  {name:'Finikounda bays & islets',                 activity:'seakayak', diff:2, base:115, tags:['coast','islets','scenic']},
+  {name:'Koroni castle from the sea',               activity:'seakayak', diff:2, base:130, tags:['coast','historical']},
+  {name:'Epidavros sunken city',                    activity:'seakayak', diff:2, base:140, tags:['coast','historical','snorkel']},
+  {name:'The Proti island crossing',                activity:'seakayak', diff:3, base:190, tags:['open-water','exposed','remote']},
+  {name:'Cape Tainaron lighthouse (kayak)',         activity:'seakayak', diff:3, base:205, tags:['open-water','exposed','remote','historical']},
+  {name:'Sapientza & Schiza crossing',              activity:'seakayak', diff:3, base:200, tags:['open-water','remote','exposed']},
 ];
 const CLIENTS=[
   {label:'a family with two young children', type:'family', g:4, pm:1.0},
@@ -286,7 +294,7 @@ const BACKGROUNDS=[
 ];
 
 /* ---------------- setup ---------------- */
-const SAVE_KEY='aegean_save_v6';
+const SAVE_KEY='aegean_save_v7';
 let pickedBg='medic', pendingName='', cachedSave=null, pickedKit=['water'];
 
 /* ---------------- calendar ----------------
@@ -363,6 +371,8 @@ async function doContinue(){
   if(Array.isArray(S.owned)){ const m={}; S.owned.forEach(id=>{ if(ITEM_LIFETIME[id]!=null) m[id]=freshOwned(id,'standard'); }); S.owned=m; }
   S.owned=S.owned||{water:freshOwned('water','standard')};
   S.certs=S.certs||[]; S.infra=S.infra||[];
+  // Disciplines — pre-M1 saves only ran hiking, so default the offered list to that.
+  S.offeredDisciplines=S.offeredDisciplines||['hike']; S.fleet=S.fleet||{};
   S.forecast=S.forecast||[]; ensureForecast();
   S.year=S.year||1; S.seasonDay=S.seasonDay||S.day||1; S.season=S.season||'summer';
   S.yearLogs=S.yearLogs||[]; if(S.phase3Ready==null) S.phase3Ready=false;
@@ -409,7 +419,7 @@ function initGame(name, bgId, kit){
   (kit||['water']).forEach(id=>{ if(ITEM_LIFETIME[id]!=null) initialOwned[id]=freshOwned(id,'standard'); });
   S={ phase:1, day:1, year:1, seasonDay:1, season:'summer',
       cash:200, rep:50, energy:100, gear:90, packSize:4, loadout:[], depot:{},
-      owned:initialOwned, certs:[], infra:[],
+      owned:initialOwned, certs:[], infra:[], offeredDisciplines:['hike'], fleet:{},
       weather:null, bookings:[], history:[], forecast:[WEATHER[0]],
       stats:{earned:0, fees:0, tips:0, wagesPaid:0, retainersPaid:0, tripsYou:0, tripsGuides:0, hires:0, bestRep:50, yearsCompleted:0},
       yearStats:freshYearStats(),
@@ -430,13 +440,17 @@ function mkBookings(n){
   // Website infra: one extra booking choice each morning, and a slight
   // bias toward better-paying clients (re-roll the lowest-pm pick once).
   if(hasInfra('website')) n += 1;
-  const pool=[...ROUTES], out=[];
-  for(let i=0;i<n;i++){
+  // Only offer routes for disciplines the player actually guides.
+  const offered = S.offeredDisciplines && S.offeredDisciplines.length ? S.offeredDisciplines : ['hike'];
+  const pool = ROUTES.filter(r => offered.includes(r.activity||'hike'));
+  if(!pool.length) return [];
+  const out=[];
+  for(let i=0;i<n && pool.length;i++){
     const r=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
     let c=rnd(CLIENTS);
     if(hasInfra('website') && c.pm < 1.0 && chance(0.5)) c=rnd(CLIENTS);
     const pay=Math.round(r.base*c.pm*(0.85+Math.random()*0.4));
-    out.push({route:r.name, diff:r.diff, client:c.label, ctype:c.type, group:c.g, pay, tags:r.tags,
+    out.push({route:r.name, activity:r.activity||'hike', diff:r.diff, client:c.label, ctype:c.type, group:c.g, pay, tags:r.tags,
               cancelled:(S.weather.storm && r.diff===3)});
   }
   return out;
