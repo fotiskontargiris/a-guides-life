@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messinia Guide — Hero portrait mockups</title>
+<style>
+  :root{--ink:#ecdcc0;--sea:#0c252b;--panel:#12343a;}
+  body{margin:0;background:#0c252b;color:#ecdcc0;font-family:Georgia,'Spectral',serif;padding:24px;}
+  h1{font-weight:500;font-size:22px;margin:0 0 4px;}
+  p.note{color:#b9a87f;font-size:13px;margin:0 0 20px;max-width:640px;line-height:1.5;}
+  .hgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;max-width:900px;}
+  .hcell{display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .hcell canvas{width:128px;height:128px;image-rendering:pixelated;border-radius:8px;background:#0c252b;}
+  .hname{margin-top:8px;font-size:14px;font-weight:500;line-height:1.3;}
+  .hsig{font-size:12px;color:#b9a87f;line-height:1.3;margin-top:2px;font-family:'Spline Sans Mono',monospace;}
+  .hg{color:#6fb0ad;}
+</style>
+</head>
+<body>
+<h1>The ten fallen heroes — portrait mockups</h1>
+<p class="note">Rough pixel busts to lock silhouettes and signifiers (PIXEL-ART.md palette, top-left light). Final sprites need a grid-perfect cleanup / palette-snap pass. Skin tones are derived from the sand&rarr;terracotta range since the locked ramp has no explicit skin.</p>
+<div class="hgrid" id="hgrid"></div>
+<script>
+(function(){
+var OUT='#061a1f',sandL='#f7eed8',sand='#ecdcc0',sandD='#b9a87f',
+terr='#d2754a',terrD='#a4502f',terrL='#e88a5c',gold='#e3b863',goldL='#f3d68a',
+sea='#6fb0ad',seaD='#3f7e7e',seaL='#9fd0cd',olive='#aebd7e',oliveD='#6f7d49',oliveL='#c8d39a',
+stone='#8a9a98',stoneD='#5a6b6a',stoneL='#b4c0bd',danger='#e0664c',
+grey='#b4c0bd',white='#ecdcc0',bleach='#cdbd8e',hairDark='#3a2a1f',hairBrown='#5a3f2a';
+var SK={L:{b:'#e7b98a',s:'#cf9a66'},M:{b:'#cf9460',s:'#b07a48'},D:{b:'#a76a3f',s:'#8a5230'}};
+var heroes=[
+{n:'The almost-doctor',g:'♂',sig:'pen behind ear · cross pin',sk:'M',hair:'short',hc:hairDark,brows:1,cloth:sand,eyes:'normal',mouth:'kind',acc:['penEar','crossPin']},
+{n:'The Mykonos chef',g:'♂',sig:'bandana · sea-bream tattoo',sk:'D',hair:'bandana',hc:hairDark,bandanaC:terrD,stubble:1,cloth:terr,eyes:'normal',mouth:'smirk',acc:['tattoo']},
+{n:'The army washout',g:'♀',sig:'camo buff · scanning eyes',sk:'M',hair:'crop_pony',hc:hairDark,brows:1,cloth:oliveD,eyes:'alert',mouth:'flat',acc:['buff']},
+{n:'The deckhand',g:'♀',sig:'knit cap · squint',sk:'M',hair:'salt_sides',hc:grey,cap:'knit',capC:seaD,cloth:sea,eyes:'squint',mouth:'flat',acc:['anchor']},
+{n:'The influencer',g:'♀',sig:'shades up · bright smile',sk:'L',hair:'long',hc:bleach,cloth:gold,eyes:'normal',mouth:'bright',acc:['shadesUp','earbud']},
+{n:'The startup engineer',g:'♂',sig:'glasses · lanyard',sk:'L',hair:'messy',hc:hairBrown,glasses:1,cloth:stone,eyes:'normal',mouth:'flat',acc:['lanyard']},
+{n:'The philologist',g:'♀',sig:'round specs · raised brow',sk:'M',hair:'bun',hc:hairDark,glasses:1,cloth:sandD,eyes:'normal',mouth:'kind',browRaise:1,acc:['scarf']},
+{n:'The Fasaia',g:'♀',sig:'mala beads · serene',sk:'M',hair:'long',hc:bleach,cloth:oliveD,eyes:'closed',mouth:'serene',acc:['beads']},
+{n:'The Alani',g:'♂',sig:'gold chain · cocky grin',sk:'D',hair:'slick',hc:hairDark,cloth:terrD,eyes:'normal',mouth:'cocky',acc:['chain','toothpick']},
+{n:'The Greek Villager',g:'♂',sig:'flat cap · white moustache',sk:'D',hair:'none',cap:'flat',capC:stoneD,mous:1,cloth:stoneD,eyes:'know',mouth:'flat',acc:['komboloi']}
+];
+function has(h,a){return h.acc&&h.acc.indexOf(a)>=0;}
+function draw(cv,h){
+ var S=6,ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+ var sk=SK[h.sk],skin=sk.b,sh=sk.s;
+ function R(x,y,w,hh,c){ctx.fillStyle=c;ctx.fillRect(x*S,y*S,w*S,hh*S);}
+ function C(x,y,w,hh){ctx.clearRect(x*S,y*S,w*S,hh*S);}
+ ctx.clearRect(0,0,cv.width,cv.height);
+ if(h.hair==='long'){R(12,14,4,26,h.hc);R(32,14,4,26,h.hc);}
+ if(h.hair==='salt_sides'){R(13,17,2,9,h.hc);R(33,17,2,9,h.hc);}
+ if(h.hair==='crop_pony'){R(33,16,3,11,h.hc);}
+ R(7,39,34,9,OUT);R(8,40,32,8,h.cloth);C(7,39,3,1);C(38,39,3,1);
+ if(has(h,'scarf')){R(17,37,14,3,sandD);R(18,40,4,2,sandD);}
+ if(has(h,'buff')){R(19,36,11,4,oliveD);R(21,37,1,1,olive);R(24,38,1,1,oliveL);R(27,37,1,1,olive);}
+ if(has(h,'chain')){R(18,39,12,1,gold);R(23,41,2,2,goldL);}
+ if(has(h,'beads')){for(var i=0;i<7;i++){R(17+i*2,41,1,1,terrL);}R(17,40,13,1,sandD);}
+ if(has(h,'lanyard')){R(16,40,1,5,danger);R(31,40,1,5,danger);R(21,44,6,4,stoneL);R(22,45,4,1,OUT);}
+ if(has(h,'anchor')){R(10,41,5,5,seaL);R(12,42,1,3,OUT);R(11,43,3,1,OUT);}
+ if(has(h,'crossPin')){R(10,41,4,4,sandL);R(11,41,1,3,danger);R(10,42,3,1,danger);}
+ if(has(h,'komboloi')){R(31,40,1,6,sandD);R(31,41,1,1,terr);R(31,43,1,1,terr);R(31,45,1,1,terr);}
+ if(has(h,'tattoo')){R(10,40,3,1,seaD);R(11,41,2,1,seaD);R(13,40,1,1,seaD);}
+ R(20,34,8,6,OUT);R(21,35,6,5,skin);R(21,35,6,1,sh);
+ R(15,13,18,24,OUT);R(16,14,16,22,skin);
+ C(15,13,2,2);C(31,13,2,2);C(16,34,2,2);C(30,34,2,2);C(16,33,1,3);C(31,33,1,3);
+ R(14,24,2,4,OUT);R(15,25,1,2,skin);R(32,24,2,4,OUT);R(32,25,1,2,skin);
+ if(h.hair==='short'){R(15,12,18,4,h.hc);R(15,12,2,7,h.hc);R(31,12,2,7,h.hc);R(16,15,16,1,h.hc);}
+ if(h.hair==='crop_pony'){R(15,12,18,3,h.hc);R(15,12,2,5,h.hc);R(31,12,2,5,h.hc);}
+ if(h.hair==='long'){R(15,11,18,5,h.hc);R(15,12,2,5,h.hc);R(31,12,2,5,h.hc);}
+ if(h.hair==='messy'){R(15,12,18,4,h.hc);R(16,10,2,2,h.hc);R(24,9,2,2,h.hc);R(29,10,2,2,h.hc);R(15,12,2,6,h.hc);R(31,12,2,6,h.hc);}
+ if(h.hair==='slick'){R(15,12,18,3,h.hc);R(18,12,6,1,hairBrown);R(15,12,2,4,h.hc);R(31,12,2,4,h.hc);}
+ if(h.hair==='bun'){R(15,12,18,4,h.hc);R(15,12,2,8,h.hc);R(31,12,2,8,h.hc);R(21,8,6,4,h.hc);}
+ if(h.cap==='bandana'){R(14,12,20,4,h.bandanaC);R(13,14,2,3,h.bandanaC);R(18,13,1,1,terrL);R(24,13,1,1,terrL);R(29,13,1,1,terrL);}
+ if(h.cap==='knit'){R(13,9,22,8,h.capC);R(13,15,22,2,seaD);C(13,9,2,1);C(33,9,2,1);}
+ if(h.cap==='flat'){R(15,9,16,5,h.capC);R(12,13,21,2,stoneD);}
+ if(h.mous){R(20,30,8,2,white);}
+ if(h.stubble){R(18,32,2,1,sh);R(28,32,2,1,sh);R(20,33,8,1,sh);}
+ if(h.brows){R(20,22,3,1,h.hc);R(26,22,3,1,h.hc);}
+ if(h.browRaise){R(20,22,3,1,hairDark);R(26,21,3,1,hairDark);}
+ if(h.glasses){R(18,23,5,4,OUT);R(19,24,3,2,skin);R(26,23,5,4,OUT);R(27,24,3,2,skin);R(23,24,3,1,OUT);R(20,25,1,1,OUT);R(28,25,1,1,OUT);}
+ else{
+  if(h.eyes==='normal'){R(20,24,2,2,OUT);R(27,24,2,2,OUT);}
+  if(h.eyes==='alert'){R(20,24,2,2,OUT);R(27,24,2,2,OUT);R(20,23,3,1,h.hc);R(26,23,3,1,h.hc);}
+  if(h.eyes==='squint'){R(20,25,3,1,OUT);R(26,25,3,1,OUT);}
+  if(h.eyes==='closed'){R(20,25,3,1,sh);R(26,25,3,1,sh);}
+  if(h.eyes==='cocky'){R(20,24,2,2,OUT);R(27,24,2,2,OUT);}
+  if(h.eyes==='know'){R(20,24,3,1,OUT);R(26,24,3,1,OUT);}
+ }
+ R(23,28,2,2,sh);
+ if(!h.mous){
+  if(h.mouth==='kind'){R(22,31,4,1,OUT);R(21,30,1,1,OUT);R(26,30,1,1,OUT);}
+  if(h.mouth==='smirk'){R(22,31,3,1,OUT);R(25,30,1,1,OUT);}
+  if(h.mouth==='flat'){R(22,31,4,1,OUT);}
+  if(h.mouth==='bright'){R(21,31,6,2,OUT);R(22,31,4,1,sandL);}
+  if(h.mouth==='serene'){R(22,31,4,1,sh);R(21,31,1,1,sh);R(26,31,1,1,sh);}
+  if(h.mouth==='cocky'){R(22,31,4,1,OUT);R(26,30,1,1,OUT);R(25,32,1,1,OUT);}
+ } else {R(22,32,4,1,OUT);}
+ if(has(h,'shadesUp')){R(16,11,16,2,OUT);R(17,11,5,2,seaD);R(26,11,5,2,seaD);}
+ if(has(h,'earbud')){R(32,27,1,2,sandL);}
+ if(has(h,'penEar')){R(32,21,1,6,gold);R(32,27,1,1,terrD);}
+ if(has(h,'toothpick')){R(27,31,4,1,sandL);}
+}
+var grid=document.getElementById('hgrid');
+heroes.forEach(function(h){
+ var cell=document.createElement('div');cell.className='hcell';
+ var cv=document.createElement('canvas');cv.width=288;cv.height=288;cell.appendChild(cv);
+ var nm=document.createElement('div');nm.className='hname';nm.innerHTML=h.n+' <span class="hg">'+h.g+'</span>';
+ var sg=document.createElement('div');sg.className='hsig';sg.textContent=h.sig;
+ cell.appendChild(nm);cell.appendChild(sg);grid.appendChild(cell);
+ draw(cv,h);
+});
+})();
+</script>
+</body>
+</html>

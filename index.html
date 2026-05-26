@@ -238,65 +238,68 @@ function renderForecast(){
 }
 
 const ROUTES=[
-  // HIKING — Messinia, Mani, Taygetos, Arcadia, Parnon, Achaia (17 routes)
-  {name:'Polylimnio waterfalls',                    activity:'hike',     diff:1, base:60,  tags:['river','forest']},
-  {name:'Voidokilia & Navarino dunes',              activity:'hike',     diff:1, base:58,  tags:['coast','exposed']},
-  {name:'Ancient Messene & Mavromati',              activity:'hike',     diff:2, base:95,  tags:['exposed','long','historical']},
-  {name:'Neda Gorge & waterfalls',                  activity:'hike',     diff:2, base:110, tags:['river','gorge','remote']},
-  {name:'Kardamyli & the old mule paths',           activity:'hike',     diff:1, base:70,  tags:['coast','forest']},
-  {name:'Vyros Gorge & stone bridges',              activity:'hike',     diff:2, base:115, tags:['river','gorge','remote']},
-  {name:'Cape Tenaro lighthouse',                   activity:'hike',     diff:2, base:135, tags:['coast','exposed','long','remote']},
-  {name:'Mystras Byzantine path',                   activity:'hike',     diff:1, base:80,  tags:['historical','forest']},
-  {name:'Saidona to the Taygetos refuge',           activity:'hike',     diff:2, base:140, tags:['alpine','long']},
-  {name:'Taygetos summit (Profitis Ilias)',         activity:'hike',     diff:3, base:205, tags:['alpine','exposed','hard']},
-  {name:'Lousios monasteries loop',                 activity:'hike',     diff:2, base:125, tags:['historical','river','forest']},
-  {name:'Menalon Trail — Lousios Gorge',            activity:'hike',     diff:3, base:170, tags:['forest','remote','long','gorge']},
-  {name:'Mount Lykaion (Zeus altar)',               activity:'hike',     diff:3, base:175, tags:['alpine','exposed','historical']},
-  {name:'Parnon black-fir forest',                  activity:'hike',     diff:2, base:120, tags:['forest','remote']},
-  {name:'Mount Parnon summit (Megali Tourla)',      activity:'hike',     diff:3, base:195, tags:['alpine','exposed','hard','remote']},
-  {name:'Vouraikos Gorge from Kalavrita',           activity:'hike',     diff:2, base:130, tags:['river','gorge','long']},
-  {name:'Mount Chelmos & the Styx waterfall',       activity:'hike',     diff:3, base:220, tags:['alpine','remote','hard','river']},
-  // SEA KAYAKING — the M1 vertical slice (DISCIPLINES.md → SEA KAYAKING)
-  // diff-3 open-water routes are gated on the Advanced Sea Kayak Leader Award.
-  {name:'Voidokilia Bay & the lagoon',              activity:'seakayak', diff:1, base:60,  tags:['coast','calm','scenic']},
-  {name:'Gialova lagoon & the Divari',              activity:'seakayak', diff:1, base:65,  tags:['calm','eco','family']},
-  {name:'Navarino Bay & the wreck',                 activity:'seakayak', diff:2, base:120, tags:['coast','exposed','historical']},
-  {name:'Pylos to the Methoni sea caves',           activity:'seakayak', diff:2, base:125, tags:['coast','caves','long']},
-  {name:'Kardamyli coast & sea caves',              activity:'seakayak', diff:2, base:130, tags:['coast','caves','remote']},
-  {name:'Finikounda bays & islets',                 activity:'seakayak', diff:2, base:115, tags:['coast','islets','scenic']},
-  {name:'Koroni castle from the sea',               activity:'seakayak', diff:2, base:130, tags:['coast','historical']},
-  {name:'Epidavros sunken city',                    activity:'seakayak', diff:2, base:140, tags:['coast','historical','snorkel']},
-  {name:'The Proti island crossing',                activity:'seakayak', diff:3, base:190, tags:['open-water','exposed','remote']},
-  {name:'Cape Tainaron lighthouse (kayak)',         activity:'seakayak', diff:3, base:205, tags:['open-water','exposed','remote','historical']},
-  {name:'Sapientza & Schiza crossing',              activity:'seakayak', diff:3, base:200, tags:['open-water','remote','exposed']},
-  // CANYONING — DISCIPLINES.md § CANYONING (5 routes; Polylimnio & Neda & Vyros & Lousios share
-  // names with hike routes but are separate activity trips with different kit and risk profile)
-  {name:'Polylimnio canyon (pools & jumps)',        activity:'canyon',   diff:1, base:70,  tags:['river','waterfalls','forest']},
-  {name:'Neda Gorge canyon',                        activity:'canyon',   diff:2, base:120, tags:['river','gorge','remote']},
-  {name:'Vyros Gorge canyon',                       activity:'canyon',   diff:2, base:115, tags:['gorge','remote','forest']},
-  {name:'Lousios Gorge canyon',                     activity:'canyon',   diff:2, base:130, tags:['river','gorge','historical']},
-  {name:'Ridomo Gorge (technical)',                 activity:'canyon',   diff:3, base:180, tags:['technical','remote','abseil']},
-  // RAFTING — DISCIPLINES.md § RAFTING (4 routes; Arcadia + north-Peloponnese rivers)
-  {name:'Alfeios River (Olympia)',                  activity:'raft',     diff:1, base:100, tags:['river','scenic','family']},
-  {name:'Lousios River',                            activity:'raft',     diff:2, base:130, tags:['river','gorge','historical']},
-  {name:'Ladonas River (dam-fed)',                  activity:'raft',     diff:2, base:125, tags:['river','dam-fed','reliable']},
-  {name:'Neda run',                                 activity:'raft',     diff:1, base:80,  tags:['river','remote']},
-  // CYCLING — DISCIPLINES.md § CYCLING / E-BIKE (5 routes)
-  {name:'Olive-grove gravel lanes',                 activity:'cycle',    diff:1, base:70,  tags:['backcountry','family']},
-  {name:'Voidokilia & Gialova loop',                activity:'cycle',    diff:1, base:75,  tags:['coast','eco','family']},
-  {name:'Ancient Messene back-lanes',               activity:'cycle',    diff:2, base:110, tags:['historical','backcountry']},
-  {name:'Mani coast road',                          activity:'cycle',    diff:2, base:120, tags:['coast','long','exposed']},
-  {name:'Taygetos foothill climb',                  activity:'cycle',    diff:3, base:165, tags:['mountain','hard','long']},
-  // SUP — DISCIPLINES.md § SUP (4 routes; the narrow-window niche)
-  {name:'Gialova lagoon sunrise',                   activity:'sup',      diff:1, base:70,  tags:['calm','eco','sunrise']},
-  {name:'Voidokilia bay (SUP)',                     activity:'sup',      diff:1, base:65,  tags:['calm','family']},
-  {name:'Kalamata waterfront',                      activity:'sup',      diff:1, base:60,  tags:['urban','calm','sunset']},
-  {name:'Navarino bay crossing (SUP)',              activity:'sup',      diff:2, base:110, tags:['open','exposed']},
-  // CLIMBING — DISCIPLINES.md § CLIMBING (4 routes; the vertical one)
-  {name:'Kalamata sea-view crag',                   activity:'climb',    diff:1, base:80,  tags:['crag','single-pitch','scenic']},
-  {name:'Mani sea crags',                           activity:'climb',    diff:2, base:130, tags:['crag','coast','exposed']},
-  {name:'Leonidio (Red Rock)',                      activity:'climb',    diff:2, base:150, tags:['crag','destination','long']},
-  {name:'Taygetos multi-pitch',                     activity:'climb',    diff:3, base:190, tags:['alpine','multi-pitch','exposed']},
+  // region: local (walkable from Kalamata) / near (bus reach) / mid (moped reach) / far (car only)
+  // Year 1 begins in Kalamata with no vehicle — tier-0 is bus, with a €8 fee on each "near" trip.
+  // The moped opens "mid", the Hilux opens "far"; fleet disciplines also need a rack or trailer.
+  // HIKING — 17 routes
+  {name:'Polylimnio waterfalls',                    activity:'hike',     region:'local', diff:1, base:60,  tags:['river','forest']},
+  {name:'Voidokilia & Navarino dunes',              activity:'hike',     region:'near',  diff:1, base:58,  tags:['coast','exposed']},
+  {name:'Ancient Messene & Mavromati',              activity:'hike',     region:'near',  diff:2, base:95,  tags:['exposed','long','historical']},
+  {name:'Neda Gorge & waterfalls',                  activity:'hike',     region:'mid',   diff:2, base:110, tags:['river','gorge','remote']},
+  {name:'Kardamyli & the old mule paths',           activity:'hike',     region:'near',  diff:1, base:70,  tags:['coast','forest']},
+  {name:'Vyros Gorge & stone bridges',              activity:'hike',     region:'mid',   diff:2, base:115, tags:['river','gorge','remote']},
+  {name:'Cape Tenaro lighthouse',                   activity:'hike',     region:'far',   diff:2, base:135, tags:['coast','exposed','long','remote']},
+  {name:'Mystras Byzantine path',                   activity:'hike',     region:'mid',   diff:1, base:80,  tags:['historical','forest']},
+  {name:'Saidona to the Taygetos refuge',           activity:'hike',     region:'mid',   diff:2, base:140, tags:['alpine','long']},
+  {name:'Taygetos summit (Profitis Ilias)',         activity:'hike',     region:'far',   diff:3, base:205, tags:['alpine','exposed','hard']},
+  {name:'Lousios monasteries loop',                 activity:'hike',     region:'mid',   diff:2, base:125, tags:['historical','river','forest']},
+  {name:'Menalon Trail — Lousios Gorge',            activity:'hike',     region:'far',   diff:3, base:170, tags:['forest','remote','long','gorge']},
+  {name:'Mount Lykaion (Zeus altar)',               activity:'hike',     region:'far',   diff:3, base:175, tags:['alpine','exposed','historical']},
+  {name:'Parnon black-fir forest',                  activity:'hike',     region:'far',   diff:2, base:120, tags:['forest','remote']},
+  {name:'Mount Parnon summit (Megali Tourla)',      activity:'hike',     region:'far',   diff:3, base:195, tags:['alpine','exposed','hard','remote']},
+  {name:'Vouraikos Gorge from Kalavrita',           activity:'hike',     region:'far',   diff:2, base:130, tags:['river','gorge','long']},
+  {name:'Mount Chelmos & the Styx waterfall',       activity:'hike',     region:'far',   diff:3, base:220, tags:['alpine','remote','hard','river']},
+  // SEA KAYAKING — boats live at the southwest-coast base; Voidokilia + Gialova are "local";
+  // every other route needs car + rack (limited) or trailer (full) to move the boats.
+  {name:'Voidokilia Bay & the lagoon',              activity:'seakayak', region:'local', diff:1, base:60,  tags:['coast','calm','scenic']},
+  {name:'Gialova lagoon & the Divari',              activity:'seakayak', region:'local', diff:1, base:65,  tags:['calm','eco','family']},
+  {name:'Navarino Bay & the wreck',                 activity:'seakayak', region:'near',  diff:2, base:120, tags:['coast','exposed','historical']},
+  {name:'Pylos to the Methoni sea caves',           activity:'seakayak', region:'mid',   diff:2, base:125, tags:['coast','caves','long']},
+  {name:'Kardamyli coast & sea caves',              activity:'seakayak', region:'mid',   diff:2, base:130, tags:['coast','caves','remote']},
+  {name:'Finikounda bays & islets',                 activity:'seakayak', region:'mid',   diff:2, base:115, tags:['coast','islets','scenic']},
+  {name:'Koroni castle from the sea',               activity:'seakayak', region:'mid',   diff:2, base:130, tags:['coast','historical']},
+  {name:'Epidavros sunken city',                    activity:'seakayak', region:'far',   diff:2, base:140, tags:['coast','historical','snorkel']},
+  {name:'The Proti island crossing',                activity:'seakayak', region:'far',   diff:3, base:190, tags:['open-water','exposed','remote']},
+  {name:'Cape Tainaron lighthouse (kayak)',         activity:'seakayak', region:'far',   diff:3, base:205, tags:['open-water','exposed','remote','historical']},
+  {name:'Sapientza & Schiza crossing',              activity:'seakayak', region:'far',   diff:3, base:200, tags:['open-water','remote','exposed']},
+  // CANYONING — kit (wetsuits, harness, rope) fits in a car. Polylimnio is local.
+  {name:'Polylimnio canyon (pools & jumps)',        activity:'canyon',   region:'local', diff:1, base:70,  tags:['river','waterfalls','forest']},
+  {name:'Neda Gorge canyon',                        activity:'canyon',   region:'mid',   diff:2, base:120, tags:['river','gorge','remote']},
+  {name:'Vyros Gorge canyon',                       activity:'canyon',   region:'mid',   diff:2, base:115, tags:['gorge','remote','forest']},
+  {name:'Lousios Gorge canyon',                     activity:'canyon',   region:'far',   diff:2, base:130, tags:['river','gorge','historical']},
+  {name:'Ridomo Gorge (technical)',                 activity:'canyon',   region:'far',   diff:3, base:180, tags:['technical','remote','abseil']},
+  // RAFTING — no local routes. Rafting is the *advanced opener* — expect a longer Year 1.
+  // Even the closest (Neda run, mid) needs a trailer; the car alone won't take a raft.
+  {name:'Alfeios River (Olympia)',                  activity:'raft',     region:'far',   diff:1, base:100, tags:['river','scenic','family']},
+  {name:'Lousios River',                            activity:'raft',     region:'far',   diff:2, base:130, tags:['river','gorge','historical']},
+  {name:'Ladonas River (dam-fed)',                  activity:'raft',     region:'far',   diff:2, base:125, tags:['river','dam-fed','reliable']},
+  {name:'Neda run',                                 activity:'raft',     region:'mid',   diff:1, base:80,  tags:['river','remote']},
+  // CYCLING — local lanes on the bike itself; near loops you ride out to. Mid/far need shuttle.
+  {name:'Olive-grove gravel lanes',                 activity:'cycle',    region:'local', diff:1, base:70,  tags:['backcountry','family']},
+  {name:'Voidokilia & Gialova loop',                activity:'cycle',    region:'near',  diff:1, base:75,  tags:['coast','eco','family']},
+  {name:'Ancient Messene back-lanes',               activity:'cycle',    region:'near',  diff:2, base:110, tags:['historical','backcountry']},
+  {name:'Mani coast road',                          activity:'cycle',    region:'mid',   diff:2, base:120, tags:['coast','long','exposed']},
+  {name:'Taygetos foothill climb',                  activity:'cycle',    region:'far',   diff:3, base:165, tags:['mountain','hard','long']},
+  // SUP — Voidokilia / Gialova / Kalamata waterfront all local from the SW coast base.
+  {name:'Gialova lagoon sunrise',                   activity:'sup',      region:'local', diff:1, base:70,  tags:['calm','eco','sunrise']},
+  {name:'Voidokilia bay (SUP)',                     activity:'sup',      region:'local', diff:1, base:65,  tags:['calm','family']},
+  {name:'Kalamata waterfront',                      activity:'sup',      region:'local', diff:1, base:60,  tags:['urban','calm','sunset']},
+  {name:'Navarino bay crossing (SUP)',              activity:'sup',      region:'mid',   diff:2, base:110, tags:['open','exposed']},
+  // CLIMBING — Kalamata crag walkable; everything else needs a vehicle to reach.
+  {name:'Kalamata sea-view crag',                   activity:'climb',    region:'local', diff:1, base:80,  tags:['crag','single-pitch','scenic']},
+  {name:'Mani sea crags',                           activity:'climb',    region:'mid',   diff:2, base:130, tags:['crag','coast','exposed']},
+  {name:'Leonidio (Red Rock)',                      activity:'climb',    region:'far',   diff:2, base:150, tags:['crag','destination','long']},
+  {name:'Taygetos multi-pitch',                     activity:'climb',    region:'far',   diff:3, base:190, tags:['alpine','multi-pitch','exposed']},
 ];
 const CLIENTS=[
   {label:'a family with two young children', type:'family', g:4, pm:1.0},
@@ -308,22 +311,75 @@ const CLIENTS=[
 ];
 const NAMES=['Maria','Nikos','Eleni','Yannis','Sofia','Dimitris','Katerina','Petros','Alexios','Thalia','Kostas','Ariadne'];
 const SPECS=['sure-footed on scree','calm in foul weather','wonderful with families','a born navigator','tireless on long days'];
+/* The ten fallen heroes (see HEROES.md / INTRO-KITCHEN.md). Each is a failed-
+   ambition archetype who has come home to mum. `gender` drives her diminutive
+   and the portrait; `tag` maps the hero onto the engine's existing perkIs(...)
+   hooks so the mechanical model actually fires in trail events; `cat` is the
+   catastrophe reveal, `model` the instruments note, `pani` the panigiri send-off. */
 const BACKGROUNDS=[
-  {id:'medic',     name:'Mountain-rescue medic',  perk:'Injuries on the trail almost always end well.'},
-  {id:'charmer',   name:'Village charmer',         perk:'You earn extra reputation and bigger tips.'},
-  {id:'outfitter', name:'Seasoned outfitter',     perk:'Start with a 6-slot pack and €150 extra.'},
-  {id:'navigator', name:'Born of the mountains',   perk:'You read weather and lost paths far better.'},
-  {id:'shepherd',  name:'Old shepherd',            perk:'Forty years on these slopes. You read weather and ground like an old book.'},
-  {id:'captain',   name:'Retired ferry captain',   perk:'Tourists trust the uniform. Coastal trips pay sweeter. Start with €200 extra.'},
-  {id:'goatherd',  name:'Goat-tracker turned guide', perk:'Thirty years finding stray goats in the mist. You do not get lost.'},
-  {id:'animator',  name:'Ex-cruise-ship animator', perk:'Two thousand Zorba routines for Royal Caribbean. Tourist groups tip you double.'},
-  {id:'chef',      name:'Disgraced TV chef',       perk:'Your show ended after the incident with the goat. You can stretch snacks like nobody else.'},
-  {id:'busker',    name:'Bouzouki busker',         perk:'The tavernas kept calling the cops. Tips love you — but the instrument takes a slot in your pack.'},
+  {id:'medic', name:'The almost-doctor', gender:'m', tag:'medic',
+   perk:'Injuries and nervous clients are safe with you — but you’ll scrub a risky day.',
+   cat:`“Three years of medical school,” she tells the icon over the door, not you. “Three years.” You don’t correct her to four sittings of the same anatomy exam. You were always good with people in pain — it was only the test that proved it you could never pass.`,
+   model:`Injuries end well and frightened, older groups trust you — but you cancel the risky days a braver guide would run.`,
+   pani:`Kyría Voúla finds you within ninety seconds, her blood-pressure diary already open.`},
+  {id:'chef', name:'The Mykonos chef', gender:'m', tag:'charmer',
+   perk:'Feed the group and the tips and reviews follow — but mind the provisions.',
+   cat:`“The restaurant was in a magazine,” she informs the wooden spoon. “A magazine.” You leave out the rent, the head waiter, the stolen password. You came home with a tattoo of a sea bream and the one gift that survived it: you can make strangers feel fed and looked after.`,
+   model:`Provisions turn into tips and glowing reviews; left unmanaged, they quietly eat your margin.`,
+   pani:`You taste the spit-roast from across the square and silently, helplessly, rebalance the salt.`},
+  {id:'soldier', name:'The army washout', gender:'f', tag:'navigator',
+   perk:'You run the storms and the high routes — but you frighten the gentle ones.',
+   cat:`She still keeps the selection photo on the dresser — the one where you are all mud and certainty. You don’t mention the final day, the single cut that came. You tell her instead that you can read a sky like a sentence.`,
+   model:`Storms and the hard high routes are yours, at premium pay; soft groups find you terrifying and tip low.`,
+   pani:`You clock three exits and the one unattended gas bottle. Old habits.`},
+  {id:'sailor', name:'The deckhand', gender:'f', tag:'captain',
+   perk:'Coast and rivers pay well in your hands — the dry heights don’t.',
+   cat:`“My captain,” she says, which you never quite were. Years of salt and other people’s cargo, and a stomach that has finally had enough of the open sea. But water still reads to you like family.`,
+   model:`The coast and the rivers run safe and rich for you, and you’ll have a head start when the boats come; the dry heights are your weakness.`,
+   pani:`Someone mentions the sea and you are nine sentences into a storm off Yemen before you notice.`},
+  {id:'influencer', name:'The influencer', gender:'f', tag:'animator',
+   perk:'Reputation climbs fast — but a bad day goes viral too.',
+   cat:`She never understood what you did out there, only that it involved numbers, and that the numbers went away. Still — you can make any ordinary afternoon look like the best day of a stranger’s life.`,
+   model:`Good trips spawn extra reviews and bookings and your name travels fast; so does a bad one.`,
+   pani:`You film the clarinet player. He has more presence than your last three sponsors combined.`},
+  {id:'engineer', name:'The startup engineer', gender:'m', tag:'engineer',
+   perk:'Gear lasts and projects pay — but strangers are slow to warm to you.',
+   cat:`“A company. In Germany.” She says Germany the way other people say the moon. You built something elegant for eleven users — a figure she kept refreshing to confirm. Now you will build it for goats.`,
+   model:`Your kit lasts, repairs are cheap, and the off-season projects pay — a slow start that snowballs; tips lag until your name catches up.`,
+   pani:`You find yourself estimating the throughput of the souvláki line. It could be doubled.`},
+  {id:'scholar', name:'The philologist', gender:'f', tag:'charmer',
+   perk:'Foreign groups adore you and tip the difference — if you can stop lecturing.',
+   cat:`Four languages, and a man named Babis who got the post. You can hand a German a poem and give a Frenchman back his own childhood — for which, it turns out, the Greek state keeps no permanent position.`,
+   model:`International groups understand you completely and tip for it; but the cultural lecture runs long and eats the day.`,
+   pani:`You correct a tourist’s Greek, gently, and they hug you.`},
+  {id:'fasaia', name:'The Fasaia', gender:'f', tag:'fasaia',
+   perk:'You stay calm when the day doesn’t — but you’re slow to push the sale.',
+   cat:`She has braced herself for the words “energy” and “alignment,” and she is bearing them like weather. Goa rearranged you. The bank account did not approve.`,
+   model:`Crises de-escalate around you and the group keeps its cool; but your serenity is slow to push for the upsell or the hard route.`,
+   pani:`Your uncle presses the first tsípouro into your hand. Breathe, you think. It is nine o’clock. By two in the morning your inner peace will be in open war with a brass section.`},
+  {id:'alani', name:'The Alani', gender:'m', tag:'alani',
+   perk:'You know a guy — cheap gear, easy deals — and merchandise of uncertain provenance.',
+   cat:`She tells the neighbours you have “many friends.” This is true. Some of them you owe. You know every back door in the prefecture and the price of everything behind them.`,
+   model:`Gear comes cheap and deals come easy; just don’t look too closely at where the stock came from.`,
+   pani:`Three people wave at you across the square. Two of them you owe. You wave back at all three.`},
+  {id:'villager', name:'The Greek Villager', gender:'m', tag:'shepherd',
+   perk:'Every path and village deal is yours and cheap — but the foreigners are a wall.',
+   cat:`This one she cannot spin, because the whole village watched it go — the flock, the olive grove, the kafeneío where the beach bar stands now. The most local man alive, reduced to selling his own backyard to strangers.`,
+   model:`Every route is cheap and safe in your hands and the cousins supply you for nothing; but with no languages, foreign tips and reviews suffer until you learn hospitality.`,
+   pani:`You know the clarinet player. And his father. And the debt his father owed yours.`},
+];
+
+/* Mum's favourite-dish opener — a small, warm start bonus + a recurring callback. */
+const DISHES=[
+  {id:'gemista',    name:'Gemistá',                sub:'peppers and tomatoes stuffed with rice — the ones you used to pick the filling out of', eff:{rep:5},          tail:'+5 reputation — you arrive wholesome'},
+  {id:'pastitsio',  name:'Pastítsio',              sub:'three slabs, because two would be an insult',                                                eff:{gear:8},         tail:'+8 kit condition — you face the rough days padded'},
+  {id:'bakaliaros', name:'Bakaliáros & skordaliá', sub:'fried cod and a garlic dip with strong opinions',                                            eff:{cash:25},        tail:'+€25 — she tucks a note into your pocket'},
+  {id:'youvetsi',   name:'Youvétsi',               sub:'the Sunday lamb and orzo, on a Tuesday — which means she is genuinely worried',              eff:{cash:15,rep:3},  tail:'+€15 and +3 reputation — she fusses, and talks you up to the neighbours'},
 ];
 
 /* ---------------- setup ---------------- */
-const SAVE_KEY='aegean_save_v8';
-let pickedBg='medic', pendingName='', cachedSave=null, pickedKit=['water'], pickedDiscipline='hike', pickedLoanSource='bank';
+const SAVE_KEY='aegean_save_v9';
+let pickedBg='medic', pickedDish='gemista', pendingName='', cachedSave=null, pickedKit=['water'], pickedDiscipline='hike', pickedLoanSource='bank';
 
 /* Loan sources for the starter loan (PHASE-ARCHITECTURE §15). Same reusable
    shape: principal lands as cash; instalment falls due at the post-season
@@ -409,14 +465,14 @@ function renderTitle(save, loading){
     <p class="verdict">You graduated from your guide course because nothing else worked out. The Peloponnese is now your problem.</p>
     <div class="choices">
       ${simpleOpt('▸','Continue', sub, !canCont, 'doContinue()')}
-      ${simpleOpt('✦','New game','Roll a new idiot to send into the wild', false, 'renderProfile()')}
+      ${simpleOpt('✦','New game','Home to Kalamata, and your mother’s kitchen', false, 'renderKitchen()')}
     </div>
     ${hasStorage()?'':'<p style="font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:14px">Saving isn\u2019t available in this viewer, so progress won\u2019t survive a reload — but the game plays in full.</p>'}
   </div>`);
 }
 async function doContinue(){
   const save=cachedSave||await loadSave();
-  if(!save||!save.S){ renderProfile(); return; }
+  if(!save||!save.S){ renderKitchen(); return; }
   S=save.S; gCounter=save.g||0;
   S.depot=S.depot||{}; S.loadout=S.loadout||[]; S.packSize=S.packSize||4;
   // Migrate old array-form owned (v5 and earlier) to the new tiered object form
@@ -431,15 +487,75 @@ async function doContinue(){
   S.forecast=S.forecast||[]; ensureForecast();
   S.year=S.year||1; S.seasonDay=S.seasonDay||S.day||1; S.season=S.season||'summer';
   S.yearLogs=S.yearLogs||[]; if(S.phase3Ready==null) S.phase3Ready=false;
+  if(S.dish===undefined) S.dish=null;
   S.stats=S.stats||{earned:0,fees:0,tips:0,wagesPaid:0,retainersPaid:0,tripsYou:0,tripsGuides:0,hires:0,bestRep:S.rep,yearsCompleted:0};
   ['fees','tips','retainersPaid','yearsCompleted'].forEach(k=>{ if(S.stats[k]==null) S.stats[k]=0; });
   S.yearStats=S.yearStats||freshYearStats();
   setSub('Year '+S.year+' · '+(S.phase===2?'Phase II — you lead a team now.':'Phase I — '+((S.you&&S.you.name)||'your')+'\u2019s season continues.'));
   renderHUD(); renderCurrent();
 }
-function renderProfile(){
-  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('A career in the outdoors and minor catastrophes');
-  // Discipline picker — the biggest decision, so it leads
+/* ---- The kitchen: new-game intro that doubles as character creation ----
+   Narrative beats run first (cold open + name → favourite dish → catastrophe
+   = hero pick → the pitch), then renderSetup() handles the practical picks
+   (discipline / kit / loan) under the cover of stepping out into the panigíri. */
+function renderKitchen(){
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('Home, and the smell of something browning');
+  setScene(`<div class="day-tag" style="color:var(--gold)">Kalamata · your mother’s kitchen</div>
+    <h2>You’re home</h2>
+    <p class="verdict">The bus smelled of diesel and someone’s gardenia. Now you are at the kitchen table you sat at when you were seven, and twelve, and seventeen and swearing you would never come back. The oilcloth has the same lemons on it. Something is browning in the oven, and the good plates — the ones for guests — are out, which is how you know she has decided you are a guest now. Or, worse, a patient.</p>
+    <p>“Sit, sit,” she says, though you are already sitting. “You’ve gotten thin. What did they do to you out there.” It is not a question. Nothing she says tonight will be a question.</p>
+    <label style="display:block;margin-top:16px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">What does she call you?</label>
+    <input id="gname" type="text" maxlength="18" value="${(pendingName||'').replace(/[<>"]/g,'')}" placeholder="e.g. Alexios"
+      style="width:100%;margin:6px 0 4px;padding:12px 14px;border-radius:11px;border:1px solid var(--edge);background:rgba(0,0,0,.18);color:var(--ink);font-family:'Fraunces',serif;font-size:18px;outline:none">
+    <div class="actionbar"><button class="go" onclick="kitchenSit()">Sit down</button></div>`);
+}
+function kitchenCaptureName(){ const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value.replace(/[<>"]/g,'').slice(0,18); }
+function kitchenSit(){ kitchenCaptureName(); renderKitchenDish(); }
+function renderKitchenDish(){
+  const opts=DISHES.map(d=>`<button class="opt ${pickedDish===d.id?'primary':''}" onclick="kitchenDish('${d.id}')">
+    <span class="mark">${pickedDish===d.id?'✓':'·'}</span><span class="b-main">${d.name}<span class="b-sub">${d.sub} — <em>${d.tail}</em></span></span></button>`).join('');
+  setScene(`<div class="day-tag">She has made your favourite</div>
+    <h2>Dinner</h2>
+    <p>She sets it down before you have agreed to anything. Your favourite — and she will not hear that you have a different favourite now, that people change. Tonight you are the child who loved this, so this is what love looks like: steaming, and far too much of it.</p>
+    <p style="font-style:italic;color:var(--sea);font-size:13px">She will make it again all season, “since you are clearly not eating properly out there.”</p>
+    <div class="choices" style="margin-top:8px">${opts}</div>`);
+}
+function kitchenDish(id){ if(DISHES.find(d=>d.id===id)) pickedDish=id; renderKitchenHero(); }
+function renderKitchenHero(){
+  const opts=BACKGROUNDS.map(b=>`<button class="opt ${pickedBg===b.id?'primary':''}" onclick="kitchenHero('${b.id}')">
+    <span class="mark">${b.gender==='f'?'♀':'♂'}</span><span class="b-main">${b.name}<span class="b-sub">${b.perk}</span></span></button>`).join('');
+  setScene(`<div class="day-tag">“And the thing out there?”</div>
+    <h2>What happened</h2>
+    <p>She lets you eat three bites. Then the wooden spoon comes up and waves at the entire shape of your life. “And the… the thing. Out there. It’s finished?” You could lie. You don’t.</p>
+    <label style="display:block;margin-top:6px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Who you were</label>
+    <div class="choices" style="margin-top:8px">${opts}</div>`);
+}
+function kitchenHero(id){ if(BACKGROUNDS.find(b=>b.id===id)) pickedBg=id; renderKitchenReveal(); }
+function renderKitchenReveal(){
+  const b=BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
+  setScene(`<div class="day-tag">${b.name}</div>
+    <h2>So that’s that, then</h2>
+    <p class="verdict">${b.cat}</p>
+    <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.03em;line-height:1.5">▸ ${b.model}</p>
+    <div class="choices" style="margin-top:10px">
+      <button class="opt" onclick="renderKitchenHero()"><span class="mark">·</span><span class="b-main">Actually — that wasn’t me<span class="b-sub">Go back and choose again</span></span></button>
+    </div>
+    <div class="actionbar"><button class="go" onclick="renderKitchenPitch()">Go on, then</button></div>`);
+}
+function renderKitchenPitch(){
+  const b=BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
+  const dim = b.gender==='f' ? 'kóri mou' : 'yie mou';
+  setScene(`<div class="day-tag">The pitch</div>
+    <h2>“You know what you should do”</h2>
+    <p>She lets you finish. She crosses herself, once, towards the icon over the door. And then — as if the thought has only this second floated down to her, as if she has not been steering toward it since the arrivals hall — she says it.</p>
+    <p>“You know what you should do.” You know exactly what she is about to say. “Tourism. Look around you — is there anywhere more beautiful in this world? The foreigners come with their money and their little walking sticks and they pay — they pay, ${dim} — to see what we see for free, every day of our lives. And you have the languages. Take them up the mountain. Show them Polylímnio. Show them the sea.”</p>
+    <p>She is already clearing your plate, though you have not finished. “Kostas’s boy does it, up in Stoúpa. He bought a car.” A pause; the knife goes in clean. “Tomorrow you begin. I’ve told Kyría Voúla you’re in tourism now.”</p>
+    <p class="verdict">It is decided. It was always decided.</p>
+    <div class="actionbar"><button class="go" onclick="renderSetup()">Step outside</button></div>`);
+}
+function renderSetup(){
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('The first night of the season');
+  const b=BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
   const discChips=DISCIPLINES.map(d=>{
     const on = pickedDiscipline===d.id, locked = d.status!=='available';
     const cls = on ? 'primary' : (locked ? 'disabled' : '');
@@ -453,13 +569,11 @@ function renderProfile(){
     return `<button class="opt ${on?'primary':''} ${full?'disabled':''}" onclick="${full?'':`toggleKit('${id}')`}">
       <span class="mark">${on?'✓':'+'}</span><span class="b-main">${ITEMS[id]}</span></button>`;
   }).join('');
-  // Fleet disciplines need a starter loan; the player picks who they borrow
-  // from below (each source has its own personality at default — §15).
   const isFleetDisc = pickedDiscipline!=='hike';
   const disciplineNote = isFleetDisc
     ? `<p style="font-style:italic;color:var(--sea);font-size:13px;margin:8px 0 8px">You will start with the L1 award and a starter loan to bootstrap a fleet. Pick your money carefully — a season's instalment falls due each winter.</p>`
     : '';
-  const loanChips = isFleetDisc ? DISCIPLINES && LOAN_SOURCES.map(src=>{
+  const loanChips = isFleetDisc ? LOAN_SOURCES.map(src=>{
     const on=pickedLoanSource===src.id;
     return `<button class="opt ${on?'primary':''}" onclick="pickLoanSource('${src.id}')">
       <span class="mark">${on?'✓':'·'}</span><span class="b-main">${src.name}<span class="b-sub">${src.blurb}</span></span></button>`;
@@ -467,49 +581,39 @@ function renderProfile(){
   const loanSection = isFleetDisc ? `
     <label style="display:block;margin-top:8px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Where the loan comes from</label>
     <div class="choices" style="margin-top:8px">${loanChips}</div>` : '';
-  setScene(`<div class="day-tag">First the paperwork</div>
-    <h2>Who is this idiot, exactly?</h2>
-    <p>Pick a discipline (what you guide), a backstory (who you are), and a starting kit. You begin with little — some grit, some questionable life choices, and the routes in your head.</p>
+  setScene(`<div class="day-tag">The first night</div>
+    <h2>Out into the season</h2>
+    <p>Outside, the village is tuning up. It is August; down the lane a clarinet finds its note, and the smell of grilling meat is quietly winning its war with the night jasmine. The panigíri. ${b.pani}</p>
+    <p>But first — what will you guide, and what goes in the bag?</p>
     <label style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your discipline</label>
     <div class="choices" style="margin-top:8px">${discChips}</div>
     ${disciplineNote}
     ${loanSection}
-    <label style="display:block;margin-top:14px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your name</label>
-    <input id="gname" type="text" maxlength="18" value="${(pendingName||'').replace(/[<>"]/g,'')}" placeholder="e.g. Alexios"
-      style="width:100%;margin:6px 0 16px;padding:12px 14px;border-radius:11px;border:1px solid var(--edge);background:rgba(0,0,0,.18);color:var(--ink);font-family:'Fraunces',serif;font-size:18px;outline:none">
-    <label style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your background</label>
-    <div class="choices" style="margin-top:8px">
-      ${BACKGROUNDS.map(b=>`<button class="opt ${pickedBg===b.id?'primary':''}" onclick="pickBg('${b.id}')">
-        <span class="mark">${pickedBg===b.id?'✓':'·'}</span><span class="b-main">${b.name}<span class="b-sub">${b.perk}</span></span></button>`).join('')}
-    </div>
     <label style="display:block;margin-top:18px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Starting kit — pick up to 3 (${pickedKit.length}/3)</label>
     <div class="choices" style="margin-top:8px">${kitChips}</div>
-    <div class="actionbar"><button class="go ${pickedKit.length?'':'disabled'}" onclick="${pickedKit.length?'beginNewGame()':''}" ${pickedKit.length?'':'style="opacity:.45;pointer-events:none"'}>Right, off you go</button></div>`);
+    <div class="actionbar"><button class="go ${pickedKit.length?'':'disabled'}" onclick="${pickedKit.length?'beginNewGame()':''}" ${pickedKit.length?'':'style="opacity:.45;pointer-events:none"'}>Into it, then</button></div>`);
 }
-function toggleKit(id){ const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value; const i=pickedKit.indexOf(id); if(i>=0)pickedKit.splice(i,1); else if(pickedKit.length<3)pickedKit.push(id); renderProfile(); }
-function pickBg(id){ const el=$('gname'); if(el && typeof el.value==='string') pendingName=el.value; pickedBg=id; renderProfile(); }
+function toggleKit(id){ const i=pickedKit.indexOf(id); if(i>=0)pickedKit.splice(i,1); else if(pickedKit.length<3)pickedKit.push(id); renderSetup(); }
 function pickDiscipline(id){
-  const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value;
   const d=DISCIPLINES.find(x=>x.id===id); if(!d||d.status!=='available') return;
   pickedDiscipline=id;
   // Switching discipline drops kit items that don't apply (a kayaker doesn't start with walking poles).
   pickedKit = pickedKit.filter(k => itemForActivity(k, id));
   if(!pickedKit.length) pickedKit = ['water'];
-  renderProfile();
+  renderSetup();
 }
 function pickLoanSource(id){
-  const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value;
   if(!LOAN_SOURCES.find(x=>x.id===id)) return;
   pickedLoanSource=id;
-  renderProfile();
+  renderSetup();
 }
 function beginNewGame(){
   if(!pickedKit.length) return;
   const el=$('gname'); let nm=(el&&typeof el.value==='string'?el.value.trim():'')||pendingName.trim()||'Alex';
   nm=nm.replace(/[<>"]/g,'').slice(0,18)||'Alex';
-  initGame(nm, pickedBg, pickedKit.slice(), pickedDiscipline, pickedLoanSource);
+  initGame(nm, pickedBg, pickedKit.slice(), pickedDiscipline, pickedLoanSource, pickedDish);
 }
-function initGame(name, bgId, kit, discipline, loanSourceId){
+function initGame(name, bgId, kit, discipline, loanSourceId, dishId){
   gCounter=0;
   const bg=BACKGROUNDS.find(b=>b.id===bgId)||BACKGROUNDS[0];
   const disc = (DISCIPLINES.find(d=>d.id===discipline && d.status==='available')||DISCIPLINES[0]).id;
@@ -523,11 +627,18 @@ function initGame(name, bgId, kit, discipline, loanSourceId){
       weather:null, bookings:[], history:[], forecast:[WEATHER[0]],
       stats:{earned:0, fees:0, tips:0, wagesPaid:0, retainersPaid:0, tripsYou:0, tripsGuides:0, hires:0, bestRep:50, yearsCompleted:0},
       yearStats:freshYearStats(),
-      you:{id:'you', name:name, isYou:true, skill:90, morale:100, wage:0, spec:bg.name, perk:bg.id, task:null},
+      you:{id:'you', name:name, isYou:true, skill:90, morale:100, wage:0, spec:bg.name, perk:(bg.tag||bg.id), task:null},
       guides:[], queue:null, dayReports:[], trip:null, yearLogs:[] };
-  if(bg.id==='outfitter'){ S.packSize=6; S.cash+=150; ['firstaid','map'].forEach(id=>{ if(!ownsItem(id)) S.owned[id]=freshOwned(id,'standard'); }); }
-  if(bg.id==='captain'){ S.cash+=200; }
-  if(bg.id==='busker'){ S.packSize=3; }
+  // Hero start-grants (the simple, safe part of each model; deeper hooks live in events via perkIs).
+  if(bg.id==='medic'  && !ownsItem('firstaid')) S.owned.firstaid=freshOwned('firstaid','standard');
+  if(bg.id==='chef'   && !ownsItem('snacks'))   S.owned.snacks=freshOwned('snacks','standard');
+  if(bg.id==='engineer'){ S.packSize=6; ['map','firstaid'].forEach(id=>{ if(!ownsItem(id)) S.owned[id]=freshOwned(id,'standard'); }); }
+  if(bg.id==='alani')    S.cash+=150;   // knows a guy — cheaper start
+  if(bg.id==='villager') S.cash+=100;   // the cousins look after their own
+  // Mum's favourite dish — a small, warm opening bonus.
+  S.dish = dishId || null;
+  const dish = DISHES.find(d=>d.id===S.dish);
+  if(dish){ if(dish.eff.rep) S.rep=clamp(S.rep+dish.eff.rep,0,100); if(dish.eff.gear) S.gear=clamp(S.gear+dish.eff.gear,0,100); if(dish.eff.cash) S.cash+=dish.eff.cash; }
   // Discipline starter grants — fleet disciplines need the L1 cert to lead at
   // all, AND a starter loan because the fleet is well past a €200 purse.
   const DISCIPLINE_START = {
@@ -566,9 +677,13 @@ function mkBookings(n){
   // Website infra: one extra booking choice each morning, and a slight
   // bias toward better-paying clients (re-roll the lowest-pm pick once).
   if(hasInfra('website')) n += 1;
-  // Only offer routes for disciplines the player actually guides.
+  // Only offer routes for disciplines the player actually guides — AND only
+  // those they can physically reach today given their transport (Year 1 is
+  // constrained to the bus from Kalamata; the moped opens "mid", the Hilux
+  // opens "far"). Fleet-kit shortage on regional routes is a separate gate
+  // surfaced via bookingLock so the player sees what they're missing.
   const offered = S.offeredDisciplines && S.offeredDisciplines.length ? S.offeredDisciplines : ['hike'];
-  const pool = ROUTES.filter(r => offered.includes(r.activity||'hike'));
+  const pool = ROUTES.filter(r => offered.includes(r.activity||'hike') && routeReachable(r));
   if(!pool.length) return [];
   const out=[];
   for(let i=0;i<n && pool.length;i++){
@@ -613,7 +728,7 @@ function mkBookings(n){
       if(S.weather.storm){ cancelled=true; cancelReason='Cancelled — thunder on exposed rock is no place to be'; }
       else if(S.weather.heat && tags.includes('multi-pitch')){ cancelled=true; cancelReason='Cancelled — the rock is greasy and the oven is open'; }
     }
-    out.push({route:r.name, activity:act, diff:r.diff, client:c.label, ctype:c.type, group:c.g, pay, tags,
+    out.push({route:r.name, activity:act, region:r.region||'local', diff:r.diff, client:c.label, ctype:c.type, group:c.g, pay, tags,
               cancelled, cancelReason});
   }
   return out;
@@ -705,7 +820,12 @@ function renderHUD(){
     $('hud').innerHTML =
       stat(dayLabel,dayValue)+stat('Cash','€'+S.cash, S.cash>=0?'var(--gold)':'var(--danger)')+
       stat('Repute',S.rep,repC,[S.rep,repC])+stat('Energy',S.energy,enC,[S.energy,enC]);
-    $('goal').innerHTML = tierLine + 'Year '+S.year+' · Milestone — <b>€1500</b> &amp; <b>70 reputation</b> to take on guides · gear '+gearGlyph()+' · pack <b>'+S.packSize+'</b> slots';
+    // Year 1's emotional goal IS the Hilux. Show that until you own it; after
+    // that, surface the wider milestone toward Phase 2.
+    const carGoal = !hasInfra('pickup')
+      ? `<b style="color:var(--terra)">Hilux fund €${S.cash}/€1800</b> — escape Kalamata`
+      : '<b>€1500</b> &amp; <b>70 rep</b> to take on guides';
+    $('goal').innerHTML = tierLine + 'Year '+S.year+' · '+carGoal+' · gear '+gearGlyph()+' · pack <b>'+S.packSize+'</b> slots';
   } else {
     $('hud').innerHTML =
       stat(dayLabel,dayValue)+stat('Cash','€'+S.cash, S.cash>=0?'var(--gold)':'var(--danger)')+
@@ -772,6 +892,7 @@ function bookingLock(b){
   if(b.cancelled) return b.cancelReason || 'Cancelled — too dangerous today';
   const act = b.activity||'hike';
   const tags = b.tags||[];
+  const region = b.region||'local';
   if(act==='hike' && b.diff===3 && !hasCert('mountain')) return 'Locked — needs the Mountain Leader cert';
   if(act==='seakayak'){
     if(!hasCert('kayakBasic')) return 'Locked — needs the Sea Kayak Award (the gate to guiding kayak)';
@@ -779,6 +900,7 @@ function bookingLock(b){
     if(exposed && b.diff>=2 && !hasCert('kayakLeader')) return 'Locked — needs the Sea Kayak Leader Award for exposed water';
     if(b.diff===3 && !hasCert('kayakAdvanced')) return 'Locked — needs the Advanced Sea Kayak Leader Award';
     if(fleetCapacity('seakayak') < 1) return 'Locked — you have no kayaks (or no PFD sets) yet';
+    if(region!=='local' && fleetTransportCap('seakayak')<1) return 'Locked — you can drive there but cannot bring the boats. Buy a roof rack (€150) or a trailer (€400).';
   }
   if(act==='canyon'){
     if(!hasCert('canyonBasic')) return 'Locked — needs the Canyon Guide cert';
@@ -791,19 +913,21 @@ function bookingLock(b){
     if(b.diff===2 && !hasCert('raftLeader')) return 'Locked — needs the Trip Leader cert';
     if(b.diff===3 && !hasCert('raftAdvanced')) return 'Locked — needs the Raft Instructor cert';
     if(fleetCapacity('raft') < 1) return 'Locked — you have no raft (or kit set) yet';
+    if(region!=='local' && fleetTransportCap('raft')<1) return 'Locked — a raft cannot ride on a roof. Buy a trailer (€400).';
   }
   if(act==='cycle'){
     if(!hasCert('cycleBasic')) return 'Locked — needs the Trail Cycle Leader cert';
     if(b.diff===2 && !hasCert('cycleLeader')) return 'Locked — needs the Mountain Bike Leader cert';
     if(b.diff===3 && !hasCert('cycleAdvanced')) return 'Locked — needs the Advanced MTB Guide cert';
     if(fleetCapacity('cycle') < 1) return 'Locked — you have no client bikes (or helmets) yet';
+    if(region!=='local' && fleetTransportCap('cycle')<1) return 'Locked — you cannot shuttle bikes without a rack or trailer (€150 / €400).';
   }
   if(act==='sup'){
     if(!hasCert('supBasic')) return 'Locked — needs the SUP Award';
-    // SUP exposed/open water needs Leader for diff-2, Advanced for the crossing (diff-3 placeholder)
     if((tags.includes('open')||tags.includes('exposed')) && b.diff>=2 && !hasCert('supLeader')) return 'Locked — needs the SUP Leader Award for open water';
     if(b.diff===3 && !hasCert('supAdvanced')) return 'Locked — needs the Advanced / Coastal SUP Leader Award';
     if(fleetCapacity('sup') < 1) return 'Locked — you have no boards (or kit sets) yet';
+    if(region!=='local' && fleetTransportCap('sup')<1) return 'Locked — you cannot move the boards without a rack or trailer (€150 / €400).';
   }
   if(act==='climb'){
     if(!hasCert('climbBasic')) return 'Locked — needs the Single-Pitch Award';
@@ -892,27 +1016,76 @@ function fleetSection(act){
   const capLine = cap===Infinity?'' : `<div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--ink-faint);margin:0 0 8px;font-style:italic">Current capacity: <b style="color:${cap>0?'var(--sage)':'var(--danger)'}">${cap}</b> client${cap===1?'':'s'} per trip.</div>`;
   return `<div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 7px">Sea-kayak fleet</div>${capLine}${cards}`;
 }
+// Map discipline id → display label for shop section headers.
+const DISCIPLINE_SHOP_LABELS = {
+  hike:'Hiking kit', seakayak:'Sea-kayak safety', canyon:'Canyon kit',
+  raft:'Raft kit', cycle:'Cycling kit', sup:'SUP kit', climb:'Climbing kit',
+};
+function garageSection(){
+  const transport = INFRA.filter(it => it.scope==='transport');
+  const cards = transport.map(it => {
+    const have = hasInfra(it.id);
+    const prereqOk = !it.prereq || hasInfra(it.prereq);
+    const can = !have && prereqOk && S.cash >= it.cost;
+    let sub;
+    if(have) sub = `Owned. ${it.effect}`;
+    else if(!prereqOk) sub = `Buy the ${(INFRA.find(x=>x.id===it.prereq)||{}).name||it.prereq} first.`;
+    else if(S.cash < it.cost) sub = `€${it.cost} · €${it.cost-S.cash} short`;
+    else sub = `€${it.cost} · ${it.effect}`;
+    const click = can ? `buyVehicle('${it.id}')` : '';
+    return `<button class="opt ${have?'':can?'primary':'disabled'}" onclick="${click}" ${have?'style="opacity:.55"':''}>
+      <span class="mark">${have?'✓':'+'}</span><span class="b-main">${it.name}<span class="b-sub">${sub}</span></span></button>`;
+  }).join('');
+  const tier = transportTier();
+  const status = tier===3 ? 'You have the Hilux. The Peloponnese is open.'
+               : tier===2 ? 'You have the moped — mid-region routes opened. The Hilux is the last freedom.'
+               : 'You move by bus. Local routes free; near-region trips cost €8 a day.';
+  return `<div style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin:18px 0 6px">The garage</div>
+    <p style="font-size:12.5px;font-style:italic;color:var(--ink-faint);margin:-2px 0 8px">${status}</p>
+    ${cards}`;
+}
 function openShop(){
   renderHUD();
   const offered = S.offeredDisciplines || ['hike'];
-  // Section the shop by discipline so it doesn't bloat as more land.
+  // Section the shop by discipline so it doesn't bloat as more disciplines land.
   const shared = ITEM_ORDER.filter(id => !ITEM_ACTIVITY[id]);
-  const hikingKit = offered.includes('hike') ? ITEM_ORDER.filter(id => ITEM_ACTIVITY[id]==='hike') : [];
-  const kayakKit  = offered.includes('seakayak') ? ITEM_ORDER.filter(id => ITEM_ACTIVITY[id]==='seakayak') : [];
-  const sections =
-      shopSection('Essentials',         shared)
-    + shopSection('Hiking kit',         hikingKit)
-    + shopSection('Sea-kayak safety',   kayakKit)
-    + (offered.includes('seakayak') ? fleetSection('seakayak') : '');
+  let sections = shopSection('Essentials', shared);
+  for(const d of offered){
+    const ids = ITEM_ORDER.filter(id => {
+      const a = ITEM_ACTIVITY[id];
+      if(!a) return false;
+      return Array.isArray(a) ? a.includes(d) : a===d;
+    });
+    if(!ids.length) continue;
+    sections += shopSection(DISCIPLINE_SHOP_LABELS[d]||d, ids);
+    if(fleetItemsFor(d).length) sections += fleetSection(d);
+  }
   setScene(`<div class="day-tag">${dayTag()} · Equipment shop</div>
     <h2>Geo's outdoor emporium</h2>
     <p>Three qualities for safety kit; fleet items just come in ones. <b>Pro</b> gear costs more but lasts. Cash: <b style="color:var(--gold)">€${S.cash}</b>.</p>
     ${sections}
+    ${garageSection()}
     <div class="choices" style="margin-top:14px">
       ${packUpgradeOpt()}
       ${simpleOpt('⚒','Service your equipment', S.gear>=100?'Kit is in top shape':S.cash<40?'Need €40':'€40 · +35% gear condition', (S.gear>=100||S.cash<40), 'serviceGear()')}
     </div>
     <div class="actionbar"><button class="go" onclick="renderMorning()">Done — back to the day</button></div>`);
+}
+/* Mid-summer vehicle purchase. Transport infra is the only category buyable
+   outside winter — the rest (website, hotelDeal) still go through enrollInfra
+   in the winter office. */
+function buyVehicle(id){
+  const it = INFRA.find(x => x.id===id);
+  if(!it || it.scope!=='transport') return;
+  if(hasInfra(id)) return;
+  if(it.prereq && !hasInfra(it.prereq)) return;
+  if(S.cash < it.cost) return;
+  S.cash -= it.cost;
+  S.infra.push(id);
+  if(S.yearStats) S.yearStats.infra = (S.yearStats.infra||0)+1;
+  note(`Bought ${it.name.toLowerCase()} (−€${it.cost}).`);
+  saveGame();
+  openShop();
 }
 function buyItem(id, tier){
   tier=tier||'standard'; const c=itemCost(id,tier);
@@ -1348,7 +1521,10 @@ function finishPlayerTrip(){
   }
   let hotelBonus=0;
   if(hasInfra('hotelDeal') && (b.ctype==='tourist' || b.ctype==='family')) hotelBonus=20;
-  const fee=Math.round(b.pay*t.payMul)+(hasInfra('pickup')?10:0)+coastBonus+hotelBonus, tip=t.tips, earned=fee+tip;
+  // Bus fare — only bites on near-region trips when you haven't bought a moped or Hilux yet
+  const bus = busFee(b);
+  const fee=Math.round(b.pay*t.payMul)+(hasInfra('pickup')?10:0)+coastBonus+hotelBonus-bus, tip=t.tips, earned=fee+tip;
+  if(bus>0) t.logs && t.logs.push(`The bus to the trailhead and back took €${bus} off the day.`);
   S.cash+=earned;
   S.energy=clamp(S.energy-(b.diff===3?36:b.diff===2?28:20)-(S.weather.drain||0),0,100);
   S.gear=clamp(S.gear-(6+b.diff*3),0,100);
@@ -1880,7 +2056,7 @@ function endGame(title,verdict,win){
     <div class="day-tag" style="color:${win?'var(--sage)':'var(--danger)'}">${win?'Victory':'Game over'} · ${dayTag()}</div>
     <h2>${title}</h2><p class="verdict">${verdict}</p>
     <p style="font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--ink-dim)">€${S.cash} · ${S.rep} reputation · ${1+S.guides.length} on the team · ${S.day} days</p>
-    <div class="choices"><button class="opt primary" onclick="renderProfile()"><span class="mark">↻</span><span class="b-main">${win?'Play again':'Try another season'}</span></button></div></div>`);
+    <div class="choices"><button class="opt primary" onclick="renderKitchen()"><span class="mark">↻</span><span class="b-main">${win?'Play again':'Try another season'}</span></button></div></div>`);
   return true;
 }
 
@@ -2135,18 +2311,68 @@ function hasCert(id){ return S.certs && S.certs.includes(id); }
 function certName(id){ const c=CERTS.find(x=>x.id===id); return c?c.name:id; }
 function certWeeks(id){ const c=CERTS.find(x=>x.id===id); return c?(c.weeks||1):1; }
 
-/* Off-season infrastructure projects. Each is a winter-built thing that
-   changes how the next summer plays. Effects are wired by id elsewhere
-   (finishPlayerTrip for pickup/hotelDeal; mkBookings for website). */
+/* Off-season infrastructure projects + transport.
+   scope:'transport' items unlock route regions (see routeReachable). They can
+   be bought mid-summer at the shop's Garage section, not only in the winter
+   office. The rest (website, hotelDeal) remain winter-only via enrollInfra. */
 const INFRA=[
-  {id:'pickup', name:'Battered pickup truck', cost:1800, weeks:3,
-   effect:'+€10 to fees on every trip you guide.'},
-  {id:'website', name:'A proper booking website', cost:2200, weeks:6,
+  // Transport ladder — the Year 1 → Year 2 spine
+  {id:'moped',   name:'Second-hand moped',     cost:400,  weeks:1, scope:'transport',
+   effect:'Reaches mid-region routes (Mani, Mystras, the Arcadian backroads). No more bus fare.'},
+  {id:'pickup',  name:'A battered Hilux',      cost:1800, weeks:3, scope:'transport', prereq:null,
+   effect:'Full regional access for hike, climb, canyon. +€10 to every fee on trips you guide. Fleet disciplines need a rack or trailer on top.'},
+  {id:'rack',    name:'Roof rack',             cost:150,  weeks:1, scope:'transport', prereq:'pickup',
+   effect:'Carry 2 clients’ worth of kit (boats / boards / bikes) to regional put-ins.'},
+  {id:'trailer', name:'Trailer',               cost:400,  weeks:1, scope:'transport', prereq:'pickup',
+   effect:'Carry your full fleet on the road. Required for raft to leave the depot at all.'},
+  // Winter-only projects
+  {id:'website', name:'A proper booking website',                cost:2200, weeks:6,
    effect:'+1 booking choice every morning. Bookings skew slightly toward better-paying clients.'},
-  {id:'hotelDeal', name:'Hotel partnership (Costa Navarino)', cost:1500, weeks:4,
+  {id:'hotelDeal', name:'Hotel partnership (Costa Navarino)',    cost:1500, weeks:4,
    effect:'+€20 on every tourist or family trip. They send you steady work.'},
 ];
 function hasInfra(id){ return S.infra && S.infra.includes(id); }
+
+/* Route accessibility — given the player's current transport, which routes
+   can they actually reach today? Local is always free; near needs at least
+   the bus (with an €8 fare); mid needs a moped+; far needs a car.
+   Fleet disciplines (kayak/sup/cycle/raft) need a rack or trailer to take
+   their kit out of the local zone — that gate lives in bookingLock(). */
+const REGION_TIER = { local:0, near:1, mid:2, far:3 };
+const TRANSPORT_NAMES = { 0:'bus', 1:'bus', 2:'moped', 3:'Hilux' };
+function transportTier(){
+  if(hasInfra('pickup')) return 3;
+  if(hasInfra('moped'))  return 2;
+  return 1;                              // bus is the floor — always available
+}
+function routeReachable(r){
+  const tier = REGION_TIER[r.region || 'local'];
+  return tier <= transportTier();
+}
+function busFee(b){
+  if((b.region||'local')!=='near') return 0;
+  if(hasInfra('moped') || hasInfra('pickup')) return 0;
+  return 8;
+}
+// Which disciplines need a rack/trailer to move clients' equipment to regional routes?
+const FLEET_NEEDS_RACK_OR_TRAILER = ['seakayak','sup','cycle'];
+const FLEET_NEEDS_TRAILER_ONLY    = ['raft'];
+function fleetTransportCap(activity){
+  if(FLEET_NEEDS_TRAILER_ONLY.includes(activity)) return hasInfra('trailer') ? 99 : 0;
+  if(FLEET_NEEDS_RACK_OR_TRAILER.includes(activity)){
+    if(hasInfra('trailer')) return 99;
+    if(hasInfra('rack'))    return 2;
+    return 0;
+  }
+  return 99; // hike/climb/canyon have no fleet — kit fits in/on you
+}
+function fleetCapacityFor(b){
+  const act = b.activity||'hike';
+  const base = fleetCapacity(act);
+  if(base===Infinity) return Infinity;
+  if((b.region||'local')==='local') return base;     // boats live at the base
+  return Math.min(base, fleetTransportCap(act));
+}
 
 const REVIEWERS=['Eleni K.','Marco R.','Sophie L.','Andreas P.','Yuki T.','James W.','Giulia F.','Petros M.','Hannah B.','Lars N.','Chiara V.','Dimitra S.','Tom H.','Ana R.'];
 const SOURCES=['Google','TripAdvisor','GetYourGuide','Booking.com'];
@@ -2289,8 +2515,8 @@ const TRAILHEAD=[
      {need:'drybag', label:'Stow it all in the dry bag', hint:'Came prepared', run:()=>({line:'Everything vanishes into the dry bag. Crisis, and a wet passport, averted.', rep:4})},
      {label:'Lock the valuables in the van', hint:'A late launch, but dry documents', run:()=>({line:'A trek back to the van, a late launch, but dry documents.', energy:-4})},
    ]},
-  {id:'k-fleet', activities:['seakayak'], w:1.2, when:(b)=>(b.group||0) > fleetCapacity('seakayak'), title:'Too many bodies, not enough boats',
-   text:(b)=>`${b.group} turned up. You brought ${fleetCapacity('seakayak')} kayaks.`,
+  {id:'k-fleet', activities:['seakayak'], w:1.2, when:(b)=>(b.group||0) > fleetCapacityFor(b), title:'Too many bodies, not enough boats',
+   text:(b)=>`${b.group} turned up. You brought ${fleetCapacityFor(b)} kayaks.`,
    choices:[
      {label:'Run two waves yourself', hint:'Knackering, but nobody is turned away', run:()=>({line:'You take what you can, land them, come back for the rest. Knackering, but nobody is turned away.', energy:-12})},
      {label:'Turn the extras away with a refund', hint:'A small loss, a small dent', run:()=>({line:'A couple go home disappointed and a little out of pocket on your side.', cash:-30, rep:-2})},
@@ -2728,7 +2954,7 @@ const EVENTS=[
    text:()=>`A client has locked up ten metres up, refusing to go up or come down. The rope is going nowhere.`,
    choices:[
      {label:'Talk them through, breath by breath', hint:'Empathy is the core climb skill',
-      run:(b,S)=>chance(0.7+(perkIs('charmer','medic','animator')?0.15:0))
+      run:(b,S)=>chance(0.7+(perkIs('charmer','medic','animator','fasaia')?0.15:0))
         ?{lines:['You talk them down a move at a time, breath, foot, breath, foot. By the bottom they are crying and grinning.'], rep:6, energy:-4}
         :{lines:['A tense, slow, morale-sapping lower-off. They are unhurt; they are also done with rock for life.'], rep:-3}},
    ]},
