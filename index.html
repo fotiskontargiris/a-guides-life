@@ -294,8 +294,21 @@ const BACKGROUNDS=[
 ];
 
 /* ---------------- setup ---------------- */
-const SAVE_KEY='aegean_save_v7';
-let pickedBg='medic', pendingName='', cachedSave=null, pickedKit=['water'];
+const SAVE_KEY='aegean_save_v8';
+let pickedBg='medic', pendingName='', cachedSave=null, pickedKit=['water'], pickedDiscipline='hike';
+
+/* Disciplines that can be picked at character creation. `status:'available'`
+   are M1 disciplines you can play today; `status:'soon'` are visible-but-locked
+   tiles for M3+ content so the wider game ambition is legible from day one. */
+const DISCIPLINES=[
+  {id:'hike',     name:'Hiking',           status:'available', blurb:'The classic. Low capital, steady, the gentle start.'},
+  {id:'seakayak', name:'Sea kayaking',     status:'available', blurb:'Wind is the killer, fleet is the cost — dolphins, monk seals, the open sea.'},
+  {id:'canyon',   name:'Canyoning',        status:'soon',      blurb:'Cold water, technical rappels, deep shaded gorges. Heat-proof; storm-fragile.'},
+  {id:'raft',     name:'Rafting',          status:'soon',      blurb:'Whole boats of clients. Big fleet, big fees, flow-dependent.'},
+  {id:'cycle',    name:'Cycling / e-bike', status:'soon',      blurb:'Tourist-friendly. e-bikes premium. Hot road days.'},
+  {id:'sup',      name:'SUP',              status:'soon',      blurb:'Sun, board, lazy lagoon. Niche. Wind-fragile.'},
+  {id:'climb',    name:'Climbing',         status:'soon',      blurb:'Premium per client. Gear-light per head. Niche.'},
+];
 
 /* ---------------- calendar ----------------
    A season is the Greek outdoor-tourism summer: April 1 → October 31, 214
@@ -373,6 +386,7 @@ async function doContinue(){
   S.certs=S.certs||[]; S.infra=S.infra||[];
   // Disciplines — pre-M1 saves only ran hiking, so default the offered list to that.
   S.offeredDisciplines=S.offeredDisciplines||['hike']; S.fleet=S.fleet||{};
+  if(S.loan===undefined) S.loan=null;
   S.forecast=S.forecast||[]; ensureForecast();
   S.year=S.year||1; S.seasonDay=S.seasonDay||S.day||1; S.season=S.season||'summer';
   S.yearLogs=S.yearLogs||[]; if(S.phase3Ready==null) S.phase3Ready=false;
@@ -384,15 +398,32 @@ async function doContinue(){
 }
 function renderProfile(){
   showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('A career in the outdoors and minor catastrophes');
-  const kitChips=ITEM_ORDER.map(id=>{
+  // Discipline picker — the biggest decision, so it leads
+  const discChips=DISCIPLINES.map(d=>{
+    const on = pickedDiscipline===d.id, locked = d.status!=='available';
+    const cls = on ? 'primary' : (locked ? 'disabled' : '');
+    const click = locked ? '' : `pickDiscipline('${d.id}')`;
+    const tail = locked ? ' <span style="color:var(--ink-faint)">· coming soon</span>' : '';
+    return `<button class="opt ${cls}" onclick="${click}" ${locked?'style="opacity:.5"':''}>
+      <span class="mark">${on?'✓':(locked?'·':'+')}</span><span class="b-main">${d.name}${tail}<span class="b-sub">${d.blurb}</span></span></button>`;
+  }).join('');
+  const kitChips=ITEM_ORDER.filter(id => itemForActivity(id, pickedDiscipline)).map(id=>{
     const on=pickedKit.includes(id), full=pickedKit.length>=3 && !on;
     return `<button class="opt ${on?'primary':''} ${full?'disabled':''}" onclick="${full?'':`toggleKit('${id}')`}">
       <span class="mark">${on?'✓':'+'}</span><span class="b-main">${ITEMS[id]}</span></button>`;
   }).join('');
+  // Kayak note: a one-time loan grant lands when you commit, so the player
+  // can actually afford the fleet that gates the discipline at all.
+  const disciplineNote = pickedDiscipline==='seakayak'
+    ? `<p style="font-style:italic;color:var(--sea);font-size:13px;margin:8px 0 14px">You will start with the <b>Sea Kayak Award</b> and a small bank loan (€1500) to bootstrap a fleet. Spend it well — a season's instalment is due each winter.</p>`
+    : '';
   setScene(`<div class="day-tag">First the paperwork</div>
     <h2>Who is this idiot, exactly?</h2>
-    <p>Pick a name, a backstory, and whatever kit you managed to scrape together. You start with very little — some grit, some questionable life choices, and a head full of routes.</p>
-    <label style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your name</label>
+    <p>Pick a discipline (what you guide), a backstory (who you are), and a starting kit. You begin with little — some grit, some questionable life choices, and the routes in your head.</p>
+    <label style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your discipline</label>
+    <div class="choices" style="margin-top:8px">${discChips}</div>
+    ${disciplineNote}
+    <label style="display:block;margin-top:14px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your name</label>
     <input id="gname" type="text" maxlength="18" value="${(pendingName||'').replace(/[<>"]/g,'')}" placeholder="e.g. Alexios"
       style="width:100%;margin:6px 0 16px;padding:12px 14px;border-radius:11px;border:1px solid var(--edge);background:rgba(0,0,0,.18);color:var(--ink);font-family:'Fraunces',serif;font-size:18px;outline:none">
     <label style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Your background</label>
@@ -406,20 +437,31 @@ function renderProfile(){
 }
 function toggleKit(id){ const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value; const i=pickedKit.indexOf(id); if(i>=0)pickedKit.splice(i,1); else if(pickedKit.length<3)pickedKit.push(id); renderProfile(); }
 function pickBg(id){ const el=$('gname'); if(el && typeof el.value==='string') pendingName=el.value; pickedBg=id; renderProfile(); }
+function pickDiscipline(id){
+  const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value;
+  const d=DISCIPLINES.find(x=>x.id===id); if(!d||d.status!=='available') return;
+  pickedDiscipline=id;
+  // Switching discipline drops kit items that don't apply (a kayaker doesn't start with walking poles).
+  pickedKit = pickedKit.filter(k => itemForActivity(k, id));
+  if(!pickedKit.length) pickedKit = ['water'];
+  renderProfile();
+}
 function beginNewGame(){
   if(!pickedKit.length) return;
   const el=$('gname'); let nm=(el&&typeof el.value==='string'?el.value.trim():'')||pendingName.trim()||'Alex';
   nm=nm.replace(/[<>"]/g,'').slice(0,18)||'Alex';
-  initGame(nm, pickedBg, pickedKit.slice());
+  initGame(nm, pickedBg, pickedKit.slice(), pickedDiscipline);
 }
-function initGame(name, bgId, kit){
+function initGame(name, bgId, kit, discipline){
   gCounter=0;
   const bg=BACKGROUNDS.find(b=>b.id===bgId)||BACKGROUNDS[0];
+  const disc = (DISCIPLINES.find(d=>d.id===discipline && d.status==='available')||DISCIPLINES[0]).id;
   const initialOwned={};
   (kit||['water']).forEach(id=>{ if(ITEM_LIFETIME[id]!=null) initialOwned[id]=freshOwned(id,'standard'); });
   S={ phase:1, day:1, year:1, seasonDay:1, season:'summer',
       cash:200, rep:50, energy:100, gear:90, packSize:4, loadout:[], depot:{},
-      owned:initialOwned, certs:[], infra:[], offeredDisciplines:['hike'], fleet:{},
+      owned:initialOwned, certs:[], infra:[], offeredDisciplines:[disc], fleet:{},
+      loan:null,
       weather:null, bookings:[], history:[], forecast:[WEATHER[0]],
       stats:{earned:0, fees:0, tips:0, wagesPaid:0, retainersPaid:0, tripsYou:0, tripsGuides:0, hires:0, bestRep:50, yearsCompleted:0},
       yearStats:freshYearStats(),
@@ -428,11 +470,19 @@ function initGame(name, bgId, kit){
   if(bg.id==='outfitter'){ S.packSize=6; S.cash+=150; ['firstaid','map'].forEach(id=>{ if(!ownsItem(id)) S.owned[id]=freshOwned(id,'standard'); }); }
   if(bg.id==='captain'){ S.cash+=200; }
   if(bg.id==='busker'){ S.packSize=3; }
+  // Discipline starter grants — kayak needs the L1 cert to lead at all, and
+  // a starter loan because the fleet (~€220 a boat) is well past a €200 purse.
+  if(disc==='seakayak'){
+    S.certs.push('kayakBasic');
+    S.cash += 1500;
+    S.loan = { source:'the bank', balance:1500, perYear:600 };
+    note('Took out a €1500 starter loan from the bank for a kayak fleet. A season instalment of €600 falls due each winter.');
+  }
   ensureForecast();
   setSub('Year 1 · Phase I — '+name+', a guide making a name in Messinia.');
   startDay();
 }
-function freshYearStats(){ return {fees:0, tips:0, wages:0, retainers:0, certs:0, infra:0, tripsYou:0, tripsGuides:0, bestRep:0, worstRep:100, startCash:0, openingRep:0}; }
+function freshYearStats(){ return {fees:0, tips:0, wages:0, retainers:0, loan:0, certs:0, infra:0, tripsYou:0, tripsGuides:0, bestRep:0, worstRep:100, startCash:0, openingRep:0}; }
 async function goMenu(){ const save=await loadSave(); cachedSave=save; renderTitle(save,false); }
 function people(){ return [S.you, ...S.guides]; }
 function personById(id){ return id==='you'?S.you:S.guides.find(g=>g.id===id); }
@@ -1039,6 +1089,16 @@ function enterOffSeason(){
   S.cash -= retainer;
   if(S.stats) S.stats.retainersPaid = (S.stats.retainersPaid||0)+retainer;
   if(S.yearStats) S.yearStats.retainers = retainer;
+  // Loan instalment — fleet-bootstrap debt is due each winter until paid off.
+  let loanPaid = 0;
+  if(S.loan && S.loan.balance > 0){
+    loanPaid = Math.min(S.loan.perYear, S.loan.balance);
+    S.cash -= loanPaid;
+    S.loan.balance -= loanPaid;
+    if(S.yearStats) S.yearStats.loan = loanPaid;
+    if(S.loan.balance <= 0){ note(`Final loan instalment paid to ${S.loan.source} (−€${loanPaid}). The boats are yours, free and clear.`); S.loan = null; }
+    else note(`Loan instalment paid to ${S.loan.source} (−€${loanPaid}). Balance: €${S.loan.balance}.`);
+  }
   // Consumables decay over storage
   CON.forEach(id => { if(S.depot[id]) S.depot[id] = Math.floor(S.depot[id]/2); });
   note(`The season closed. Retainers paid (−€${retainer}). Consumable stock halved over winter.`);
@@ -1047,7 +1107,7 @@ function enterOffSeason(){
 }
 function renderSeasonReport(){
   const ys=S.yearStats||freshYearStats();
-  const net = (ys.fees+ys.tips) - (ys.wages+ys.retainers);
+  const net = (ys.fees+ys.tips) - (ys.wages+ys.retainers+(ys.loan||0));
   const roster = S.guides.length
     ? S.guides.map(g=>`<div class="row"><span class="l">${g.name} · ${g.spec}</span><span class="v">retainer −€250</span></div>`).join('')
     : '<div class="row"><span class="l">No guides on the books.</span><span class="v"></span></div>';
@@ -1064,6 +1124,7 @@ function renderSeasonReport(){
       <div class="row"><span class="l">Tips</span><span class="v" style="color:var(--gold)">+€${ys.tips}</span></div>
       ${ys.wages?`<div class="row"><span class="l">Wages</span><span class="v neg">−€${ys.wages}</span></div>`:''}
       ${ys.retainers?`<div class="row"><span class="l">Winter retainers</span><span class="v neg">−€${ys.retainers}</span></div>`:''}
+      ${ys.loan?`<div class="row"><span class="l">Loan instalment${S.loan?` · still owed €${S.loan.balance}`:' · paid off'}</span><span class="v neg">−€${ys.loan}</span></div>`:''}
       <div class="row"><span class="l"><b>Net for the year</b></span><span class="v ${net>=0?'pos':'neg'}"><b>${net>=0?'+':'−'}€${Math.abs(net)}</b></span></div>
       <div class="row"><span class="l">Trips you led · guide-led</span><span class="v">${ys.tripsYou} · ${ys.tripsGuides}</span></div>
       <div class="row"><span class="l">Reputation arc · best</span><span class="v">${S.rep} now · ${ys.bestRep} peak</span></div>
