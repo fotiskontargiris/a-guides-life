@@ -1403,7 +1403,7 @@ function renderSeasonReport(){
     ? `<p style="background:rgba(174,189,126,0.12);border:1px solid rgba(174,189,126,0.4);border-radius:11px;padding:11px 13px;margin:4px 0 14px;color:var(--sage);font-style:italic">★ Milestone this year — your outfit is ready for <b>Phase III</b>. Water and air will open in a future season.</p>`
     : '';
   setScene(`<div class="end">
-    <div class="day-tag" style="color:var(--gold)">Year ${S.year} · Season closed</div>
+    <div class="day-tag" style="color:var(--gold)">Year ${S.year} · November · post-season</div>
     <h2>The books for the year</h2>
     <p class="verdict">October has run out. The cruise ships move on, the tavernas pull in their patios, and you stare at the books trying to remember what you did with all that money.</p>
     ${milestone}
@@ -1421,7 +1421,7 @@ function renderSeasonReport(){
       <div class="row"><span class="l">In the bank, end of season</span><span class="v ${S.cash>=0?'pos':'neg'}">€${S.cash}</span></div>
     </div>
     ${S.guides.length?`<div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 7px">Your team on retainer</div><div class="ledger">${roster}</div>`:''}
-    <div class="actionbar"><button class="go" onclick="renderOffSeason()">Begin winter planning <span class="gs">${WINTER_WEEKS} weeks ahead</span></button></div>
+    <div class="actionbar"><button class="go" onclick="renderOffSeason()">Move into winter <span class="gs">${WINTER_WEEKS} weeks of planning</span></button></div>
   </div>`);
 }
 function certCard(c, left, bestRep){
@@ -1500,8 +1500,42 @@ function renderOffSeason(){
     <div class="choices">${infraRows}</div>
     <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin:22px 0 6px">Your team</div>
     <div class="team">${rosterRows}</div>
-    <div class="actionbar"><button class="go" onclick="enterSpring()">Open spring — Year ${S.year+1} <span class="gs">${left} unused week${left===1?'':'s'}</span></button></div>`);
+    <div class="actionbar"><button class="go" onclick="renderPreSeason()">Step into spring <span class="gs">Year ${S.year+1} ahead · ${left} unused week${left===1?'':'s'}</span></button></div>`);
   paintForecast();
+}
+/* Pre-season (March) — the fourth movement of the year per PHASE-ARCHITECTURE
+   §9. After the winter office and before Day 1 of summer. Confirms what the
+   player will offer this year, surfaces fleet state, lists any debt due,
+   gives the player a deliberate moment before the season starts.
+   In Phase 1, mostly atmospheric. Phase 2+ will use this to force roster
+   decisions. */
+function renderPreSeason(){
+  renderHUD();
+  const offered = S.offeredDisciplines || ['hike'];
+  const discRows = offered.map(d => {
+    const disc = DISCIPLINES.find(x=>x.id===d);
+    const cap = fleetCapacity(d);
+    const capLabel = cap===Infinity ? 'no fleet cap (you carry yourself)' : `fleet caps you at ${cap} client${cap===1?'':'s'}/trip`;
+    const capColor = cap===Infinity ? 'var(--ink-faint)' : (cap===0 ? 'var(--danger)' : (cap<=2 ? 'var(--gold)' : 'var(--sage)'));
+    return `<div class="row"><span class="l">${disc?disc.name:d}</span><span class="v" style="color:${capColor}">${capLabel}</span></div>`;
+  }).join('');
+  const loanLine = S.loan
+    ? `<div class="row"><span class="l">Outstanding loan · ${S.loan.source}</span><span class="v" style="color:var(--gold)">€${S.loan.balance} · €${S.loan.perYear}/yr due Nov</span></div>`
+    : '';
+  setScene(`<div class="end">
+    <div class="day-tag" style="color:var(--sage)">Year ${S.year+1} · March · pre-season</div>
+    <h2>The shoulder month</h2>
+    <p class="verdict">The almond trees come out before the rest. The shop fronts wash down, the trailheads need raking, the boats need a pull-down to the water. You stand in the doorway and look at what is coming.</p>
+    <div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin:14px 0 6px">What you are offering this year</div>
+    <div class="ledger">${discRows}</div>
+    <div class="ledger" style="margin-top:6px">
+      <div class="row"><span class="l">Cash at the start</span><span class="v ${S.cash>=0?'pos':'neg'}">€${S.cash}</span></div>
+      <div class="row"><span class="l">Reputation going in</span><span class="v">${S.rep}</span></div>
+      ${loanLine}
+    </div>
+    <p style="font-size:12.5px;font-style:italic;color:var(--ink-faint);margin-top:12px">Once you open the season, the year runs. New disciplines can only be picked up over next winter.</p>
+    <div class="actionbar"><button class="go" onclick="enterSpring()">Open April 1 — start the season</button></div>
+  </div>`);
 }
 function enterSpring(){
   S.year++; S.season='summer'; S.seasonDay=1;
