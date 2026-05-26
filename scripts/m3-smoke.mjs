@@ -12,10 +12,12 @@ const FLEET_BUYS = {
   canyon:   [['clientwetsuit',1],['clientharnessset',1]],
   raft:     [['raft',1],['raftkitset',6]],
   cycle:    [['clientbike',2],['clientbikehelmet',2]],
+  sup:      [['clientboard',2],['clientsupkit',2]],
+  climb:    [['clientclimbkit',2],['clientclimbshoes',2]],
 };
 
 let fails = 0;
-for(const disc of ['hike','seakayak','canyon','raft','cycle']){
+for(const disc of ['hike','seakayak','canyon','raft','cycle','sup','climb']){
   try {
     globalThis.initGame('Test-'+disc,'medic',['water'],disc);
     const S = globalThis.S;
@@ -33,4 +35,4 @@ for(const disc of ['hike','seakayak','canyon','raft','cycle']){
     }
   } catch(e){ fails++; console.log(`[${disc}] FAIL: ${e.message}\n${e.stack.split('\n').slice(0,3).join('\n')}`); }
 }
-console.log(fails===0 ? '\nAll five disciplines initialise cleanly.' : `\n${fails} discipline(s) crashed.`);
+console.log(fails===0 ? '\nAll seven disciplines initialise cleanly.' : `\n${fails} discipline(s) crashed.`);
