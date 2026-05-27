@@ -970,14 +970,14 @@ function renderMorning(){
 function packUpgradeOpt(){
   const next = S.packSize<6?6 : S.packSize<8?8 : null;
   if(!next) return simpleOpt('▣','Expedition backpack','You already carry the biggest pack there is', true, '');
-  const cost = next===6?250:600;
+  const cost = alaniPrice(next===6?250:600);
   const repGate = next===6?0:65;
   const can = S.cash>=cost && S.rep>=repGate;
   const sub = S.cash<cost?`Need €${cost}` : S.rep<repGate?`Build your name first — reputation ${repGate}` : `€${cost} · carry up to ${next} items`;
   return simpleOpt('▣', `Bigger backpack (${next} slots)`, sub, !can, 'buyPack()');
 }
 function buyPack(){
-  const next = S.packSize<6?6:8, cost = next===6?250:600, repGate=next===6?0:65;
+  const next = S.packSize<6?6:8, cost = alaniPrice(next===6?250:600), repGate=next===6?0:65;
   if(S.cash<cost||S.rep<repGate) return;
   S.cash-=cost; S.packSize=next; note(`Bought a ${next}-slot backpack (−€${cost}).`); saveGame(); openShop();
 }
@@ -1085,11 +1085,12 @@ function buyVehicle(id){
   if(!it || it.scope!=='transport') return;
   if(hasInfra(id)) return;
   if(it.prereq && !hasInfra(it.prereq)) return;
-  if(S.cash < it.cost) return;
-  S.cash -= it.cost;
+  const cost = alaniPrice(it.cost);
+  if(S.cash < cost) return;
+  S.cash -= cost;
   S.infra.push(id);
   if(S.yearStats) S.yearStats.infra = (S.yearStats.infra||0)+1;
-  note(`Bought ${it.name.toLowerCase()} (−€${it.cost}).`);
+  note(`Bought ${it.name.toLowerCase()} (−€${cost}).`);
   saveGame();
   if(VEHICLE_SCENES[id]){ renderVehicleScene(id); return; }
   openShop();
@@ -1142,10 +1143,18 @@ function renderVehicleScene(id){
 function buyItem(id, tier){
   tier=tier||'standard'; const c=itemCost(id,tier);
   if(S.cash<c) return;
-  S.cash-=c; S.owned[id]=freshOwned(id,tier);
-  note(`Bought ${ITEMS[id].replace('&amp;','&')} (${tier}, −€${c}).`); saveGame(); openShop();
+  S.cash-=c; const fresh=freshOwned(id,tier); S.owned[id]=fresh;
+  // Alani's gear is cheap because Alani's guy in Stoupa doesn't ask questions
+  const isAlani = S.you && S.you.heroId==='alani';
+  if(isAlani && chance(ALANI_DODGY_CHANCE)){
+    fresh.dodgy = true;
+    note(`Bought ${ITEMS[id].replace('&amp;','&')} (${tier}, −€${c}). Stelios's brother brought it. You don't ask where it came from.`);
+  } else {
+    note(`Bought ${ITEMS[id].replace('&amp;','&')} (${tier}, −€${c}).`);
+  }
+  saveGame(); openShop();
 }
-function serviceGear(){ if(S.cash<40||S.gear>=100) return; S.cash-=40; S.gear=clamp(S.gear+35,0,100); note('Serviced your equipment (−€40).'); saveGame(); openShop(); }
+function serviceGear(){ const c=alaniPrice(40); if(S.cash<c||S.gear>=100) return; S.cash-=c; S.gear=clamp(S.gear+35,0,100); note(`Serviced your equipment (−€${c}).`); saveGame(); openShop(); }
 function openCerts(){
   renderHUD();
   function infoCard(c){
@@ -1591,7 +1600,9 @@ function finishPlayerTrip(){
   if(S.stats){ S.stats.earned+=earned; S.stats.fees+=fee; S.stats.tips+=tip; S.stats.tripsYou++; }
   if(S.yearStats){ S.yearStats.fees+=fee; S.yearStats.tips+=tip; S.yearStats.tripsYou++; }
   // Wear down each packed item by one trip; chef makes snacks last half-rate.
-  const broken=[];
+  // Alani's dodgy gear: a small chance per trip that a "questionable provenance"
+  // item is recognised at the trailhead — instant breakage + reputation hit.
+  const broken=[]; const dodgyExposed=[];
   (S.loadout||[]).forEach(id=>{
     if(!S.owned[id]) return;
     // The Mykonos chef (hero id) stretches snacks — even though her engine
@@ -1599,8 +1610,20 @@ function finishPlayerTrip(){
     // identifies by heroId so both effects coexist.
     const skipWear = (S.you && S.you.heroId==='chef') && id==='snacks' && chance(0.5);
     if(!skipWear) S.owned[id].trips--;
-    if(S.owned[id].trips<=0){ broken.push({id, tier:S.owned[id].tier}); delete S.owned[id]; }
+    // Alani-only: dodgy items occasionally get spotted on the trail
+    if(S.owned[id] && S.owned[id].dodgy && (S.you && S.you.heroId==='alani') && chance(ALANI_DODGY_EXPOSE_CHANCE)){
+      dodgyExposed.push({id, tier:S.owned[id].tier});
+      delete S.owned[id];
+      const r = applyRep(-3); t.repDelta = (t.repDelta||0) + r;
+      return;
+    }
+    if(S.owned[id] && S.owned[id].trips<=0){ broken.push({id, tier:S.owned[id].tier}); delete S.owned[id]; }
   });
+  if(dodgyExposed.length){
+    const names=dodgyExposed.map(x=>ITEMS[x.id].replace('&amp;','&')).join(', ');
+    note(`A client recognised the ${names} — apparently it went missing from a clubhouse last spring. You returned it, smiling, and lost a little face (−3 rep).`);
+    prepLine += ` A piece of your kit had a name carved on the underside, and it was not yours.`;
+  }
   if(broken.length){
     const names=broken.map(x=>`${ITEMS[x.id].replace('&amp;','&')} (${x.tier})`).join(', ');
     note(`Gear gave out on the trail: ${names}. Re-buy at the shop.`);
@@ -2276,9 +2299,11 @@ function fleetCapacity(act){
 }
 function buyFleet(id, act){
   const it = (FLEET_ITEMS[act]||[]).find(x=>x.id===id);
-  if(!it || S.cash<it.cost) return;
-  S.cash -= it.cost; S.fleet[id] = fleetCount(id)+1;
-  note(`Bought a ${it.name.toLowerCase()} (−€${it.cost}).`);
+  if(!it) return;
+  const cost = alaniPrice(it.cost);
+  if(S.cash<cost) return;
+  S.cash -= cost; S.fleet[id] = fleetCount(id)+1;
+  note(`Bought a ${it.name.toLowerCase()} (−€${cost}).`);
   saveGame(); openShop();
 }
 const GEAR=[
@@ -2333,7 +2358,18 @@ const ITEM_LIFETIME={  // trips at standard quality before wear-out / consumptio
   // Climbing — chalk burns up; ropes & quickdraws + draws last seasons
   quickdraws:120, beladevice:100, climbChalk:15, slings:80, climbShoesOwn:50,
 };
-function itemCost(id, tier){ return Math.round(ITEM_COST[id] * TIER_MULT[tier].cost); }
+/* Alani's guy in Stoúpa — 25% off everything, plus a small chance any item
+   bought is "of uncertain provenance". HEROES.md → Alani: cheap-and-connected,
+   slightly dodgy. Applies to gear, fleet, vehicles, pack upgrades, service.
+   NOT to certs (institutional) or loans. */
+const ALANI_DISCOUNT = 0.75;
+const ALANI_DODGY_CHANCE = 0.18; // per purchase
+const ALANI_DODGY_EXPOSE_CHANCE = 0.06; // per trip per dodgy item in loadout
+function alaniPrice(base){
+  if(typeof S!=='undefined' && S && S.you && S.you.heroId==='alani') return Math.round(base * ALANI_DISCOUNT);
+  return base;
+}
+function itemCost(id, tier){ return alaniPrice(Math.round(ITEM_COST[id] * TIER_MULT[tier].cost)); }
 function itemLifetime(id, tier){ return Math.max(1, Math.round(ITEM_LIFETIME[id] * TIER_MULT[tier].life)); }
 function ownedTier(id){ return S.owned && S.owned[id] ? S.owned[id].tier : null; }
 function ownedTrips(id){ return S.owned && S.owned[id] ? S.owned[id].trips : 0; }
