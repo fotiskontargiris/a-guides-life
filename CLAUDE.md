@@ -152,6 +152,9 @@ Balance is a **first pass** — these are the dials to turn for a balance featur
 - `scripts/` — the test harness (`harness.mjs`, `trace.mjs`, `winter-test.mjs`).
 - `LANGUAGE.md` — the canonical voice doctrine (tone, register, Greek diction, typography,
   locked decisions, worked examples). Read before writing any in-game copy.
+- `ART-DIRECTION.md` — the canonical visual doctrine (style, palette, composition, subject
+  inventory, locked decisions, worked references). The visual sibling of `LANGUAGE.md`.
+  Read before producing any asset (illustration, icon, glyph, title plate, screen mockup).
 
 **The design (read before building Phase 1 — written 2026-05)**
 - `OUTLINE.md` — the six-phase map (the skeleton).
@@ -168,12 +171,19 @@ Balance is a **first pass** — these are the dials to turn for a balance featur
 - `BUILD-PHASE-1.md` — the implementation brief: read order, first vertical slice, guardrails.
 
 **The look**
-- `design-system/` — the Messinia Guide design system handoff. `design-system/README.md` is the
-  art-direction bible; `design-system/colors_and_type.css` is the drop-in token sheet (it
-  matches the palette already in `index.html`); `design-system/ui_kits/game/` is a React
-  recreation of the in-game screens; `design-system/preview/` has per-token/component cards.
-  Note: `design-system/aegean-guide.html` is a *reference snapshot* — the root `index.html` is
-  the live game.
+- `ART-DIRECTION.md` — the canonical visual doctrine. Style ("editorial Mediterranean — gouache
+  colour, woodcut bones"), palette (terra · olive · sea · bone · ink + one seasonal accent),
+  composition rules, subject‑matter inventory (heroes, places, companions, vehicles, disciplines,
+  weather, UI chrome, title plate), locked decisions (pixel art is RETIRED, no emoji, no glow),
+  worked references and anti‑patterns. Pair‑read with `LANGUAGE.md` — picture and prose are
+  written to feel like the same world.
+- Palette tokens already in `index.html` (`--ink`, `--terra`, `--gold`, `--sea`, `--olive`,
+  `--danger`, `--panel`…) match the ART-DIRECTION palette and remain the source of truth for
+  in‑game colour. When adding a hue, add it to ART-DIRECTION.md first and the CSS variables
+  second.
+- The former `design-system/` directory (pixel‑art‑era handoff with React UI kits and a
+  reference snapshot of an older `aegean-guide.html`) has been retired. The root `index.html`
+  is the live game; ART-DIRECTION.md is the bible.
 
 Run `claude` in this folder; it will read this file. When you make changes, re-run the extract +
 `node --check` and the headless simulation (`scripts/harness.mjs`, `scripts/winter-test.mjs`)

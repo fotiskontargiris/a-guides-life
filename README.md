@@ -22,7 +22,8 @@ A text-driven outdoor-guide career game set in the Peloponnese. You graduated fr
 8. **Weather instability** — days can turn mid‑trip; three choices when the sky moves on you. ✓
 9. **Open next**: Phase 2 × disciplines patch · CATASTROPHES.md content · the missing activities (sailing, snorkel, paragliding).
 
-See [CLAUDE.md](./CLAUDE.md) for the working notes and project bible.
+See [CLAUDE.md](./CLAUDE.md) for the working notes and project bible. The voice is canonised
+in [LANGUAGE.md](./LANGUAGE.md); the visual surface in [ART-DIRECTION.md](./ART-DIRECTION.md).
 
 ## Run
 
