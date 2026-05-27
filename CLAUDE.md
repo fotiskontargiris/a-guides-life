@@ -177,6 +177,14 @@ Balance is a **first pass** — these are the dials to turn for a balance featur
   weather, UI chrome, title plate), locked decisions (pixel art is RETIRED, no emoji, no glow),
   worked references and anti‑patterns. Pair‑read with `LANGUAGE.md` — picture and prose are
   written to feel like the same world.
+- `ASSET-MANIFEST.md` — the bridge from doctrine to production. Every asset with a stable id,
+  filename, subject, composition hook, and status. Tiered A–G; pilot trio defined to prove
+  the style across all three registers before scaling. Source of truth for what to make next,
+  what to call it, and where the file lives.
+- `assets/` — illustration & glyph home (heroes / places / disciplines / weather / title /
+  scenes / chrome). Folder skeleton exists; production has not started. SVG for glyphs, PNG
+  for illustrated. See `assets/README.md` for the folder map and `ASSET-MANIFEST.md` for the
+  asset list.
 - Palette tokens already in `index.html` (`--ink`, `--terra`, `--gold`, `--sea`, `--olive`,
   `--danger`, `--panel`…) match the ART-DIRECTION palette and remain the source of truth for
   in‑game colour. When adding a hue, add it to ART-DIRECTION.md first and the CSS variables
