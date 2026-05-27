@@ -157,9 +157,13 @@
   .art-wordmark{display:block; max-width:280px; height:auto; margin:0 auto 14px;}
   /* Title block: wordmark overlaid on the cover image (the cover was
      painted with mostly empty sky in the upper portion specifically so
-     the wordmark would have room to land). */
+     the wordmark would have room to land). HTML text rather than the
+     SVG asset because the page already loads Fraunces via Google Fonts
+     — guaranteed render across browsers, no font-embedding fragility. */
   .title-block{position:relative; max-width:560px; margin:0 auto 14px;}
-  .title-block .art-wordmark{position:absolute; top:32%; left:50%; transform:translate(-50%,-50%); width:62%; max-width:none; margin:0; filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));}
+  .title-wm{position:absolute; top:34%; left:50%; transform:translate(-50%,-50%); width:90%; text-align:center; pointer-events:none;}
+  .title-wm-main{font-family:'Fraunces',serif; font-weight:800; font-size:clamp(26px,6.8vw,46px); color:var(--ink); letter-spacing:-.015em; line-height:1; text-shadow:0 1px 3px rgba(238,229,210,.65);}
+  .title-wm-italic{font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(17px,4.5vw,30px); color:var(--gold); margin-top:5px; letter-spacing:.005em; text-shadow:0 1px 3px rgba(238,229,210,.65);}
   /* Inline glyphs: discipline picker (~36px) + forecast chip (~22px). */
   .art-glyph{display:inline-block; width:36px; height:36px; vertical-align:middle; margin-right:6px;}
   .art-glyph-sm{display:block; width:22px; height:22px; margin:4px auto 4px;}
@@ -639,19 +643,21 @@ function renderTitle(save, loading){
   showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('A career in the outdoors and minor catastrophes');
   const canCont=!!save && !loading;
   const sub = loading?'Checking for a saved season…' : save?`Resume — Year ${save.S.year||1} · ${save.S.season==='winter'?'Winter planning':(save.S.seasonDay?summerDate(save.S.seasonDay):'Day '+save.S.day)}, ${save.S.phase===2?'a team to run':'building your name'}` : 'No saved season yet';
-  // Wordmark sits ON TOP of the cover image (the cover was painted with
-  // empty sky in the upper portion specifically so the wordmark would
-  // have room). The .title-block wrapper handles the absolute overlay.
+  // Wordmark sits ON TOP of the cover image as HTML text (page already
+  // loads Fraunces via Google Fonts — more reliable than depending on
+  // an SVG's embedded font references). The cover was painted with
+  // empty sky in the upper portion specifically so the wordmark lands
+  // there. Withholding copy below — the kitchen scene carries the reveal
+  // about why you're home; the title screen just sets mood.
   const titleCover = imgFor('title-cover', {cls:'art art-title', alt:'Outdoor Guide Life or no Life'});
-  const titleWordmark = imgFor('title-wordmark', {cls:'art art-wordmark', alt:'Outdoor Guide Life or no Life'});
-  const titleBlock = (titleCover || titleWordmark)
-    ? `<div class="title-block">${titleCover}${titleWordmark}</div>`
+  const wordmarkHTML = `<div class="title-wm"><div class="title-wm-main">Outdoor Guide Life</div><div class="title-wm-italic">or no Life</div></div>`;
+  const titleBlock = titleCover
+    ? `<div class="title-block">${titleCover}${wordmarkHTML}</div>`
     : '';
   setScene(`<div class="end" style="padding-top:4px">
     ${titleBlock}
     <div class="day-tag" style="color:var(--gold)">Right then</div>
-    <h2>Start a season</h2>
-    <p class="verdict">You graduated from your guide course because nothing else worked out. The Peloponnese is now your problem.</p>
+    <p class="verdict">All the necessary mistakes are still ahead of you.</p>
     <div class="choices">
       ${simpleOpt('▸','Continue', sub, !canCont, 'doContinue()')}
       ${simpleOpt('✦','New game','Home to Kalamata, and your mother’s kitchen', false, 'renderKitchen()')}
