@@ -793,6 +793,12 @@ function advanceDay(){
   }
   S.day++; S.seasonDay++;
   if(S.forecast&&S.forecast.length) S.forecast.shift(); ensureForecast();
+  // Villager — the panigíri circuit is free marketing. Every seven days, the
+  // village mentions you to someone who pays attention.
+  if(S.season==='summer' && S.you && S.you.heroId==='villager' && S.seasonDay>1 && S.seasonDay%7===0){
+    applyRep(1);
+    note('Your name went around the panigíri last night. Someone is asking after you.');
+  }
   if(S.season==='summer' && S.seasonDay>SUMMER_DAYS){ enterOffSeason(); return; }
   startDay();
 }
@@ -1154,7 +1160,15 @@ function buyItem(id, tier){
   }
   saveGame(); openShop();
 }
-function serviceGear(){ const c=alaniPrice(40); if(S.cash<c||S.gear>=100) return; S.cash-=c; S.gear=clamp(S.gear+35,0,100); note(`Serviced your equipment (−€${c}).`); saveGame(); openShop(); }
+function serviceGear(){
+  // Villager — the cousin does it on a Saturday morning for half what Geo charges
+  let c = alaniPrice(40);
+  if(S.you && S.you.heroId==='villager') c = Math.round(c * 0.5);
+  if(S.cash<c||S.gear>=100) return;
+  S.cash-=c; S.gear=clamp(S.gear+35,0,100);
+  const who = (S.you && S.you.heroId==='villager') ? 'Cousin Mitsos serviced everything in his yard' : 'Serviced your equipment';
+  note(`${who} (−€${c}).`); saveGame(); openShop();
+}
 function openCerts(){
   renderHUD();
   function infoCard(c){
@@ -1560,9 +1574,22 @@ function finishPlayerTrip(){
   // Background perks at trip completion:
   //   animator — tourist groups tip double (cruise-show charm)
   //   captain  — coastal routes pay a touch more, locals respect the uniform
+  //   villager — local routes pay a cousin-network bonus; tourist tips suffer (no languages)
   if(perkIs('animator') && b.ctype==='tourist') t.tips=Math.round(t.tips*1.5);
   let coastBonus=0;
   if(perkIs('captain') && (b.tags||[]).includes('coast')){ coastBonus=12; applyRep(2); t.repDelta=(t.repDelta||0)+2; }
+  // Villager (heroId-gated; tag is 'shepherd' for the nav-like event hooks)
+  let villagerBonus=0;
+  const isVillager = S.you && S.you.heroId==='villager';
+  if(isVillager && (b.region||'local')==='local'){
+    // Cousin networks send you the choice families; the route knows you back.
+    villagerBonus = Math.round(b.pay * 0.15);
+  }
+  if(isVillager && b.ctype==='tourist'){
+    // The story you wanted to tell them stays in Greek. They tip the silence.
+    t.tips = Math.round((t.tips||0) * 0.5);
+    t.logs && t.logs.push('You knew the trail but not their language; the day finished warm, the tips thin.');
+  }
   // Discipline comfort read (DISCIPLINES.md § COMFORT — PHASE-ARCHITECTURE §16):
   //   seakayak — wind/storm = chop. Family/tourist suffer, thrill enjoy.
   //   canyon   — mist/storm = cold rising water. Family/tourist shiver, thrill grin.
@@ -1591,7 +1618,7 @@ function finishPlayerTrip(){
   if(hasInfra('hotelDeal') && (b.ctype==='tourist' || b.ctype==='family')) hotelBonus=20;
   // Bus fare — only bites on near-region trips when you haven't bought a moped or Hilux yet
   const bus = busFee(b);
-  const fee=Math.round(b.pay*t.payMul)+(hasInfra('pickup')?10:0)+coastBonus+hotelBonus-bus, tip=t.tips, earned=fee+tip;
+  const fee=Math.round(b.pay*t.payMul)+(hasInfra('pickup')?10:0)+coastBonus+hotelBonus+villagerBonus-bus, tip=t.tips, earned=fee+tip;
   if(bus>0) t.logs && t.logs.push(`The bus to the trailhead and back took €${bus} off the day.`);
   S.cash+=earned;
   S.energy=clamp(S.energy-(b.diff===3?36:b.diff===2?28:20)-(S.weather.drain||0),0,100);
