@@ -182,16 +182,52 @@ const ri = (a,b)=>a+Math.floor(Math.random()*(b-a+1));
 
 let S, gCounter=0;
 
+/* Weather. Each type carries a stability baseline — Clear/Hot sit quiet,
+   Drizzle/Storm are volatile. Each daily roll wraps the type in its own
+   per-day stability score (baseline ± jitter, 0-100), so the same Clear
+   day can be steady or unstable. Days <75 stability roll for a mid-trip
+   turn (renderWeatherTurn). */
 const WEATHER=[
-  {name:'Clear skies', short:'Clear', col:'var(--gold)', note:'The light is perfect and the air is still. A guide could not ask for more.', risk:0, drain:0},
-  {name:'Hot and dry', short:'Hot', col:'var(--terra)', note:'The cicadas are screaming. The Messinian sun will test everyone today.', risk:0.05, drain:10, heat:true},
-  {name:'Gusty winds', short:'Windy', col:'var(--sea)', note:'The wind is up off the gulf, snapping at the ridgelines.', risk:0.10, wind:true},
-  {name:'Low cloud and drizzle', short:'Drizzle', col:'#7fb6c8', note:'A soft grey ceiling sits over Taygetos. Footing will be slick.', risk:0.08, mist:true},
-  {name:'A storm is gathering', short:'Storm', col:'var(--danger)', note:'The horizon has gone the colour of a bruise. The high routes are no place to be.', risk:0.24, storm:true},
+  {name:'Clear skies', short:'Clear', col:'var(--gold)', note:'The light is perfect and the air is still. A guide could not ask for more.', risk:0, drain:0, stability:85},
+  {name:'Hot and dry', short:'Hot', col:'var(--terra)', note:'The cicadas are screaming. The Messinian sun will test everyone today.', risk:0.05, drain:10, heat:true, stability:75},
+  {name:'Gusty winds', short:'Windy', col:'var(--sea)', note:'The wind is up off the gulf, snapping at the ridgelines.', risk:0.10, wind:true, stability:50},
+  {name:'Low cloud and drizzle', short:'Drizzle', col:'#7fb6c8', note:'A soft grey ceiling sits over Taygetos. Footing will be slick.', risk:0.08, mist:true, stability:40},
+  {name:'A storm is gathering', short:'Storm', col:'var(--danger)', note:'The horizon has gone the colour of a bruise. The high routes are no place to be.', risk:0.24, storm:true, stability:30},
 ];
 const FORECAST_DAYS=5;
-function rollWeather(){ return rnd(WEATHER); }
+function rollWeather(){
+  const base = rnd(WEATHER);
+  // Per-day jitter — same Clear day can be 70 or 100 stable.
+  const stability = clamp((base.stability||60) + ri(-15, 15), 0, 100);
+  return Object.assign({}, base, {stability});
+}
 function ensureForecast(){ S.forecast=S.forecast||[]; while(S.forecast.length<FORECAST_DAYS) S.forecast.push(rollWeather()); }
+// Where each weather type can drift if a day turns. Weights bias the change
+// in a plausible direction (windy days lean toward storm/drizzle; storms
+// blow themselves out toward windy/drizzle; clear days mostly stay or pick
+// up wind in the afternoon).
+const WEATHER_TRANSITIONS = {
+  Clear:   [{to:'Windy', w:3}, {to:'Hot', w:1}],
+  Hot:     [{to:'Windy', w:2}, {to:'Storm', w:1}],
+  Windy:   [{to:'Storm', w:2}, {to:'Drizzle', w:2}, {to:'Clear', w:1}],
+  Drizzle: [{to:'Storm', w:2}, {to:'Windy', w:2}, {to:'Clear', w:1}],
+  Storm:   [{to:'Windy', w:3}, {to:'Drizzle', w:2}],
+};
+function weatherByShort(s){ return WEATHER.find(w=>w.short===s); }
+function pickTurnTarget(currentShort){
+  const opts = WEATHER_TRANSITIONS[currentShort] || [];
+  if(!opts.length) return null;
+  let total = opts.reduce((s,o)=>s+o.w,0), r = Math.random()*total;
+  for(const o of opts){ if((r -= o.w) <= 0) return weatherByShort(o.to); }
+  return weatherByShort(opts[0].to);
+}
+// Stability label / colour for forecast chips and headers.
+function stabilityHint(stab){
+  if(stab >= 75) return {label:'steady',   col:'var(--olive)'};
+  if(stab >= 50) return {label:'unsettled',col:'var(--gold)'};
+  if(stab >= 30) return {label:'volatile', col:'var(--terra)'};
+  return                 {label:'turning',  col:'var(--danger)'};
+}
 function weatherAdvice(w){
   if(w.storm) return 'High and exposed routes are off. Anyone out wants a map and rain shells.';
   if(w.mist) return 'A map &amp; compass is worth its weight; expect slick ground.';
@@ -200,7 +236,11 @@ function weatherAdvice(w){
   return 'A fine day for almost anything. Make the most of it.';
 }
 function weatherChip(w, label, big){
-  return `<div style="flex:1;min-width:0;text-align:center;background:var(--panel2);border:1px solid var(--edge);border-radius:10px;padding:${big?'10px 6px':'8px 4px'}">
+  // Outline tints by stability so unstable days are subtly flagged in the
+  // forecast strip. The dot still shows the weather type's natural colour.
+  const sh = stabilityHint(w.stability ?? 75);
+  const border = w.stability != null && w.stability < 75 ? sh.col : 'var(--edge)';
+  return `<div style="flex:1;min-width:0;text-align:center;background:var(--panel2);border:1px solid ${border};border-radius:10px;padding:${big?'10px 6px':'8px 4px'}">
     <div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)">${label}</div>
     <div style="width:${big?'14px':'10px'};height:${big?'14px':'10px'};border-radius:50%;background:${w.col};margin:5px auto 4px;box-shadow:0 0 8px ${w.col}"></div>
     <div style="font-family:'Spline Sans Mono',monospace;font-size:${big?'12px':'10px'};color:${w.col}">${w.short}</div>
@@ -971,7 +1011,7 @@ function renderMorning(){
   const certChip = `<div style="font-family:'Spline Sans Mono',monospace;font-size:10.5px;color:var(--ink-faint);text-align:center;margin:6px 0 12px;font-style:italic">Cert school opens in November · peak rep this year <b style="color:var(--ink-dim);font-style:normal">${peakRep}</b> · ${certCount} cert${certCount===1?'':'s'} held</div>`;
   setScene(`
     <div class="day-tag">${dayTag()} · Dawn</div>
-    <p class="weather">${w.name}<small>${w.note}</small></p>
+    <p class="weather">${w.name}${w.stability!=null?` <span style="color:${stabilityHint(w.stability).col};font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;vertical-align:middle">· ${stabilityHint(w.stability).label}</span>`:''}<small>${w.note}</small></p>
     <h2>Right, who is paying you today?</h2>
     <p>Pick a trip — or, below, sort yourself out instead.</p>
     <div class="choices">${cards}</div>
@@ -1512,7 +1552,57 @@ function resolveMeet(ci){
 }
 function eligible(){ const b=S.trip.b,w=S.weather; const act=b.activity||'hike'; return EVENTS.filter(e=>activityMatch(e,act) && e.when(b,w)); }
 function wpick(list){ let t=list.reduce((s,e)=>s+e.w,0),r=Math.random()*t; for(const e of list){ if((r-=e.w)<=0) return e; } return list[0]; }
+function maybeWeatherTurn(){
+  // Only fires on unstable days, only once per trip, only during a player trip
+  if(!S.trip || S.trip.justTurned) return false;
+  if(!S.weather || S.weather.stability == null) return false;
+  if(S.weather.stability >= 75) return false;
+  // p scales with instability: stab 50→12.5%, 30→17.5%, 10→22.5%
+  const p = 0.05 + (100 - S.weather.stability) / 400;
+  return chance(p);
+}
+function renderWeatherTurn(){
+  const oldW = S.weather;
+  const newBase = pickTurnTarget(oldW.short);
+  if(!newBase){ runEvent(); return; }
+  // The new weather inherits a slightly nudged stability — a day that's
+  // already turned tends to keep moving, but never re-turns this trip.
+  S.trip.pendingTurn = Object.assign({}, newBase, {
+    stability: clamp(oldW.stability + ri(-10, 10), 0, 100),
+  });
+  S.trip.justTurned = true;
+  const b = S.trip.b;
+  setScene(`<div class="day-tag">${dayTag()} · ${b.route}</div>
+    <h2>The sky turns</h2>
+    <p>You set off in <b style="color:${oldW.col}">${oldW.short.toLowerCase()}</b>. The day has had other ideas.</p>
+    <p><i>${S.trip.pendingTurn.note}</i></p>
+    <div class="choices">
+      <button class="opt primary" onclick="applyWeatherTurn('push')">
+        <span class="mark">→</span><span class="b-main">Push on under the changed sky<span class="b-sub">Trust the day. The risk goes up.</span></span></button>
+      <button class="opt" onclick="applyWeatherTurn('shelter')">
+        <span class="mark">▣</span><span class="b-main">Shelter for an hour, let it pass<span class="b-sub">Energy −5; the day finds its feet again</span></span></button>
+      <button class="opt" onclick="applyWeatherTurn('short')">
+        <span class="mark">✂</span><span class="b-main">Cut the route short, take everyone home<span class="b-sub">Fee × 0.85; nobody is caught out</span></span></button>
+    </div>`);
+}
+function applyWeatherTurn(choice){
+  const newW = S.trip.pendingTurn; if(!newW){ runEvent(); return; }
+  S.weather = newW; S.trip.pendingTurn = null;
+  if(choice==='push'){
+    S.trip.prepRisk = (S.trip.prepRisk||0) + 0.15;
+    S.trip.logs.push(`The sky turned to ${newW.short.toLowerCase()}, and you carried on regardless.`);
+  } else if(choice==='shelter'){
+    S.energy = clamp(S.energy - 5, 0, 100);
+    S.trip.logs.push(`You sheltered an hour while the ${newW.short.toLowerCase()} took hold, then carried on with the day.`);
+  } else if(choice==='short'){
+    S.trip.payMul = (S.trip.payMul||1) * 0.85;
+    S.trip.logs.push(`You cut the route short under the turning ${newW.short.toLowerCase()}. Sensible. The clients respected it.`);
+  }
+  runEvent();
+}
 function runEvent(){
+  // Mid-trip weather turn — once per trip, only when the day's stability is low.
+  if(maybeWeatherTurn()){ renderWeatherTurn(); return; }
   const ev=wpick(eligible()); S.trip.cur=ev; const b=S.trip.b;
   setScene(`<div class="day-tag">${dayTag()} · ${b.route}</div>
     <h2>${ev.title}</h2><p>${ev.text(b,S)}</p>
@@ -1961,7 +2051,7 @@ function renderAssign(){
   const cards=people().map(p=>mateCard(p)).join('');
   const tripsPlanned=people().filter(p=>p.task&&p.task.kind==='trip').length;
   setScene(`<div class="day-tag">${dayTag()} · Dawn</div>
-    <p class="weather">${w.name}<small>${w.note}</small></p>
+    <p class="weather">${w.name}${w.stability!=null?` <span style="color:${stabilityHint(w.stability).col};font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;vertical-align:middle">· ${stabilityHint(w.stability).label}</span>`:''}<small>${w.note}</small></p>
     <h2>Right, where is everyone going?</h2>
     <p>Park a person on each job, then push the button and let the day happen to them. Daily wages: <b style="color:var(--gold)">€${wages()}</b>.</p>
     <div class="team">${cards}</div>
