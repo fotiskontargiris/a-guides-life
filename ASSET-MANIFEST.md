@@ -162,26 +162,29 @@ UI flat‑lays. Same matte gouache surface, but the *object* is the subject — 
 
 ---
 
-## 10. File specs (one table to rule them all)
+## 10. File specs (current — post‑optimisation)
 
-| Tier | Asset type | Format | Source size | In‑game size | Background |
+After the weight pass (`scripts/optimize-assets.py`, 2026-05-28) every illustrated asset
+is **WebP at quality 88**, resized to 2× retina max for its slot. The title wordmark stays
+SVG. Total `assets/` is **~22 MB** (down from ~115 MB, a 93 MB save).
+
+| Tier | Asset type | Format | Resized to | Display size | Notes |
 |---|---|---|---|---|---|
-| A — Cover | Title cover | PNG (24‑bit) | 1280 × 800 | responsive | opaque bone |
-| A — Cover | Wordmark | SVG | — | scales | transparent |
-| A — Opening | Kitchen scene | PNG | 1280 × 800 | responsive | opaque |
-| B — Heroes | Portrait | PNG | 512 × 640 | ~256 × 320 | bone, opaque |
-| C — Disciplines | Glyph | SVG | 64 × 64 | 32 × 32 typical | transparent, `currentColor` |
-| D — Weather | Glyph | SVG | 64 × 64 | 32 × 32 typical | transparent, `currentColor` |
-| E — Places | Silhouette | PNG | 1024 × 640 | ~640 × 400 card | opaque |
-| F — Scenes | Set piece | PNG | 1280 × 800 | responsive | opaque |
-| G — Chrome | Flat lay | PNG | 800 × 600 | ~480 × 360 | bone, opaque |
+| A — Cover | Title cover | WebP | 1586 × 992 (native) | responsive, max 560px | opaque bone |
+| A — Cover | Wordmark | SVG | — | scales | not used live (HTML text overlay instead) |
+| A — Opening | Kitchen scene | WebP | 1586 × 992 (native) | responsive, max 720px | opaque |
+| B — Heroes | Portrait | WebP | 720 × 1082 | max 280px | bone, opaque, 2:3 portrait |
+| C — Disciplines | Glyph | WebP | 96 × 96 | 36px display | opaque, was wildly oversized at 1254×1254 |
+| D — Weather | Glyph | WebP | 96 × 96 | 22px display | opaque, same story |
+| E — Places | Silhouette | WebP | ~1586 × ~1005 (native) | max 560px | opaque |
+| F — Scenes | Set piece | WebP | ~1586 × ~992 (native) | max 720px | opaque |
+| G — Chrome | Flat lay | WebP | 1200 × 900 | max 480px | opaque |
 
-**Naming**: `tier-slug.ext` where `tier` is `hero / place / glyph‑discipline / glyph‑weather
+**Naming**: `tier-slug.webp` where `tier` is `hero / place / glyph‑discipline / glyph‑weather
 / title / scene / chrome` and `slug` is the stable id from §3–9.
 
-**Compression**: PNG at default; if file size becomes a concern (the page loads everything
-on first paint right now), convert to WebP at 85% quality and keep PNG as source. The
-`<img>` helper (to be added — see §12) will pick the right one.
+**Pilot originals at `assets/pilot-0[1-3]-*.png`** are kept as PNG for reference / future
+re-generation comparisons (~10 MB; not loaded by the game).
 
 ---
 
@@ -235,15 +238,13 @@ over 100 runs).
    accent for most cards, the CSS‑variable approach (`document.documentElement.style.
    setProperty('--accent', …)` at season change) is now the cheaper next step — would tint
    chrome and instrument labels seasonally without re‑shipping art variants. **Open.**
-4. **Asset weight / CDN** — total `assets/` is **~115 MB** (heroes 33 MB, places 33 MB,
-   scenes 15 MB, chrome 8 MB, disciplines 8 MB, weather 8 MB, title 2 MB). GitHub Pages
-   serves it fine but first‑paint per‑screen is a few MB. `loading="lazy"` on every `<img>`
-   keeps this manageable in practice — only visible assets fetch. An optimisation pass
-   (pngquant / TinyPNG / WebP at 85%) could probably cut to 30–40 MB without visible loss.
-   A separate root‑level copy of the three pilots (`assets/pilot-0[1-3]-*.png`, ~10 MB)
-   sits unreferenced — kept as the canonical "approved pilot" originals for future
-   re‑generation comparisons. **Open — optimise before next public push if bandwidth is
-   a concern.**
+4. ~~**Asset weight / CDN**~~ — **RESOLVED 2026-05-28**: weight pass via
+   `scripts/optimize-assets.py` (Pillow). Resized each asset per‑tier to 2× retina max +
+   converted to WebP at quality 88. **Total `assets/` 115 MB → 22 MB (93 MB saved,
+   88.3% reduction).** Biggest wins: glyphs went from ~1 MB each at 1254×1254 to ~1 KB at
+   96×96 (display is 22-36px, the originals were ~1300× oversized); heroes from ~3.3 MB
+   at 1023×1537 to ~300 KB at 720×1082. The pilot originals at root stay PNG for archival.
+   CDN no longer needed at this size — GitHub Pages serves it cleanly.
 
 ---
 
