@@ -20,28 +20,103 @@
     --r:14px;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0; padding:0;}
+  /* GAME UI ARCHITECTURE — fixed viewport, never a page scroll.
+     Top chrome stays anchored. The scene area fills remaining height.
+     Inside scene: in 2-col mode the image is fixed, the right panel
+     scrolls internally; in utility mode the scene itself scrolls.
+     The bubble / scene / image never moves when the player scrolls. */
+  html,body{margin:0; padding:0; height:100%;}
   body{
     font-family:'Spectral',Georgia,serif; color:var(--ink);
     background:
       radial-gradient(120% 80% at 50% -10%, rgba(210,117,74,0.18), transparent 55%),
       linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
-    background-attachment:fixed; min-height:100vh; line-height:1.55; overflow-x:hidden;
+    background-attachment:fixed; line-height:1.55;
+    height:100vh; height:100dvh;     /* dynamic vh handles mobile address bar */
+    overflow:hidden;                  /* NO page scroll, ever */
   }
   .topo{position:fixed; inset:0; z-index:0; opacity:0.06; pointer-events:none;}
-  /* Landscape-first wrap. Theatrical 2-col layout sits inside .scene.
-     Wide single column for utility screens (shop, cert school, logbook). */
-  .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:18px 18px 40px; display:flex; flex-direction:column; min-height:100vh;}
+  /* Landscape-first wrap. Locked to viewport height. */
+  .wrap{
+    position:relative; z-index:1;
+    max-width:1100px; margin:0 auto;
+    padding:14px 18px 16px;
+    display:flex; flex-direction:column;
+    height:100vh; height:100dvh;
+    overflow:hidden;
+  }
+  /* Top chrome — natural size, never grows or scrolls */
+  .appbar, .hud, .goal, #goal, #fcast { flex:none; }
+  /* The scene area fills the remaining viewport height */
+  .scene, #scene {
+    flex:1;
+    min-height:0;                     /* allow shrinking inside flex */
+    display:flex; flex-direction:column;
+    overflow-y:auto;                  /* utility scenes scroll internally */
+    overflow-x:hidden;
+    scrollbar-width:thin;
+    scrollbar-color:var(--terra) transparent;
+  }
+  .scene::-webkit-scrollbar { width:6px; }
+  .scene::-webkit-scrollbar-thumb { background:rgba(210,117,74,0.5); border-radius:3px; }
+  .scene::-webkit-scrollbar-track { background:transparent; }
+  /* Direct scene children default to natural height; only .two-col
+     fills the remaining space (and internally manages its own scroll). */
+  .scene > * { flex:none; }
+  .scene > .two-col { flex:1; min-height:0; }
   /* The theatrical 2-col scene: image stage left, content panel right.
-     The day-tag (and any header) sits above, spanning both columns.
-     Collapses to single column on narrow screens (portrait phone). */
-  .two-col{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:28px; align-items:start; margin-top:4px;}
+     Fills the scene's remaining height; image fixed, panel scrolls. */
+  .two-col{
+    display:grid;
+    grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    gap:28px;
+    align-items:stretch;
+    flex:1;
+    min-height:0;
+    overflow:hidden;
+  }
   .two-col .col-stage, .two-col .col-panel{min-width:0;}
+  /* Stage column: image fits inside via max-width/height, no scroll */
+  .col-stage{
+    overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    min-height:0;
+  }
+  .col-stage > *,
+  .col-stage img,
+  .col-stage .scene-stage,
+  .col-stage .scene-stage img {
+    max-width:100%; max-height:100%;
+    width:auto; height:auto;
+    display:block;
+  }
+  .col-stage .scene-stage{position:relative;}
+  /* Panel column: scrolls internally when content exceeds height */
+  .col-panel{
+    overflow-y:auto;
+    padding-right:8px;
+    scrollbar-width:thin;
+    scrollbar-color:var(--terra) transparent;
+  }
+  .col-panel::-webkit-scrollbar { width:6px; }
+  .col-panel::-webkit-scrollbar-thumb { background:rgba(210,117,74,0.5); border-radius:3px; }
+  .col-panel::-webkit-scrollbar-track { background:transparent; }
   /* Choice button grids — landscape lets short-label buttons go 2-up */
   .choices.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  /* Responsive fallback: portrait phone (or very narrow window).
+     The game reverts to document-style scroll — it stops being a fixed
+     viewport, becomes a vertical column. Less game-like but functional
+     when the player can't or won't rotate. */
   @media (max-width:760px){
-    .two-col{grid-template-columns:1fr; gap:12px;}
-    .choices.grid-2{grid-template-columns:1fr;}
+    html,body{ height:auto; overflow:visible; }
+    body{ min-height:100vh; overflow-x:hidden; }
+    .wrap{ height:auto; max-height:none; overflow:visible; padding:18px 16px 40px; }
+    .scene, #scene{ overflow:visible; flex:none; }
+    .two-col{ grid-template-columns:1fr; gap:12px; overflow:visible; flex:none; }
+    .col-stage, .col-panel{ overflow:visible; }
+    .col-stage > *, .col-stage img, .col-stage .scene-stage,
+    .col-stage .scene-stage img { max-height:none; height:auto; width:100%; }
+    .choices.grid-2{ grid-template-columns:1fr; }
   }
 
   .appbar{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:2px 0 14px; animation:rise .7s ease both;}
