@@ -171,12 +171,15 @@ Balance is a **first pass** — these are the dials to turn for a balance featur
 - `BUILD-PHASE-1.md` — the implementation brief: read order, first vertical slice, guardrails.
 
 **The look**
-- `ART-DIRECTION.md` — the canonical visual doctrine. Style ("editorial Mediterranean — gouache
-  colour, woodcut bones"), palette (terra · olive · sea · bone · ink + one seasonal accent),
-  composition rules, subject‑matter inventory (heroes, places, companions, vehicles, disciplines,
-  weather, UI chrome, title plate), locked decisions (pixel art is RETIRED, no emoji, no glow),
-  worked references and anti‑patterns. Pair‑read with `LANGUAGE.md` — picture and prose are
-  written to feel like the same world.
+- `ART-DIRECTION.md` — the canonical visual doctrine. **Locked 2026-05-28 to "the
+  changing guide's desk + stylized illustrated realism"** (replaces the earlier "editorial
+  gouache + woodcut bones" direction; the 43 assets shipped under the earlier doctrine
+  remain in‑game and work). Five UI surfaces: Desk · Route card · Backpack · People card ·
+  Day report. The desk changes across phases (Phase 1 kitchen table → Phase 2 working desk
+  → Phase 3 office → Phase 4 regional board). Canonical reference: *The First Booking* at
+  `assets/title/title-cover.webp`. Palette (terra · olive · sea · bone · ink + one seasonal
+  accent), composition rules, subject inventory by surface, locked decisions, worked
+  reference + anti‑patterns. Pair‑read with `LANGUAGE.md`.
 - `ASSET-MANIFEST.md` — the bridge from doctrine to production. Every asset with a stable id,
   filename, subject, composition hook, and status. Tiered A–G; pilot trio defined to prove
   the style across all three registers before scaling. Source of truth for what to make next,

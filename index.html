@@ -155,16 +155,17 @@
   .art-chrome{display:block; width:100%; max-width:480px; height:auto; margin:6px auto 12px;}
   .art-title{display:block; width:100%; max-width:560px; height:auto; margin:0;}
   .art-wordmark{display:block; max-width:280px; height:auto; margin:0 auto 14px;}
-  /* Title block: full brand stack (kicker + wordmark + italic) overlaid
-     on the cover image. HTML text rather than SVG — page already loads
-     Fraunces via Google Fonts, guaranteed render. Colors are hardcoded
-     for the bone-cream cover background (the page's var(--ink) is the
-     light sand colour for text-on-dark-bg, useless here). */
-  .title-block{position:relative; max-width:560px; margin:0 auto 14px;}
-  .title-wm{position:absolute; top:30%; left:50%; transform:translate(-50%,-50%); width:92%; text-align:center; pointer-events:none;}
-  .title-wm-kicker{font-family:'Spline Sans Mono',monospace; font-size:clamp(8.5px,1.5vw,11px); letter-spacing:.3em; text-transform:uppercase; color:#a04a25; margin-bottom:10px; line-height:1.3;}
-  .title-wm-main{font-family:'Fraunces',serif; font-weight:800; font-size:clamp(28px,7vw,48px); color:#1b1b1f; letter-spacing:-.015em; line-height:1;}
-  .title-wm-italic{font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(18px,4.6vw,32px); color:#a87425; margin-top:6px; letter-spacing:.005em;}
+  /* Title block: cover image leads, wordmark + kicker sit BELOW as a
+     caption. The "first booking" cover is dense with narrative content
+     (mum's note, phone notification, map) — overlaying type on top of
+     it would compete. Below-image caption respects the image's voice.
+     Colors hardcoded for the dark page background (var(--ink) which
+     is the light sand for text-on-dark-bg is actually correct here). */
+  .title-block{max-width:560px; margin:0 auto 8px;}
+  .title-wm{text-align:center; margin:14px auto 4px; line-height:1;}
+  .title-wm-kicker{font-family:'Spline Sans Mono',monospace; font-size:clamp(9px,1.6vw,11px); letter-spacing:.3em; text-transform:uppercase; color:var(--terra); margin-bottom:12px; line-height:1.3;}
+  .title-wm-main{font-family:'Fraunces',serif; font-weight:800; font-size:clamp(28px,7vw,46px); color:var(--ink); letter-spacing:-.015em; line-height:1;}
+  .title-wm-italic{font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:clamp(18px,4.6vw,32px); color:var(--gold); margin-top:6px; letter-spacing:.005em;}
   /* Inline glyphs: discipline picker (~36px) + forecast chip (~22px). */
   .art-glyph{display:inline-block; width:36px; height:36px; vertical-align:middle; margin-right:6px;}
   .art-glyph-sm{display:block; width:22px; height:22px; margin:4px auto 4px;}
@@ -498,6 +499,8 @@ const ASSETS = {
   'title-cover':              'assets/title/title-cover.webp',
   'title-wordmark':           'assets/title/title-wordmark.svg',
   'scene-kitchen':            'assets/scenes/scene-kitchen.webp',
+  // Tier H — Phase 2/3/4 desks (Phase 1 shipped 2026-05-28 as title-cover above)
+  'desk-phase1-first-booking':'assets/desk/desk-phase1-first-booking.webp',
   // Tier B — heroes (HEROES.md order)
   'hero-01-medic':            'assets/heroes/hero-01-medic.webp',
   'hero-02-chef':             'assets/heroes/hero-02-chef.webp',
@@ -645,21 +648,20 @@ function renderTitle(save, loading){
   showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('');
   const canCont=!!save && !loading;
   const sub = loading?'Checking for a saved season…' : save?`Resume — Year ${save.S.year||1} · ${save.S.season==='winter'?'Winter planning':(save.S.seasonDay?summerDate(save.S.seasonDay):'Day '+save.S.day)}, ${save.S.phase===2?'a team to run':'building your name'}` : 'No saved season yet';
-  // Wordmark sits ON TOP of the cover image as HTML text (page already
-  // loads Fraunces via Google Fonts — more reliable than depending on
-  // an SVG's embedded font references). The cover was painted with
-  // empty sky in the upper portion specifically so the wordmark lands
-  // there. Withholding copy below — the kitchen scene carries the reveal
-  // about why you're home; the title screen just sets mood.
-  const titleCover = imgFor('title-cover', {cls:'art art-title', alt:'Outdoor Guide Life or no Life'});
+  // New cover (The First Booking) is dense with narrative — overlaying
+  // type would compete with mum's note, the phone notification, the
+  // map. So: cover image leads, wordmark + kicker sit BELOW as a
+  // caption. Withholding copy below the wordmark — kitchen scene does
+  // the reveal.
+  const titleCover = imgFor('title-cover', {cls:'art art-title', alt:'The First Booking — a Kalamata kitchen table at dusk'});
   const wordmarkHTML = `<div class="title-wm">
     <div class="title-wm-kicker">A career in the outdoors, money, and minor catastrophes</div>
     <div class="title-wm-main">Outdoor Guide Life</div>
     <div class="title-wm-italic">or no Life</div>
   </div>`;
   const titleBlock = titleCover
-    ? `<div class="title-block">${titleCover}${wordmarkHTML}</div>`
-    : '';
+    ? `<div class="title-block">${titleCover}</div>${wordmarkHTML}`
+    : wordmarkHTML;
   setScene(`<div class="end" style="padding-top:4px">
     ${titleBlock}
     <div class="day-tag" style="color:var(--gold)">Right then</div>

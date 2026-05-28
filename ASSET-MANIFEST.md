@@ -10,6 +10,23 @@ it.* It does not relitigate style.
 
 ---
 
+## 0. Status of the world (2026-05-28)
+
+**43 assets shipped** under the earlier *"editorial gouache + woodcut bones"* direction.
+They live in‑game and work. Folders + filenames are stable.
+
+**The doctrine evolved** on 2026-05-28 — `ART-DIRECTION.md` now locks *"the changing
+guide's desk + stylized illustrated realism."* The canonical reference is *The First
+Booking* (`assets/title/title-cover.webp`). Every **new** asset is judged against that
+image; existing assets stay until/unless re‑rendered.
+
+**The remaining production** (Phases ↓) covers the surfaces the doctrine added that
+weren't shipped yet — Phase 2/3/4 desks, the backpack screen variants, client cards, and
+day‑report surfaces. The original tiers (heroes, places, glyphs, scenes, chrome, title)
+are complete.
+
+---
+
 ## 1. How this works
 
 - Each asset has a **stable ID** (e.g. `hero-01-medic`) and a **filename** (e.g.
@@ -185,6 +202,61 @@ SVG. Total `assets/` is **~22 MB** (down from ~115 MB, a 93 MB save).
 
 **Pilot originals at `assets/pilot-0[1-3]-*.png`** are kept as PNG for reference / future
 re-generation comparisons (~10 MB; not loaded by the game).
+
+---
+
+## 10½. New surfaces from the doctrine evolution (the next production tier)
+
+The doctrine evolution of 2026-05-28 added four new asset surfaces. Existing wire‑ups in
+`index.html` will pick these up automatically once they're in `assets/` and added to the
+`ASSETS` map. Render every one against *The First Booking* as the locked reference.
+
+### Tier H — Phase 2/3/4 desks (3)
+The desk *changes* across phases. Phase 1 is shipped (= title‑cover, the first booking).
+Phase 2/3/4 are new.
+
+| ID | File | Subject |
+|---|---|---|
+| `desk-phase2-working` | `assets/desk/desk-phase2-working.webp` | The working desk — staff cards laid out (Maria, Nikos), a small route board pinned with the day's assignments, two handheld guide radios on chargers, a gear‑checklist clipboard, a folder of repair bills, a cash ledger open. Same kitchen→office register; harbour still in the window, but the table is busier now |
+| `desk-phase3-office` | `assets/desk/desk-phase3-office.webp` | The company desk — a laptop with a booking platform on screen, printed Google reviews stacked, package brochures, hotel partner notes, a branded company stamp, a wall calendar with marked days, signed contracts in a tray. Same window onto Messinia; the table has grown into an office |
+| `desk-phase4-regional` | `assets/desk/desk-phase4-regional.webp` | The regional board — a wall map of the Peloponnese with pins for each base, base folders stacked (Kalamata, Mani, Arcadia), manager portraits in frames, a crisis‑notes board, legal/financial document piles, brand materials, expansion plans rolled up. The desk has become a war room. Window now shows a higher view — town below |
+
+### Tier I — Backpack screen (3)
+The packing screen is *physical*. Pack changes with phase.
+
+| ID | File | Subject |
+|---|---|---|
+| `backpack-phase1` | `assets/backpack/backpack-phase1.webp` | A small worn outdoor backpack, ~40L, dust on the strap, 4 packing slots visible. Solo guide, can carry the bare essentials. Photographic table corner under it |
+| `backpack-phase2-depot` | `assets/backpack/backpack-phase2-depot.webp` | The depot view — a wall of gear: rope coils, helmets on pegs, water bottles in a crate, life‑jackets stacked, a row of named gear bins, a clipboard tally on a chain. The supply line behind the team |
+| `backpack-phase3-cache` | `assets/backpack/backpack-phase3-cache.webp` | The organised company cache — labelled containers by discipline, branded buffs in folded stacks, a small workshop bench, a wall of named gear bins with guide initials on each, fluorescent strip lighting overhead |
+
+### Tier J — Client people cards (9)
+Clients have been noun‑phrases in prose since day one (`LANGUAGE §3 People in the prose`).
+Now they're people cards on the desk. Reuse the noun phrases verbatim; the picture turns
+them into recognisable individuals.
+
+| ID | File | Subject |
+|---|---|---|
+| `client-family` | `assets/clients/client-family.webp` | *A family with two young children* — one parent's pack overstuffed, child on shoulders, sun hats |
+| `client-cruise` | `assets/clients/client-cruise.webp` | *A coachload of cruise tourists* — line snaking from a bus, identical lanyards, water bottles still capped |
+| `client-photographers` | `assets/clients/client-photographers.webp` | *Three photographers chasing the light* — tripods, telephoto lenses, no patience |
+| `client-corporate` | `assets/clients/client-corporate.webp` | *A corporate team‑lead with a schedule* — branded fleece, phone in hand, slightly impatient |
+| `client-k2` | `assets/clients/client-k2.webp` | *The over‑equipped K2 client* — full alpine kit in the olive grove, four trekking poles, an altimeter watch |
+| `client-german-goat` | `assets/clients/client-german-goat.webp` | *A German couple weeping, gently, at a goat* — earnest tears, a phone filming, the goat unimpressed |
+| `client-bouzouki` | `assets/clients/client-bouzouki.webp` | *The bouzouki busker whose instrument eats a pack slot* — case visible on his back, smaller pack as a result |
+| `client-kyria-voula` | `assets/clients/client-kyria-voula.webp` | *Kyría Voúla* — small woman, blood‑pressure diary in her bag, magnificent dignity, a cane |
+| `client-cousin-mitsos` | `assets/clients/client-cousin-mitsos.webp` | *Cousin Mitsos in the yard with the spanner* — overalls, oil on his hands, knows where the part is |
+
+### Tier K — Day report surfaces (4)
+The day report is *concrete*: receipt + notebook + review + ledger. Backgrounds + tokens
+the renderer composes against.
+
+| ID | File | Subject |
+|---|---|---|
+| `report-blank` | `assets/reports/report-blank.webp` | A ledger page with faint horizontal rules, a pencil resting at the margin, a wax‑sealed corner. The canvas the day's verdict types onto |
+| `report-review-good` | `assets/reports/report-review-good.webp` | A small Google/TripAdvisor‑style review card with five‑star marks, a one‑line "The family left glowing" headline, deadpan official trim |
+| `report-review-bad` | `assets/reports/report-review-bad.webp` | The bad‑review variant — three stars, slight ink smudge, a thumb mark in the corner |
+| `report-gear-damage` | `assets/reports/report-gear-damage.webp` | A small gear‑damage notation page — pencil sketch of a snapped pole, a wear‑score margin, the inventory's "needs replacement" stamp |
 
 ---
 
