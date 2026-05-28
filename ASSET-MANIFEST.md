@@ -85,7 +85,7 @@ The frames every player sees on every new game.
 
 The ten locked characters from `HEROES.md` / `ART-DIRECTION.md §6A`. Each portrait is a
 **mid‑shot** (waist‑up) with the signature object in frame and the locked gesture caught.
-**Landscape composition**, about 16:10 (e.g. 1280 × 800), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context. The right portion leaves breathing room for the game UI to overlay.
+**Wide landscape composition**, about 20:9 (e.g. 1920 × 864), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context. The right portion leaves breathing room for the game UI to overlay. Keep critical content (figure, key compositional elements) within the central **16:9 safe zone** so they survive when shown on narrower viewports.
 
 | ID | File | Subject (signature object + gesture) |
 |---|---|---|
@@ -165,7 +165,7 @@ that recurs across menu / route card / trip header so the player learns the plac
 
 ## 8. Tier F — Set pieces & pathos (4)
 
-The frames that carry the emotional beats. Larger frames (1280 × 800). These are slower to
+The frames that carry the emotional beats. Wide landscape frames (1920 × 864, 20:9; safe zone 16:9). These are slower to
 produce; commit to them only after the pilot trio and Tier B–C land.
 
 | ID | File | Subject | Register |
@@ -200,7 +200,7 @@ SVG. Total `assets/` is **~22 MB** (down from ~115 MB, a 93 MB save).
 | A — Cover | Title cover | WebP | 1586 × 992 (native) | responsive, max 560px | opaque bone |
 | A — Cover | Wordmark | SVG | — | scales | not used live (HTML text overlay instead) |
 | A — Opening | Kitchen scene | WebP | 1586 × 992 (native) | responsive, max 720px | opaque |
-| B — Heroes | Landscape composition | WebP | 1280 × 800 (16:10) | full-bleed scene-full | figure-left, context-right; current 720×1082 portrait shipped under old spec |
+| B — Heroes | Wide landscape composition | WebP | 1920 × 864 (20:9; safe zone 16:9) | full-bleed scene-full | figure-left, context-right; current 720×1082 portrait shipped under old spec |
 | C — Disciplines | Glyph | WebP | 96 × 96 | 36px display | opaque, was wildly oversized at 1254×1254 |
 | D — Weather | Glyph | WebP | 96 × 96 | 22px display | opaque, same story |
 | E — Places | Silhouette | WebP | ~1586 × ~1005 (native) | max 560px | opaque |

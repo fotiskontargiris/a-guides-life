@@ -191,7 +191,9 @@ governs *what we draw*; this section governs *how the pigment sits on paper*.
 - **Composed asymmetry, mid‑close camera.** Slightly off‑axis, not stagey symmetry.
 - **Landscape fullscreen, always.** The game plays in a fixed landscape viewport
   (~1100×700 desktop / phone‑rotated). EVERY scene asset is a landscape composition —
-  approximately 16:10 ratio — even people cards (heroes / clients). Portrait‑oriented
+  approximately 20:9 ratio — even people cards (heroes / clients) — with critical
+  content kept within the central 16:9 safe zone so it survives narrower viewports.
+  Portrait‑oriented
   assets crop awkwardly in a landscape viewport: `object‑fit:cover` cuts the sides off
   any tall image. Heroes / clients are therefore framed as ENVIRONMENTAL portraits:
   figure in the LEFT third, the rest of the canvas given to their natural Messinian
@@ -377,7 +379,7 @@ These are settled. Do not reopen without flagging.
   is wider than it is tall."* prompt overlay until they rotate. This frees the layout
   from responsive compromise and the assets from having to work at two aspects.
 - **All assets are landscape compositions.** Heroes / clients framed as environmental
-  portraits (figure-left, context-right). Even portraits live in a 16:10 box. The only
+  portraits (figure-left, context-right). Every scene asset is a 20:9 box (e.g. 1920×864) with a 16:9 safe zone in the centre for critical content. The only
   square assets are the small glyph icons (discipline + weather) which display at 32–96px.
   See §4 for the rule and §7 for per-tier guidance.
 - **Fixed-viewport game UX.** The page never scrolls. Top chrome (appbar / HUD / goal /

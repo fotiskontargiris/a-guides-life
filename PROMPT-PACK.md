@@ -51,7 +51,7 @@ get an image. Pair‑read with `ART-DIRECTION.md` (the doctrine these encode) an
 
 | | Midjourney | ChatGPT |
 |---|---|---|
-| Aspect ratio | `--ar 16:10` for all scenes (landscape-fullscreen game) | "as a landscape composition, about 16:10 ratio" in the prompt body |
+| Aspect ratio | `--ar 20:9` for all scenes (matches modern phone landscape) | "as a wide landscape composition, about 20:9 ratio, with critical content in the central 16:9 safe zone" in the prompt body |
 | Negative prompt | `--no <list>` flag | "Do not include X, Y, Z" sentences in the prompt body |
 | Style reference | `--sref <url>` flag | Upload the reference image into the chat + text instruction |
 | Character reference | `--cref <url>` flag | Upload + "give this person the same face" |
@@ -109,7 +109,7 @@ Save to: `assets/heroes/hero-09-alani.png`
 ```
 Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on foreground figures, hairline ~1px on mid-ground structures, and no outlines at all on landscape masses (hills, sea, sky read as flat colour blocks only). Flat lighting from a single warm sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of noon gold. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
 
-Frame this as a landscape composition, about 16:10 ratio, with the figure in the LEFT third of the frame and the rest of the canvas given to his Messinian context — the kafeneío door, the moped, the dusty road. The right portion of the frame should leave breathing room (could be a wash of bone-cream paper, partial wash of terracotta dust, or quiet middle-distance) — this is where the game UI will sit. The whole image must read as a landscape painting from a travel sketchbook, not a portrait crop.
+Frame this as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third of the frame and the rest of the canvas given to his Messinian context — the kafeneío door, the moped, the dusty road. The right portion of the frame should leave breathing room (could be a wash of bone-cream paper, partial wash of terracotta dust, or quiet middle-distance) — this is where the game UI will sit. Keep the figure and any key context detail within the central 16:9 SAFE ZONE so they survive on narrower desktop viewports. The whole image must read as a landscape painting from a travel sketchbook, not a portrait crop.
 
 Subject: A Greek man in his early thirties leaning back against the seat of a cheap two-stroke moped parked outside a village kafeneio in Messinia, mainland southern Greece. He wears a faded olive button-down shirt with sleeves rolled to the elbow, jeans, dusty boots, and a worn leather wristband on his right wrist. An unlit cigarette is tucked behind his right ear. He has a half-knowing smirk, and his eyes glance off-frame to the left as if greeting someone just outside the frame. The kafeneio doorway is in deep Ionian shadow behind him, with a hand-painted Greek sign above it (the lettering should be an undecipherable hand-painted shape, not legible text). Late afternoon light, terracotta dust on the road. Compose him as a mid-shot, waist-up, single figure positioned slightly off-axis in the frame. The noon-gold accent should appear in exactly one place: catching the moped tank's chrome and the painted sign's lettering — nothing else.
 
@@ -122,7 +122,7 @@ Save to: `assets/places/place-voidokilia.png`
 ```
 Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on foreground figures, hairline ~1px on mid-ground structures, and no outlines at all on landscape masses (hills, sea, sky read as flat colour blocks only). Flat lighting from a single warm sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of noon gold. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
 
-Frame this in wide landscape orientation (about 8:5 or 16:10 ratio).
+Frame this in wide landscape orientation, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: Voidokilia Bay in Messinia, mainland southern Greece — the famous perfect crescent dune, seen from the elevation of the Pylos fort side at mid-afternoon. The crescent of pale bone-cream sand curves left to right across the lower third of the frame. Deep Ionian sea blue fills the bay. Sun-bleached olive sage scrub clings to the dunes. The inland Gialova lagoon is visible behind the dune ridge, with three small flamingo silhouettes far in the distance. On the far right, the silhouette of a Venetian fortress sits on a low promontory. Two small human-scale figures walk the dune edge mid-frame for scale, drawn with ink linework. The horizon is very slightly sloped right-to-left, implying a light meltemi wind off the gulf. The noon-gold accent should appear in exactly two small places: catching the fortress wall in afternoon light, and one of the figures' hats — nothing else.
 
@@ -135,7 +135,7 @@ Save to: `assets/scenes/scene-hilux-dawn.png`
 ```
 Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on the vehicle, no outlines at all on sky or ground (which read as flat colour blocks only). Flat lighting from a single soft warm dawn sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette, slightly desaturated for the pathos register: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of rain grey. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
 
-Frame this as a wide cinematic landscape (about 16:10 ratio).
+Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A battered dark-olive Toyota Hilux pickup truck, alone in a rural Kalamata village yard at first light. The truck is shown side-on, positioned slightly off-centre, the only object that carries weight in the frame. It is a working farm vehicle: dust on the headlights, a steel roof rack overhead, a small dent on the rear bumper, an aftermarket tow bar. Pale bone-cream pre-dawn sky fills the upper two thirds of the frame. Terracotta dust on the dirt yard fills the lower third. A low fieldstone wall sits behind the truck, rendered in rain-grey shadow. The rain-grey accent appears only in the wall and the truck's underside shadow.
 
@@ -181,7 +181,7 @@ Save to: `assets/scenes/scene-kitchen.png`
 ```
 Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on figures and objects, hairline on mid-ground structures, and no outlines on landscape masses (which read as flat colour blocks only). Flat lighting from a single warm sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of oleander pink. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
 
-Frame this as a wide cinematic landscape (about 16:10 ratio).
+Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: The interior of a working-class Greek mother's kitchen in Kalamata, southern Greece. The kitchen table sits in the foreground covered with an oilcloth painted with cheerful yellow lemons, set with the good plates for guests, four place settings out. A worn wooden spoon rests on a small saucer. The soft warm glow of an oven mid-bake lights the back of the room. The mother is visible only from behind, working dough at the counter — we see her apron strings, her grey hair pinned up, her weathered hands at work. We never see her face. An open doorway at the back of the room leads to a small sun-drenched courtyard, with the late afternoon Mediterranean light spilling across the kitchen floor in warm bands. Intimate, warm, domestic atmosphere. The oleander-pink accent appears only in the painted lemons on the oilcloth and in the apron ties — nothing else.
 
@@ -199,7 +199,7 @@ Save to: `assets/title/title-cover.png` (background layer; wordmark added separa
 ```
 Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows. Use woodcut-style ink linework only on the rooftop silhouette and the cypress, with the sky as a completely flat colour block. Flat lighting. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink. Hand-made and opinionated, in the spirit of Edward Bawden travel posters and Greek folk woodcuts by A. Tassos.
 
-Frame this as a wide cinematic landscape (about 16:10 ratio).
+Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A simple, quiet Mediterranean horizon. The bottom fifth of the frame is a single low strip of terracotta-tiled village rooftops in soft silhouette. The upper four-fifths is a pale bone-cream pre-dawn sky, with one band of warmer terracotta-tinged cloud near the horizon. In the lower right corner, a single thin cypress tree silhouette. This is a quiet establishing shot — the background for a book cover, with text to be added separately later. Leave most of the frame as open sky.
 
@@ -216,7 +216,7 @@ slightly off‑axis below. Export as SVG to `assets/title/title-wordmark.svg`.
 ## 7. Tier B — heroes (10)
 
 Open one chat, attach `pilot-01-hero-alani`, send the style‑lock preface from §5, then send
-each hero prompt in sequence. Each is a **landscape composition, about 16:10 ratio, with the figure in the LEFT third** and the rest of the canvas given to their natural Messinian context. The right portion leaves breathing room for the game UI to overlay.
+each hero prompt in sequence. Each is a **wide landscape composition, about 20:9 ratio, with the figure in the LEFT third (kept within the central 16:9 safe zone)** and the rest of the canvas given to their natural Messinian context. The right portion leaves breathing room for the game UI to overlay.
 
 ### `hero-01-medic` — The almost‑doctor (♂) · rain‑grey accent
 Save to: `assets/heroes/hero-01-medic.png`
@@ -224,7 +224,7 @@ Save to: `assets/heroes/hero-01-medic.png`
 ```
 Same editorial Mediterranean illustration style as the reference image — matte gouache, woodcut linework, flat lighting, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is rain grey.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek man in his early thirties, the almost-doctor. He holds a small green canvas medic kit with a white cross, taped at one corner where the seam is wearing. His right thumb runs along a kit strap, checking and re-checking. He wears a worn faded outdoor button-down and trekking trousers. Short dark hair. Kind, concerned eyes glancing down at the kit. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background with a hint of cloud and the quiet light of a hospital corridor at the edge. Gentle, cautious posture. The rain-grey accent appears only in the medic kit's webbing straps and in the corridor shadow behind him.
 
@@ -237,7 +237,7 @@ Save to: `assets/heroes/hero-02-chef.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek man in his early thirties, the once-celebrated Mykonos chef. He is passing a foil-wrapped parcel of food forward with both hands to someone just off-frame. A small sea bream fish tattoo on his right forearm. A weathered chef's apron tied loose over a faded t-shirt. A slight half-smile — not quite hungry himself, the kind who feeds others first. Dark hair pushed back from his forehead. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background with a hint of warm taverna kitchen depth behind him. Generous, welcoming gesture. The noon-gold accent appears only in the foil of the food parcel and in the apron's stitching.
 
@@ -250,7 +250,7 @@ Save to: `assets/heroes/hero-03-soldier.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is rain grey.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek woman in her early thirties, cut on the final day of special-forces selection. She holds a windworn topographic map with curled edges in both hands, but her eyes are off-frame upward, reading the sky like a sentence. Short, pragmatic dark hair. A technical olive softshell jacket. Alert, calm posture with the wind moving in her clothes. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream sky background with bruise-coloured weather forming in the upper right corner. The rain-grey accent appears only in the gathering storm clouds and in the map's well-worn creases.
 
@@ -263,7 +263,7 @@ Save to: `assets/heroes/hero-04-sailor.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek woman in her early thirties, years on cargo ships and caïques now over. She is coiling a thick wet bow line in calloused, capable hands. One hand rests on the bow of a sit-on-top sea kayak beached on flat rocks. A dry bag at her feet. She is eyeing a calm bay off-frame to her right. Salt-bleached t-shirt, rolled cargo shorts, hair tied back, sun-tanned forearms. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background with the calm deep Ionian sea visible behind. Working, unhurried posture. The noon-gold accent appears only on the wet rope catching the sun and on the kayak's deck rigging.
 
@@ -276,7 +276,7 @@ Save to: `assets/heroes/hero-05-influencer.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is oleander pink.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek woman in her late twenties. She is half a step ahead of an unseen group, framing a shot with her phone mounted on a small handheld tripod gimbal. A folded ring light is clipped to her small pack. A light breeze in her hair. Golden afternoon light. The trail is visible a step behind her. Focused expression, chasing the shot. Fashionable but practical outdoor clothing. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background with a hint of golden coast visible behind. The oleander-pink accent appears only in her scarf and on her phone case.
 
@@ -289,7 +289,7 @@ Save to: `assets/heroes/hero-06-engineer.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek man in his early thirties, the startup engineer whose company ran out of runway at eleven users. He holds a small clipboard with careful pencil notes. A Leatherman multi-tool is clipped to his belt. Simple wire-frame glasses. A focused, counting expression — as if mentally calculating the throughput of something. A casual button-down rolled to the forearms. Dark hair. The corner of a taverna is visible in the background. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background. Methodical, careful posture. The noon-gold accent appears only on the multi-tool's casing and on the clipboard's metal clip.
 
@@ -302,7 +302,7 @@ Save to: `assets/heroes/hero-07-scholar.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek woman in her early thirties, the philologist with four languages and no permanent post. She is mid-sentence, holding a slim leather notebook open in one hand showing handwritten lines in four different scripts (Greek, Latin, Arabic, and a Cyrillic script). Her other hand makes a gentle didactic gesture. A small group of unseen listeners is implied just out of frame, leaning in to hear her. Library-warm afternoon light. Simple linen dress, hair tied with a ribbon, intelligent warm expression. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background with a hint of book spines behind. The cypress-green accent appears only in her hair ribbon and the book spines behind her.
 
@@ -315,7 +315,7 @@ Save to: `assets/heroes/hero-08-fasaia.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is oleander pink.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek woman in her late twenties, returned from Goa speaking of "energy" and "alignment". Her breath is drawn in, eyes half-closed, a small composed half-smile. A hand-woven shawl-scarf over her shoulders in earthy patterns. Beaded jewelry at her wrists. The warm blurred strung-bulb lights of a distant August panigiri village festival glow behind her at far depth. Her hair is loose and full. Calm, centred posture. Mid-shot, waist-up, single figure positioned off-axis on a bone-cream background. The oleander-pink accent appears only in the scarf's pattern and in the festival lights behind her.
 
@@ -330,7 +330,7 @@ Save to: `assets/heroes/hero-10-villager.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
 
-Frame as a landscape composition, about 16:10 ratio, with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Landscape composition, not a portrait crop.
+Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
 Subject: A Greek man in his mid forties, the villager who ran the family flock and olive grove until a subsidy cut and a beach bar finished it off. One hand rests flat on a fieldstone wall that used to be his. A worn, curved olive-pruning blade hangs at his belt. A younger cousin is half-visible in the frame behind him, also working at the wall. An old olive grove fades inland under afternoon light. His sun-darkened, weathered face. Square, stoic posture. A simple work shirt and old trousers. Mid-shot, waist-up, single foreground figure positioned off-axis on a bone-cream sky background. The cypress-green accent appears only in the distant olive grove and on the pruning blade's wooden handle.
 
@@ -476,7 +476,7 @@ Save to: `assets/scenes/scene-panigiri.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
 
-Frame as a wide cinematic landscape (about 16:10 ratio).
+Frame as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A Greek village panigiri summer festival at full swing in the village square at evening. A long communal table runs through the foreground, laden with shared bottles of tsipouro and ouzo and plates of food. Strung bulb lights criss-cross the square overhead. A small wooden stage stands in the back with a three-piece band mid-song — bouzouki, violin, and laouto. The village dancers form a half-circle, hand-in-hand, mid-step. An old man pours tsipouro for a stranger. A small child runs between legs. Three or four villagers in their seventies are seated at the table. An unlit church lantern stands at the side. The silhouette of terracotta-tiled village rooftops sits behind. Maximum comic density — the crowd is the protagonist. Joyful, warm, slightly chaotic. The noon-gold accent appears throughout the strung bulb lights and on the brass instruments.
 
@@ -489,7 +489,7 @@ Save to: `assets/scenes/scene-radio-crisis.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is rain grey.
 
-Frame as a wide cinematic landscape (about 16:10 ratio).
+Frame as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A Greek woman guide stands on a high mountain trail in the Peloponnese, shown mid-shot. She holds a black plastic two-way handheld radio handset to her ear with one hand. Her other hand points off-frame to the bruise-coloured weather closing in behind her in the upper third of the frame. A small group of four clients waits twenty meters behind her on the trail, looking up at her. Her face is calm but reading the sky. A technical jacket and a small pack. Single protagonist figure off-axis, with the storm and the clients as supporting cast. A decision moment. The rain-grey accent appears only in the gathering storm clouds.
 
@@ -502,7 +502,7 @@ Save to: `assets/scenes/scene-first-hire.png`
 ```
 Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is oleander pink. This is a pathos beat — drop saturation a notch, hold the frame still.
 
-Frame as a wide cinematic landscape (about 16:10 ratio).
+Frame as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: Two figures stand side by side at the doorstep of an old Kalamata family stone house at first light — the protagonist and the new young woman hire named Maria. Both hold small ceramic mugs of coffee. Both look off into the next day, to the right of frame. We do not see either of their faces — they are both looking away. The kitchen door behind them is ajar, with the silhouette of an older woman (the protagonist's mother) glimpsed inside, still working at the stove with the warm orange oven glow behind her. The soft pale dawn light catches the door frame and the worn flagstone step. Two figures in shared quiet companionship — a pathos beat. The oleander-pink accent appears only in the dawn sky and on the rim of one of the coffee mugs.
 
@@ -627,7 +627,7 @@ location: append a small table at the bottom of `ASSET-MANIFEST.md` once product
 | Text appearing where it shouldn't | Say "no readable text — any signs or papers should show indecipherable hand-painted shapes only" |
 | Style drift across batch | Always upload pilot-01 as reference, always send the §5 style-lock preface, always stay in the same conversation for a whole batch |
 | Hero faces inconsistent across batch | After hero-01 generates well, upload IT also as a second reference for the rest of the heroes batch |
-| Aspect ratio not respected | Re-send the prompt with the aspect line at the very TOP, then re-state at the bottom: "Final reminder: landscape composition, about 16:10 ratio, NOT a portrait crop" |
+| Aspect ratio not respected | Re-send the prompt with the aspect line at the very TOP, then re-state at the bottom: "Final reminder: wide landscape composition, about 20:9 ratio, with the figure within the central 16:9 safe zone, NOT a portrait crop" |
 | Image too dark / desaturated overall | Drop the words "shadow" and "dust" by one each; emphasise "warm afternoon light" |
 
 ---
@@ -660,7 +660,7 @@ Save to: `assets/desk/desk-phase2-working.webp`
 ```
 [§3 style anchor — verbatim]
 
-Frame this as a wide cinematic landscape (about 16:10 ratio).
+Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A working desk in Kalamata at late afternoon, viewed slightly from above and to the side — the angle a person at the desk would see it. On the surface: two staff cards laid out (one labelled "Maria", one "Nikos", with small painted portrait icons and a stat strip in mono type), a small cork route board pinned with three index cards naming day-routes (Voidokilia, Polylimnio, Mavromati) in Greek and English, two handheld guide radios sitting on small black chargers with status lights on, a gear-checklist clipboard with hand-written ticks, a manila folder labelled "REPAIR" with a few invoices peeking out, an open cash ledger book with neat handwritten entries and a column of euro figures. The same kitchen of the reference image — Kalamata harbour visible through the window at sunset, terracotta rooftops, the sea. The table has organised itself; the chaos of solo guiding has become coordination. Noon-gold accent appears on the radio status lights and one route-card edge catching the window light.
 
@@ -673,7 +673,7 @@ Save to: `assets/desk/desk-phase3-office.webp`
 ```
 [§3 style anchor — verbatim]
 
-Frame this as a wide cinematic landscape (about 16:10 ratio).
+Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A small Greek outdoor-tourism company office desk in Kalamata, slightly elevated angle from the seat. On the surface: a modern but unflashy laptop screen showing a booking platform with three rows of upcoming trips (place names, dates, party size — in Greek and English), a stack of printed Google/TripAdvisor reviews with five-star rows visible, two package brochures (one labelled "Mani Coast Week", one "Taygetos Traverse") in glossy folded form, a stapled sheet of hotel partner notes from a Kardamyli hotel, a branded rubber stamp with the company logo and an ink pad, a wall calendar pinned above the desk with red-marked busy days, a tray with signed contracts in folders. The same window onto Kalamata harbour at sunset. The table has become an office. The atmosphere is "this is becoming a real business, and that is both exciting and dangerous."
 
@@ -686,7 +686,7 @@ Save to: `assets/desk/desk-phase4-regional.webp`
 ```
 [§3 style anchor — verbatim, with the seasonal accent specified as cypress green-black]
 
-Frame this as a wide cinematic landscape (about 16:10 ratio).
+Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
 Subject: A regional operations board — a wider working surface, almost a war-room corner. On a wall above: a large hand-painted map of the Peloponnese with red pins for each base (one over Kalamata, one over Areopoli in the Mani, one over Stemnitsa in Arcadia, one over the Achaia coast). On the surface below: stacked base folders each labelled in Greek (ΚΑΛΑΜΑΤΑ, ΜΑΝΗ, ΑΡΚΑΔΙΑ, ΑΧΑΪΑ), framed portraits of three regional managers with their names handwritten under each, a corkboard with crisis notes pinned (one with a small red CRISIS stamp), a tall pile of legal documents with green ribbon ties, a thick financial-report binder, a roll of brand-materials posters tied with twine, an expansion-plans architectural roll on the far edge. A higher-floor window now — looking down on the town's rooftops at dusk, the harbour smaller and farther below. The desk has become a war-room. Atmosphere: "you built the machine; the question now is whether you still belong to the life that started it."
 
@@ -738,14 +738,14 @@ No people in frame. Match the same warm Mediterranean register and physical surf
 
 Heroes are illustrated already (see §7). Clients are noun phrases that have lived in
 prose; now each becomes a small people card. Same conversation, same style ref. Frame
-each in **landscape composition, about 16:10 ratio, figure-left** — these slot into card UI.
+each in **wide landscape composition, about 20:9 ratio, figure-left (figure kept within central 16:9 safe zone)** — these slot into card UI.
 
 For each client below, use this template (replace the SUBJECT line):
 
 ```
 [§3 style anchor — verbatim]
 
-Frame this as a landscape composition, about 16:10 ratio, with the client(s) positioned LEFT of frame and the rest given to context or paper-showing space — the same landscape-first treatment as the hero portraits.
+Frame this as a wide landscape composition, about 20:9 ratio (modern phone landscape), with the client(s) positioned LEFT of frame and the rest given to context or paper-showing space — same landscape-first treatment as the heroes. Keep critical content within the central 16:9 safe zone so it survives narrower viewports.
 
 Subject: <CLIENT SUBJECT — see table>
 
