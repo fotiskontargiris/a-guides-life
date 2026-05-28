@@ -569,6 +569,86 @@
   }
   .scene-full-panel--mini .scene-btn:hover{background:#000; transform:translateY(-1px);}
 
+  /* Choices panel — wider than mini, holds a vertical list of buttons.
+     Scrollable when content exceeds available height (10 heroes need this). */
+  .scene-full-panel--choices{
+    left:auto; right:24px;
+    bottom:24px;
+    transform:none;
+    width:calc(100% - 48px);
+    max-width:380px;
+    max-height:calc(100% - 120px);
+    overflow-y:auto;
+    padding:12px 14px;
+    display:flex; flex-direction:column;
+    gap:8px;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(27,27,31,.4) transparent;
+  }
+  .scene-full-panel--choices::-webkit-scrollbar{width:5px;}
+  .scene-full-panel--choices::-webkit-scrollbar-thumb{background:rgba(27,27,31,.35); border-radius:3px;}
+  .scene-full-panel--choices .scene-input-label{margin-bottom:4px;}
+  /* .opt buttons inside the choices panel — override for bone bg */
+  .scene-full-panel--choices button.opt{
+    background:rgba(255,255,255,.55);
+    border:1px solid rgba(27,27,31,.28);
+    color:#1B1B1F;
+    padding:9px 12px;
+    font-size:13.5px;
+    border-radius:8px;
+    margin:0;
+    text-align:left;
+  }
+  .scene-full-panel--choices button.opt:hover{
+    background:rgba(255,255,255,.88);
+    border-color:#1B1B1F;
+    transform:translateY(-1px);
+  }
+  .scene-full-panel--choices button.opt.primary{
+    background:#1B1B1F;
+    color:#EEE5D2;
+    border-color:#1B1B1F;
+  }
+  .scene-full-panel--choices button.opt .mark{
+    color:#1B1B1F;
+    border-color:#1B1B1F;
+  }
+  .scene-full-panel--choices button.opt.primary .mark{
+    color:#EEE5D2;
+    border-color:#EEE5D2;
+  }
+  .scene-full-panel--choices button.opt .b-sub{
+    color:rgba(27,27,31,.62);
+    font-size:11.5px;
+  }
+  .scene-full-panel--choices button.opt.primary .b-sub{
+    color:rgba(238,229,210,.75);
+  }
+  .scene-full-panel--choices button.opt.disabled{opacity:.35;}
+  /* Action button (Go on / Step outside) in the choices panel */
+  .scene-full-panel--choices .scene-go{
+    width:100%;
+    background:#1B1B1F; color:#EEE5D2;
+    border:none; border-radius:8px;
+    padding:10px 14px;
+    font-family:'Fraunces',serif; font-weight:600; font-size:14px;
+    cursor:pointer;
+    transition:background .15s, transform .15s;
+    margin-top:4px;
+  }
+  .scene-full-panel--choices .scene-go:hover{background:#000; transform:translateY(-1px);}
+  .scene-full-panel--choices .scene-back{
+    width:100%;
+    background:transparent;
+    color:rgba(27,27,31,.7);
+    border:1px solid rgba(27,27,31,.3);
+    border-radius:8px;
+    padding:8px 12px;
+    font-family:'Fraunces',serif; font-size:12.5px; font-style:italic;
+    cursor:pointer;
+  }
+  .scene-full-panel--choices .scene-back:hover{background:rgba(0,0,0,.05);}
+
   /* STORY-SCREEN — solid-bg page for prose moments. Lets the player
      read undistracted before the scene image arrives. Day-tag top,
      centred prose middle. Auto-transitions after ~10s with a slow
@@ -1358,63 +1438,143 @@ function renderKitchen(){
 function kitchenCaptureName(){ const el=$('gname'); if(el&&typeof el.value==='string') pendingName=el.value.replace(/[<>"]/g,'').slice(0,18); }
 function kitchenSit(){ kitchenCaptureName(); removeSceneOverlay(); renderKitchenDish(); }
 function renderKitchenDish(){
-  const opts=DISHES.map(d=>`<button class="opt ${pickedDish===d.id?'primary':''}" onclick="kitchenDish('${d.id}')">
-    <span class="mark">${pickedDish===d.id?'✓':'·'}</span><span class="b-main">${d.name}<span class="b-sub">${d.sub} — <em>${d.tail}</em></span></span></button>`).join('');
-  const stage = sceneStage('scene-kitchen', [
-    {text:'Your favourite. Eat — eat. You are clearly not eating properly out there.', where:'right-top'},
-  ], { alt:'Dinner served' });
-  const panel = `<p class="narrator" style="text-align:left;margin-top:0">She sets it down before you have agreed to anything. Tonight you are the child who loved this, so this is what love looks like — steaming, and far too much of it.</p>
-    <div class="choices" style="margin-top:8px">${opts}</div>`;
-  setScene(`<div class="day-tag">She has made your favourite</div>
-    <div class="two-col"><div class="col-stage">${stage}</div><div class="col-panel">${panel}</div></div>`);
+  // Story-screen first (narrator), then the interactive scene.
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('');
+  renderStoryScreen({
+    tag: 'She has made your favourite',
+    text: 'She sets it down before you have agreed to anything. Tonight you are the child who loved this, so this is what love looks like \u2014 steaming, and far too much of it.',
+    onContinue: renderKitchenDishScene,
+    autoMs: 9000,
+  });
+}
+function renderKitchenDishScene(){
+  removeStoryOverlay(); removeSceneOverlay();
+  const cover = ASSETS['scene-kitchen']
+    ? `<img class="scene-full-bg" src="${ASSETS['scene-kitchen']}" alt="Dinner served">`
+    : '';
+  const bubble = `<div class="bubble left-top">Your favourite. Eat \u2014 eat. You are clearly not eating properly out there.</div>`;
+  const opts = DISHES.map(d=>`<button class="opt ${pickedDish===d.id?'primary':''}" onclick="kitchenDish('${d.id}')">
+      <span class="mark">${pickedDish===d.id?'\u2713':'\u00b7'}</span><span class="b-main">${d.name}<span class="b-sub">${d.sub}</span></span></button>`).join('');
+  const panel = `<div class="scene-full-panel scene-full-panel--choices">
+    <span class="scene-input-label">Pick a dish</span>
+    ${opts}
+  </div>`;
+  if(typeof document !== 'undefined' && typeof document.createElement === 'function' && document.body && document.body.appendChild){
+    const overlay = document.createElement('div');
+    overlay.id = 'sceneOverlay';
+    overlay.className = 'scene-full';
+    overlay.innerHTML = `${cover}${bubble}${panel}`;
+    document.body.appendChild(overlay);
+    setScene('');
+  } else {
+    setScene(`<div class="scene-full">${cover}${bubble}${panel}</div>`);
+  }
 }
 function kitchenDish(id){ if(DISHES.find(d=>d.id===id)) pickedDish=id; renderKitchenHero(); }
 function renderKitchenHero(){
-  const opts=BACKGROUNDS.map(b=>`<button class="opt ${pickedBg===b.id?'primary':''}" onclick="kitchenHero('${b.id}')">
-    <span class="mark">${b.gender==='f'?'♀':'♂'}</span><span class="b-main">${b.name}<span class="b-sub">${b.perk}</span></span></button>`).join('');
-  const stage = sceneStage('scene-kitchen', [
-    {text:'And the… the thing. Out there. It’s finished?', where:'right-top'},
-  ], { alt:'The wooden spoon waves at the shape of your life' });
-  // 10 hero choices — too many for a 2-up grid; keep as single column
-  // in the right panel. Scrollable if needed.
-  const panel = `<p class="narrator" style="text-align:left;margin-top:0">She lets you eat three bites. Then the wooden spoon comes up and waves at the entire shape of your life. You could lie. You don’t.</p>
-    <label style="display:block;margin-top:8px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)">Who you were</label>
-    <div class="choices" style="margin-top:8px">${opts}</div>`;
-  setScene(`<div class="day-tag">“And the thing out there?”</div>
-    <div class="two-col"><div class="col-stage">${stage}</div><div class="col-panel">${panel}</div></div>`);
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('');
+  renderStoryScreen({
+    tag: '\u201cAnd the thing out there?\u201d',
+    text: 'She lets you eat three bites. Then the wooden spoon comes up and waves at the entire shape of your life. You could lie. You don\u2019t.',
+    onContinue: renderKitchenHeroScene,
+    autoMs: 9000,
+  });
+}
+function renderKitchenHeroScene(){
+  removeStoryOverlay(); removeSceneOverlay();
+  const cover = ASSETS['scene-kitchen']
+    ? `<img class="scene-full-bg" src="${ASSETS['scene-kitchen']}" alt="The wooden spoon waves at the shape of your life">`
+    : '';
+  const bubble = `<div class="bubble left-top">And the\u2026 the thing. Out there. It\u2019s finished?</div>`;
+  const opts = BACKGROUNDS.map(b=>`<button class="opt ${pickedBg===b.id?'primary':''}" onclick="kitchenHero('${b.id}')">
+      <span class="mark">${b.gender==='f'?'\u2640':'\u2642'}</span><span class="b-main">${b.name}<span class="b-sub">${b.perk}</span></span></button>`).join('');
+  const panel = `<div class="scene-full-panel scene-full-panel--choices">
+    <span class="scene-input-label">Who you were</span>
+    ${opts}
+  </div>`;
+  if(typeof document !== 'undefined' && typeof document.createElement === 'function' && document.body && document.body.appendChild){
+    const overlay = document.createElement('div');
+    overlay.id = 'sceneOverlay';
+    overlay.className = 'scene-full';
+    overlay.innerHTML = `${cover}${bubble}${panel}`;
+    document.body.appendChild(overlay);
+    setScene('');
+  } else {
+    setScene(`<div class="scene-full">${cover}${bubble}${panel}</div>`);
+  }
 }
 function kitchenHero(id){ if(BACKGROUNDS.find(b=>b.id===id)) pickedBg=id; renderKitchenReveal(); }
 function renderKitchenReveal(){
-  const b=BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
-  // Hero portrait is the dramatic centre — fills the left col by itself
-  // (no scene-stage wrapper because there's no speech bubble here, the
-  // catastrophe line carries the moment). Verdict + model + buttons right.
-  const portrait = imgFor(HERO_ASSET[b.id], {cls:'art art-hero', alt:b.name});
-  const panel = `<h2 style="margin-top:0">So that’s that, then</h2>
-    <p class="verdict">${b.cat}</p>
-    <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.03em;line-height:1.5">▸ ${b.model}</p>
-    <div class="choices" style="margin-top:10px">
-      <button class="opt" onclick="renderKitchenHero()"><span class="mark">·</span><span class="b-main">Actually — that wasn’t me<span class="b-sub">Go back and choose again</span></span></button>
-    </div>
-    <div class="actionbar"><button class="go" onclick="renderKitchenPitch()">Go on, then</button></div>`;
-  setScene(`<div class="day-tag">${b.name}</div>
-    <div class="two-col"><div class="col-stage" style="text-align:center">${portrait}</div><div class="col-panel">${panel}</div></div>`);
+  // The catastrophe paragraph (b.cat) is dense — give it the story-
+  // screen treatment. Then the hero portrait scene with two buttons.
+  const b = BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('');
+  renderStoryScreen({
+    tag: b.name,
+    text: b.cat,
+    onContinue: renderKitchenRevealScene,
+    autoMs: 15000,  // dense paragraph — give it room
+  });
+}
+function renderKitchenRevealScene(){
+  removeStoryOverlay(); removeSceneOverlay();
+  const b = BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
+  const portraitAsset = HERO_ASSET[b.id];
+  const cover = ASSETS[portraitAsset]
+    ? `<img class="scene-full-bg" src="${ASSETS[portraitAsset]}" alt="${b.name}" style="object-position:center top">`
+    : '';
+  const panel = `<div class="scene-full-panel scene-full-panel--choices">
+    <span class="scene-input-label">\u25b8 ${b.model}</span>
+    <button class="scene-go" onclick="renderKitchenPitch()">Go on, then \u25b8</button>
+    <button class="scene-back" onclick="renderKitchenHeroScene()">That wasn\u2019t me \u2014 go back</button>
+  </div>`;
+  if(typeof document !== 'undefined' && typeof document.createElement === 'function' && document.body && document.body.appendChild){
+    const overlay = document.createElement('div');
+    overlay.id = 'sceneOverlay';
+    overlay.className = 'scene-full';
+    overlay.innerHTML = `${cover}${panel}`;
+    document.body.appendChild(overlay);
+    setScene('');
+  } else {
+    setScene(`<div class="scene-full">${cover}${panel}</div>`);
+  }
 }
 function renderKitchenPitch(){
-  const b=BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
-  const dim = b.gender==='f' ? 'kóri mou' : 'yie mou';
-  // Three stacked bubbles, staggered down the right side of the image —
-  // animate in sequence (0s / .35s / .7s) so the pitch LANDS line by line.
-  const stage = sceneStage('scene-kitchen', [
-    {text:'You know what you should do.', where:'right-top'},
-    {text:`Tourism. The foreigners come with their money and their little walking sticks — and they pay, ${dim}. Take them up the mountain. Show them Polylímnio. Show them the sea.`, where:'right-mid'},
-    {text:'Kostas’s boy does it, up in Stoúpa. He bought a car. Tomorrow you begin. I’ve told Kyría Voúla you’re in tourism now.', where:'right-bot'},
-  ], { alt:'Mother delivers the pitch' });
-  const panel = `<p class="narrator" style="text-align:left;margin-top:0">She crosses herself, once, towards the icon over the door. The knife goes in clean.</p>
-    <p class="verdict">It is decided. It was always decided.</p>
-    <div class="actionbar"><button class="go" onclick="renderSetup()">Step outside</button></div>`;
-  setScene(`<div class="day-tag">The pitch</div>
-    <div class="two-col"><div class="col-stage">${stage}</div><div class="col-panel">${panel}</div></div>`);
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('');
+  renderStoryScreen({
+    tag: 'The pitch',
+    text: 'She crosses herself, once, towards the icon over the door. The knife goes in clean. It is decided. It was always decided.',
+    onContinue: renderKitchenPitchScene,
+    autoMs: 9000,
+  });
+}
+function renderKitchenPitchScene(){
+  removeStoryOverlay(); removeSceneOverlay();
+  const b = BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
+  const dim = b.gender==='f' ? 'k\u00f3ri mou' : 'yie mou';
+  const cover = ASSETS['scene-kitchen']
+    ? `<img class="scene-full-bg" src="${ASSETS['scene-kitchen']}" alt="Mother delivers the pitch">`
+    : '';
+  // 3 stacked left-side bubbles, staggered down. The existing bubblein
+  // animation (with :nth-of-type delays) lands them in sequence.
+  const bubbles = `
+    <div class="bubble left-top">You know what you should do.</div>
+    <div class="bubble left-mid">Tourism. The foreigners come with their money and their little walking sticks \u2014 and they pay, ${dim}. Take them up the mountain. Show them Polyl\u00edmnio. Show them the sea.</div>
+    <div class="bubble left-bot">Kostas\u2019s boy does it, up in Sto\u00fapa. He bought a car. Tomorrow you begin. I\u2019ve told Kyr\u00eda Vo\u00fala you\u2019re in tourism now.</div>
+  `;
+  const panel = `<div class="scene-full-panel scene-full-panel--choices">
+    <button class="scene-go" onclick="renderSetup()">Step outside \u25b8</button>
+  </div>`;
+  if(typeof document !== 'undefined' && typeof document.createElement === 'function' && document.body && document.body.appendChild){
+    const overlay = document.createElement('div');
+    overlay.id = 'sceneOverlay';
+    overlay.className = 'scene-full';
+    overlay.innerHTML = `${cover}${bubbles}${panel}`;
+    document.body.appendChild(overlay);
+    setScene('');
+  } else {
+    setScene(`<div class="scene-full">${cover}${bubbles}${panel}</div>`);
+  }
 }
 function renderSetup(){
   showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('The first night of the season');
