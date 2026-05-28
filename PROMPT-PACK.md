@@ -107,7 +107,7 @@ a fresh take."*
 Save to: `assets/heroes/hero-09-alani.png`
 
 ```
-Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on foreground figures, hairline ~1px on mid-ground structures, and no outlines at all on landscape masses (hills, sea, sky read as flat colour blocks only). Flat lighting from a single warm sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of noon gold. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
+Render this as an ink-and-watercolor travel illustration — the visual register of a Moleskine travel-journal page or a mid-century Mediterranean travel-guidebook plate. Wet, translucent watercolor washes with natural soft edges, gentle bleeds at wash boundaries, and visible granulated pigment pooling where the brush lifted. Loose hand-drawn ink line work in warm sepia-black, made with a fountain pen on paper — confident but slightly wobbly, with varying line weight from the pen's natural pressure; never a uniform machine-precise stroke. White-of-paper gaps where the watercolor wash didn't reach: the warm limestone bone-cream paper surface is part of the image, not a continuous fill, and several passages of every frame are simply the paper showing through. Limited five-colour palette, each colour applied as a wet wash (translucent, not opaque): warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone (the paper itself), and warm near-black ink for the line work — plus exactly one seasonal accent of noon gold, also as a wash. Bright Mediterranean afternoon light: warm bone-cream paper holds the bright passages; a single saturated wash holds the shadow. Loose, hand-made, observed sketch energy — opinionated but never tightly rendered or overworked. In the spirit of Liz Steel's travel watercolors, Lapin's Mediterranean sketchbooks, David Hockney's travel sketches, and mid-century European travel-guidebook illustration. This is INK and WATERCOLOR on paper — NOT gouache, NOT digital flat-design, NOT a vector graphic, NOT photographic, NOT 3D rendered, NOT a cartoon, NOT anime, NOT chibi, NOT a CG render.
 
 Frame this as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third of the frame and the rest of the canvas given to his Messinian context — the kafeneío door, the moped, the dusty road. The right portion of the frame should leave breathing room (could be a wash of bone-cream paper, partial wash of terracotta dust, or quiet middle-distance) — this is where the game UI will sit. Keep the figure and any key context detail within the central 16:9 SAFE ZONE so they survive on narrower desktop viewports. The whole image must read as a landscape painting from a travel sketchbook, not a portrait crop.
 
@@ -120,7 +120,7 @@ Do not include: any legible text, captions, labels, watermarks or signatures; no
 Save to: `assets/places/place-voidokilia.png`
 
 ```
-Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on foreground figures, hairline ~1px on mid-ground structures, and no outlines at all on landscape masses (hills, sea, sky read as flat colour blocks only). Flat lighting from a single warm sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of noon gold. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
+Render this as an ink-and-watercolor travel illustration — the visual register of a Moleskine travel-journal page or a mid-century Mediterranean travel-guidebook plate. Wet, translucent watercolor washes with natural soft edges, gentle bleeds at wash boundaries, and visible granulated pigment pooling where the brush lifted. Loose hand-drawn ink line work in warm sepia-black, made with a fountain pen on paper — confident but slightly wobbly, with varying line weight from the pen's natural pressure; never a uniform machine-precise stroke. White-of-paper gaps where the watercolor wash didn't reach: the warm limestone bone-cream paper surface is part of the image, not a continuous fill, and several passages of every frame are simply the paper showing through. Limited five-colour palette, each colour applied as a wet wash (translucent, not opaque): warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone (the paper itself), and warm near-black ink for the line work — plus exactly one seasonal accent of noon gold, also as a wash. Bright Mediterranean afternoon light: warm bone-cream paper holds the bright passages; a single saturated wash holds the shadow. Loose, hand-made, observed sketch energy — opinionated but never tightly rendered or overworked. In the spirit of Liz Steel's travel watercolors, Lapin's Mediterranean sketchbooks, David Hockney's travel sketches, and mid-century European travel-guidebook illustration. This is INK and WATERCOLOR on paper — NOT gouache, NOT digital flat-design, NOT a vector graphic, NOT photographic, NOT 3D rendered, NOT a cartoon, NOT anime, NOT chibi, NOT a CG render.
 
 Frame this in wide landscape orientation, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -133,7 +133,7 @@ This is mainland Messinia in southern Greece, NOT the Cycladic islands. Critical
 Save to: `assets/scenes/scene-hilux-dawn.png`
 
 ```
-Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on the vehicle, no outlines at all on sky or ground (which read as flat colour blocks only). Flat lighting from a single soft warm dawn sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette, slightly desaturated for the pathos register: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of rain grey. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
+Render this as an ink-and-watercolor travel illustration — the visual register of a Moleskine travel-journal page or a mid-century Mediterranean travel-guidebook plate. Wet, translucent watercolor washes with natural soft edges, gentle bleeds at wash boundaries, and visible granulated pigment pooling where the brush lifted. Loose hand-drawn ink line work in warm sepia-black, made with a fountain pen on paper — confident but slightly wobbly, with varying line weight from the pen's natural pressure; never a uniform machine-precise stroke. White-of-paper gaps where the watercolor wash didn't reach: the warm limestone bone-cream paper surface is part of the image, not a continuous fill, and several passages of every frame are simply the paper showing through. Limited five-colour palette, each colour applied as a wet wash (translucent, not opaque): warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone (the paper itself), and warm near-black ink for the line work — plus exactly one seasonal accent of rain grey, also as a wash. Bright Mediterranean afternoon light: warm bone-cream paper holds the bright passages; a single saturated wash holds the shadow. Loose, hand-made, observed sketch energy — opinionated but never tightly rendered or overworked. In the spirit of Liz Steel's travel watercolors, Lapin's Mediterranean sketchbooks, David Hockney's travel sketches, and mid-century European travel-guidebook illustration. This is INK and WATERCOLOR on paper — NOT gouache, NOT digital flat-design, NOT a vector graphic, NOT photographic, NOT 3D rendered, NOT a cartoon, NOT anime, NOT chibi, NOT a CG render. Pull the palette saturation down a notch for this pathos beat — washes thinner and more grey-leaning than usual.
 
 Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -179,7 +179,7 @@ realistic proportions, illustrated not photorealistic."*
 Save to: `assets/scenes/scene-kitchen.png`
 
 ```
-Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows, no airbrush surface. Use woodcut-style ink linework: confident ~2px lines on figures and objects, hairline on mid-ground structures, and no outlines on landscape masses (which read as flat colour blocks only). Flat lighting from a single warm sun direction; shadows are single blocks of a darker neighbour hue, never pure black. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink — plus exactly one seasonal accent of oleander pink. Hand-made and opinionated, in the spirit of Edward Bawden travel posters, Hugo Pratt's Mediterranean comics, mid-century New Yorker editorial illustration, and Greek folk woodcuts by A. Tassos. This is illustrated, NOT photographic, NOT 3D rendered, NOT a vector flat-design graphic.
+Render this as an ink-and-watercolor travel illustration — the visual register of a Moleskine travel-journal page or a mid-century Mediterranean travel-guidebook plate. Wet, translucent watercolor washes with natural soft edges, gentle bleeds at wash boundaries, and visible granulated pigment pooling where the brush lifted. Loose hand-drawn ink line work in warm sepia-black, made with a fountain pen on paper — confident but slightly wobbly, with varying line weight from the pen's natural pressure; never a uniform machine-precise stroke. White-of-paper gaps where the watercolor wash didn't reach: the warm limestone bone-cream paper surface is part of the image, not a continuous fill, and several passages of every frame are simply the paper showing through. Limited five-colour palette, each colour applied as a wet wash (translucent, not opaque): warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone (the paper itself), and warm near-black ink for the line work — plus exactly one seasonal accent of oleander pink, also as a wash. Bright Mediterranean afternoon light: warm bone-cream paper holds the bright passages; a single saturated wash holds the shadow. Loose, hand-made, observed sketch energy — opinionated but never tightly rendered or overworked. In the spirit of Liz Steel's travel watercolors, Lapin's Mediterranean sketchbooks, David Hockney's travel sketches, and mid-century European travel-guidebook illustration. This is INK and WATERCOLOR on paper — NOT gouache, NOT digital flat-design, NOT a vector graphic, NOT photographic, NOT 3D rendered, NOT a cartoon, NOT anime, NOT chibi, NOT a CG render.
 
 Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -197,7 +197,7 @@ Save to: `assets/title/title-cover.png` (background layer; wordmark added separa
 > brand-critical wordmark, vector typography in a design tool gives sharper results.
 
 ```
-Render this as an editorial Mediterranean illustration in a matte gouache style — opaque chalky paint, no gradients, no glow, no drop shadows. Use woodcut-style ink linework only on the rooftop silhouette and the cypress, with the sky as a completely flat colour block. Flat lighting. Use only this limited five-colour palette: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone cream, and warm near-black ink. Hand-made and opinionated, in the spirit of Edward Bawden travel posters and Greek folk woodcuts by A. Tassos.
+Render this as an ink-and-watercolor travel illustration — the visual register of a Moleskine travel-journal page or a mid-century Mediterranean travel-guidebook endpaper. Wet, translucent watercolor washes with natural soft edges and gentle bleeds; loose hand-drawn ink line in warm sepia-black ONLY on the rooftop silhouette and the cypress; the sky is a soft single-wash dawn glow with substantial white-of-paper showing through. Limited five-colour palette as wet washes: warm terracotta clay, sun-bleached olive sage, deep Ionian sea blue, warm limestone bone (the paper itself), and warm near-black ink. Hand-made, opinionated, sketch-energy — never tightly rendered. In the spirit of Liz Steel's travel watercolors, Lapin's Mediterranean sketchbooks, and mid-century European travel-guidebook illustration. This is INK and WATERCOLOR on paper — NOT gouache, NOT digital flat-design, NOT a vector graphic, NOT photographic.
 
 Frame this as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -222,7 +222,7 @@ each hero prompt in sequence. Each is a **wide landscape composition, about 20:9
 Save to: `assets/heroes/hero-01-medic.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image — matte gouache, woodcut linework, flat lighting, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is rain grey.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is rain grey.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -235,7 +235,7 @@ Greek man, adult realistic proportions, illustrated not photographic. Do not inc
 Save to: `assets/heroes/hero-02-chef.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -248,7 +248,7 @@ Greek man, adult realistic proportions, illustrated not photographic. Do not inc
 Save to: `assets/heroes/hero-03-soldier.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is rain grey.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is rain grey.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -261,7 +261,7 @@ Greek woman, adult realistic proportions, illustrated not photographic. Do not i
 Save to: `assets/heroes/hero-04-sailor.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -274,7 +274,7 @@ Greek woman, adult realistic proportions, illustrated not photographic. No emoji
 Save to: `assets/heroes/hero-05-influencer.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is oleander pink.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is oleander pink.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -287,7 +287,7 @@ Greek woman, adult realistic proportions, illustrated not photographic. Do not s
 Save to: `assets/heroes/hero-06-engineer.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -300,7 +300,7 @@ Greek man, adult realistic proportions, illustrated not photographic. Do not inc
 Save to: `assets/heroes/hero-07-scholar.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is cypress green-black.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -313,7 +313,7 @@ Greek woman, adult realistic proportions, illustrated not photographic. Do not i
 Save to: `assets/heroes/hero-08-fasaia.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is oleander pink.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is oleander pink.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -328,7 +328,7 @@ Greek woman, adult realistic proportions, illustrated not photographic. Do not i
 Save to: `assets/heroes/hero-10-villager.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is cypress green-black.
 
 Frame as a wide landscape composition, about 20:9 ratio (most modern phones in landscape), with the figure in the LEFT third and the rest of the canvas given to their natural Messinian context (where they would be found — see subject for the where). The right portion of the frame should leave breathing room — partial wash of context, paper showing through — for the game UI to sit on top. Keep all critical compositional elements (the figure, any key context detail) within the central 16:9 SAFE ZONE so they survive when the image is shown on narrower 16:9 desktop viewports. Landscape composition, not a portrait crop.
 
@@ -349,7 +349,7 @@ is **wide landscape, about 8:5 ratio**.
 Save to: `assets/places/place-kalamata.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -362,7 +362,7 @@ This is mainland Messinia in southern Greece, NOT the Cycladic islands — no wh
 Save to: `assets/places/place-polylimnio.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is cypress green-black.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -377,7 +377,7 @@ This is the Greek mainland, not a tropical jungle. Do not include exotic tropica
 Save to: `assets/places/place-pylos-methoni.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -390,7 +390,7 @@ This is mainland Greece, not the Cyclades. Do not include any whitewashed buildi
 Save to: `assets/places/place-mavromati.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -403,7 +403,7 @@ Do not include dramatic clouds, lightning, mythological figures, or any "fantasy
 Save to: `assets/places/place-neda.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is cypress green-black.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -416,7 +416,7 @@ This is southern Greece, not the American Southwest — no Antelope Canyon sands
 Save to: `assets/places/place-lousios.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is cypress green-black.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is cypress green-black.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -429,7 +429,7 @@ This is a real Greek Byzantine monastery, not a fantasy castle or a tropical sce
 Save to: `assets/places/place-taygetos.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -442,7 +442,7 @@ This is the Greek Peloponnese — not the Swiss Alps. The mountain is rocky and 
 Save to: `assets/places/place-mani.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is rain grey.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is rain grey.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -455,7 +455,7 @@ This is the dry austere Mani — no lush vegetation, no tropical look, no Santor
 Save to: `assets/places/place-kardamyli.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame in wide landscape orientation (about 8:5 ratio).
 
@@ -474,7 +474,7 @@ This is mainland Greece, not the Cyclades — no whitewashed buildings, no blue 
 Save to: `assets/scenes/scene-panigiri.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is noon gold.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is noon gold.
 
 Frame as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -487,7 +487,7 @@ This is a real Greek panigiri — traditional acoustic instruments only, no elec
 Save to: `assets/scenes/scene-radio-crisis.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is rain grey.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is rain grey.
 
 Frame as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -500,7 +500,7 @@ Critically: she is using an analogue two-way radio handset — not a modern smar
 Save to: `assets/scenes/scene-first-hire.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is oleander pink. This is a pathos beat — drop saturation a notch, hold the frame still.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is oleander pink. This is a pathos beat — drop saturation a notch, hold the frame still.
 
 Frame as a wide cinematic landscape, about 20:9 ratio (modern phone landscape). Keep critical compositional elements within the central 16:9 safe zone so they survive narrower viewports.
 
@@ -516,15 +516,17 @@ Critically: no faces visible to the camera — both foreground figures look away
 **Honest caveat**: ChatGPT can generate icon‑like images, but the result is rasterised
 and won't match the cleanliness of a hand‑drawn vector glyph. Three paths:
 
-1. **Best**: hand‑draw the 13 glyphs in Figma or Affinity Designer in the woodcut style.
-   Twenty minutes of vector work beats fifty ChatGPT rolls for diagrammatic icons.
+1. **Best**: hand‑draw the 13 glyphs in Figma or Affinity Designer in the same loose
+   ink‑line style as the scenes — single fountain‑pen weight in warm sepia‑black,
+   slight wobble, no fill. Twenty minutes of vector work beats fifty ChatGPT rolls for
+   diagrammatic icons.
 2. **Hybrid**: use ChatGPT to generate a reference, trace it into SVG in Figma.
 3. **ChatGPT only**: accept raster PNG at small display size (32px), use the template below.
 
 If going path 3, use this template — change only the `{ICON SUBJECT}`:
 
 ```
-Render a small icon in the style of a vintage etched brass plaque — a single warm-near-black ink line drawing on a warm limestone bone cream background. Single confident woodcut-style line weight throughout. Diagrammatic and reduced — like a mid-century European travel pictogram or a Greek folk woodcut by A. Tassos. Centred composition. Square 1:1 framing. No text, no label, no border, no shading, no gradient, no colour fill — just the line drawing on the bone background.
+Render a small icon as a loose hand-drawn fountain-pen sketch — a single warm sepia-black ink line drawing on warm limestone bone-cream paper, with the natural slight wobble of pen on paper. Diagrammatic and reduced — like a margin sketch in a travel journal or a mid-century European travel pictogram. Centred composition. Square 1:1 framing. No watercolor wash, no fill, no shading, no border, no text, no label — just the ink line on bone-cream paper.
 
 Subject: {ICON SUBJECT}
 
@@ -560,7 +562,7 @@ from 16px to 64px without artefacts.
 Save to: `assets/chrome/chrome-logbook.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. No seasonal accent — keep this in the core five colours only.
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. No seasonal accent — keep this in the core five colours only.
 
 Frame in landscape orientation (about 4:3 ratio).
 
@@ -573,7 +575,7 @@ Do not make the handwriting legible — it should suggest text without being rea
 Save to: `assets/chrome/chrome-certificate.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is terra red (used only in the wax stamp).
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is terra red (used only in the wax stamp).
 
 Frame in landscape orientation (about 4:3 ratio).
 
@@ -586,7 +588,7 @@ Do not make the body text legible. Do not include any modern logos, modern fonts
 Save to: `assets/chrome/chrome-loan-papers.png`
 
 ```
-Same editorial Mediterranean illustration style as the reference image. The seasonal accent for this image is terra red (only in the bank stamp).
+Same ink-and-watercolor travel style as the reference image — wet translucent washes, loose hand-drawn ink line in warm sepia-black, paper showing through where the wash didn't reach, five-colour palette of terracotta, olive, sea blue, bone, and ink. The seasonal accent for this image is terra red (only in the bank stamp).
 
 Frame in landscape orientation (about 4:3 ratio).
 
@@ -617,7 +619,7 @@ location: append a small table at the bottom of `ASSET-MANIFEST.md` once product
 
 | Problem | Fix |
 |---|---|
-| Drift toward "stock illustration" / vector flat-design | Re-emphasise "matte gouache, hand-made, illustrated NOT vector" earlier in the prompt; cite Bawden + Tassos again at the end |
+| Drift toward "stock illustration" / vector flat-design | Re-emphasise "ink-and-watercolor on paper, wet washes, fountain-pen line, paper showing through" earlier in the prompt; cite Liz Steel + Lapin + Hockney again at the end |
 | Faces look generic / not specifically Greek | Add "Greek Mediterranean features, dark hair, olive skin" explicitly in the subject line |
 | Faces look like mascots / cute | Add "adult realistic proportions, serious illustrated portrait, not stylised toward cute"; never say "character" — say "figure" or "person" |
 | Outlines appearing on hills/sea/sky | Re-emphasise "landscape masses read as flat colour blocks ONLY, no outlines on hills sea or sky" |
