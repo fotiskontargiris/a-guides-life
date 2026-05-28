@@ -10,6 +10,8 @@ A text-driven **outdoor-activities tycoon game**, set in the **Peloponnese (Mess
 
 **Tone & aesthetic:** an "Aegean/Mediterranean dusk field-journal" look — warm sand text on deep teal, a faint topographic-contour SVG backdrop, a serif narrative voice (Fraunces / Spectral) paired with a monospace "instruments" font (Spline Sans Mono) for stats. Second-person, literary, concise prose. No emojis (dingbat symbols like ▸ ▶ ✓ ☾ are fine).
 
+**Layout doctrine (locked 2026-05-28):** **landscape only**, **fixed viewport**, **no page scroll ever**. One design, no portrait fallback — touch devices in portrait get a "Sideways, please" rotate-overlay until they rotate. The body and `.wrap` lock to `100dvh`; top chrome (appbar + HUD + goal + forecast) is `flex:none` anchored at top; `#scene` is `flex:1` and fills the remaining viewport. Two-col scenes (kitchen, trailhead, hire, panigíri, Hilux, title): image fixed in the left column, only the right `.col-panel` scrolls internally. Utility screens (shop, cert school, logbook): the scene area itself scrolls internally. The scene image is the *steady* visual anchor; only content panels scroll.
+
 **The design arc:** the player shifts from *doing* the work (Phase 1, hands-on guiding) to *leading people who do it* (Phase 2, managing guides). That shift is the emotional core; keep it central in any new feature.
 
 ---

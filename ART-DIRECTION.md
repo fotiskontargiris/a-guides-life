@@ -351,6 +351,15 @@ These are settled. Do not reopen without flagging.
 - **The Hilux is the only sentimental object.** Other tools are tools.
 - **Mum is drawn from behind, never face‑on.** The icon over the door does the face work.
 - **Hero gender is locked** per character (see `HEROES.md`). No swap; no neutral version.
+- **Landscape only.** One design, optimised for ~1100×700 desktop / phone-rotated. No
+  portrait fallback. Touch devices in portrait get a *"Sideways, please. The Peloponnese
+  is wider than it is tall."* prompt overlay until they rotate. This frees the layout
+  from responsive compromise and the assets from having to work at two aspects.
+- **Fixed-viewport game UX.** The page never scrolls. Top chrome (appbar / HUD / goal /
+  forecast) anchors at top; the scene area fills the rest. Two-col scenes: the image is
+  fixed in the left column, only the right panel scrolls internally. Utility screens
+  (shop, cert school, logbook): the scene area itself scrolls internally. The "browser
+  document" feeling is out; this is a game.
 
 ---
 

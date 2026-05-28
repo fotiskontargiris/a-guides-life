@@ -103,20 +103,42 @@
   .col-panel::-webkit-scrollbar-track { background:transparent; }
   /* Choice button grids — landscape lets short-label buttons go 2-up */
   .choices.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  /* Responsive fallback: portrait phone (or very narrow window).
-     The game reverts to document-style scroll — it stops being a fixed
-     viewport, becomes a vertical column. Less game-like but functional
-     when the player can't or won't rotate. */
-  @media (max-width:760px){
-    html,body{ height:auto; overflow:visible; }
-    body{ min-height:100vh; overflow-x:hidden; }
-    .wrap{ height:auto; max-height:none; overflow:visible; padding:18px 16px 40px; }
-    .scene, #scene{ overflow:visible; flex:none; }
-    .two-col{ grid-template-columns:1fr; gap:12px; overflow:visible; flex:none; }
-    .col-stage, .col-panel{ overflow:visible; }
-    .col-stage > *, .col-stage img, .col-stage .scene-stage,
-    .col-stage .scene-stage img { max-height:none; height:auto; width:100%; }
-    .choices.grid-2{ grid-template-columns:1fr; }
+
+  /* LANDSCAPE-ONLY (locked decision, 2026-05-28). No portrait fallback.
+     If a touch device hits the page in portrait, the .rotate-prompt
+     overlay covers the screen and asks for landscape. Desktop users in
+     a normal browser window are landscape by default; only an
+     intentionally portrait-shaped narrow window triggers the prompt. */
+  .rotate-prompt{
+    display:none;
+    position:fixed; inset:0; z-index:1000;
+    background:linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+    color:var(--ink);
+    align-items:center; justify-content:center;
+    text-align:center; padding:32px;
+    font-family:'Fraunces',serif;
+  }
+  .rotate-prompt .rp-inner{max-width:420px;}
+  .rotate-prompt .rp-icon{
+    font-size:48px; line-height:1;
+    color:var(--terra);
+    margin-bottom:20px;
+    display:inline-block;
+    animation:rp-rotate 2.4s ease-in-out infinite;
+  }
+  .rotate-prompt h2{font-family:'Fraunces',serif; font-weight:600; font-size:28px; margin:0 0 12px; letter-spacing:-.01em;}
+  .rotate-prompt p{font-style:italic; color:var(--ink-dim); font-size:16px; line-height:1.5; margin:0;}
+  .rotate-prompt .rp-kicker{
+    font-family:'Spline Sans Mono',monospace; font-size:10px; letter-spacing:.3em;
+    text-transform:uppercase; color:var(--terra); margin-bottom:14px;
+  }
+  @keyframes rp-rotate{
+    0%,100%{transform:rotate(-90deg);}
+    50%{transform:rotate(0deg);}
+  }
+  @media (orientation:portrait) and (max-width:900px){
+    .rotate-prompt{display:flex;}
+    .wrap{display:none;}
   }
 
   .appbar{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:2px 0 14px; animation:rise .7s ease both;}
@@ -325,6 +347,15 @@
     <path d="M-20,680 C80,640 150,720 240,680 330,640 380,700 440,670"/>
   </g>
 </svg>
+
+<div class="rotate-prompt" aria-hidden="true">
+  <div class="rp-inner">
+    <div class="rp-icon">◷</div>
+    <div class="rp-kicker">Outdoor Guide Life or no Life</div>
+    <h2>Sideways, please.</h2>
+    <p>The Peloponnese is wider than it is tall.</p>
+  </div>
+</div>
 
 <div class="wrap">
   <header class="appbar">
