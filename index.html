@@ -153,6 +153,83 @@
     .wrap{display:none;}
   }
 
+  /* PRE-TITLE COLD OPEN — moodful typographic reveal that doubles as
+     the user-gesture for fullscreen. Static HTML overlay, removed on
+     first dismiss. Plays again on page reload, not on within-session
+     "Main menu" navigation. Touch anywhere → fullscreen + fade out. */
+  .intro-screen{
+    position:fixed; inset:0; z-index:500;
+    background:linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center; padding:32px;
+    cursor:pointer;
+    transition:opacity .5s ease;
+  }
+  .intro-screen.fading{opacity:0;}
+  .intro-screen .topo-bg{
+    position:absolute; inset:0;
+    background-image:radial-gradient(120% 80% at 50% -10%, rgba(210,117,74,0.10), transparent 55%);
+    pointer-events:none;
+  }
+  .intro-main{
+    font-family:'Fraunces',serif; font-weight:800;
+    font-size:clamp(40px,9vw,80px);
+    color:var(--ink);
+    letter-spacing:-.02em; line-height:1;
+    opacity:0;
+    animation:introFade 1s ease 0.5s both;
+  }
+  .intro-italic{
+    font-family:'Fraunces',serif; font-style:italic; font-weight:500;
+    font-size:clamp(28px,6vw,52px);
+    color:var(--gold);
+    margin-top:8px;
+    opacity:0;
+    animation:introFade 1s ease 1.8s both;
+  }
+  .intro-kicker{
+    font-family:'Spline Sans Mono',monospace;
+    font-size:clamp(11px,1.6vw,14px);
+    letter-spacing:.3em; text-transform:uppercase;
+    color:var(--terra);
+    margin-top:40px;
+    opacity:0;
+    animation:introSlide 1.1s ease 3.2s both;
+  }
+  .intro-verdict{
+    font-family:'Fraunces',serif; font-style:italic;
+    color:var(--ink-dim);
+    font-size:clamp(15px,2vw,19px);
+    margin-top:18px;
+    opacity:0;
+    animation:introFade 1.1s ease 4.6s both;
+  }
+  .intro-tap{
+    font-family:'Spline Sans Mono',monospace;
+    font-size:11px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-top:48px;
+    opacity:0;
+    animation:introTapIn 0.5s ease 5.8s forwards, introTapPulse 1.8s ease 6.3s infinite alternate;
+  }
+  @keyframes introFade{
+    from{opacity:0; transform:translateY(8px);}
+    to  {opacity:1; transform:none;}
+  }
+  @keyframes introSlide{
+    from{opacity:0; transform:translateX(-16px); letter-spacing:.5em;}
+    to  {opacity:1; transform:none; letter-spacing:.3em;}
+  }
+  @keyframes introTapIn{
+    from{opacity:0;}
+    to  {opacity:0.7;}
+  }
+  @keyframes introTapPulse{
+    from{opacity:0.35;}
+    to  {opacity:0.85;}
+  }
+
   .appbar{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin:2px 0 14px; animation:rise .7s ease both;}
   .brand{text-align:left;}
   .kicker{font-family:'Spline Sans Mono',monospace; font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:var(--terra); margin-bottom:3px;}
@@ -370,6 +447,18 @@
     <path d="M-20,680 C80,640 150,720 240,680 330,640 380,700 440,670"/>
   </g>
 </svg>
+
+<!-- Pre-title cold open. Static overlay, removed on first dismiss
+     (which triggers fullscreen via the user gesture). Plays on every
+     page reload, but not on within-session navigation back to title. -->
+<div class="intro-screen" id="intro" onclick="dismissIntro()" role="button" tabindex="0">
+  <div class="topo-bg"></div>
+  <div class="intro-main">Outdoor Guide Life</div>
+  <div class="intro-italic">or no Life</div>
+  <div class="intro-kicker">A career in the outdoors, and minor catastrophes</div>
+  <div class="intro-verdict">All the necessary mistakes are still ahead of you.</div>
+  <div class="intro-tap">Touch to continue</div>
+</div>
 
 <div class="rotate-prompt" aria-hidden="true">
   <div class="rp-inner">
@@ -1351,6 +1440,30 @@ function exitFullscreenSafe(){
   }catch(e){}
 }
 function toggleFullscreen(){ isFullscreen() ? exitFullscreenSafe() : enterFullscreen(); }
+/* Cold-open dismiss. The tap on the intro overlay is the user
+   gesture that lets enterFullscreen() succeed. The overlay fades
+   out over .5s, then removes itself; the title screen below is
+   already rendered, so this just reveals it. Removed elements
+   don't come back — Main menu navigation later doesn't replay
+   the intro (only a page reload does). */
+function dismissIntro(){
+  const el = document.getElementById('intro');
+  if(!el) return;
+  enterFullscreen();
+  el.classList.add('fading');
+  setTimeout(() => { el.parentNode && el.parentNode.removeChild(el); }, 520);
+}
+// Also dismiss on any keypress, for desktop / accessibility.
+// Defensive — the headless test harness stubs window without
+// addEventListener, so guard the binding.
+if(typeof window !== 'undefined' && typeof window.addEventListener === 'function'){
+  window.addEventListener('keydown', function introKey(e){
+    if(document.getElementById('intro') && (e.key==='Enter' || e.key===' ' || e.key==='Escape')){
+      e.preventDefault();
+      dismissIntro();
+    }
+  }, {once:false});
+}
 /* Wrappers for the title-screen buttons — try fullscreen on the user
    gesture, then proceed to the action. If fullscreen fails (iOS Safari
    in-browser), the game runs anyway with browser chrome visible. */
