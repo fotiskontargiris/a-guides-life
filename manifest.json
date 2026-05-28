@@ -1,0 +1,22 @@
+{
+  "name": "Outdoor Guide Life or no Life",
+  "short_name": "Outdoor Guide",
+  "description": "A career in the outdoors, money, and minor catastrophes.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#0c252b",
+  "theme_color": "#0c252b",
+  "lang": "en",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/title/title-cover.webp",
+      "sizes": "1536x1024",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ]
+}

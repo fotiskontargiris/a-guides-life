@@ -2,7 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- Hide the browser chrome where the platform allows.
+     Theme-color tints the address bar to match the game bg when visible.
+     The apple/mobile capable tags let "Add to Home Screen" launch as a
+     fullscreen app with no browser chrome at all. The manifest declares
+     display:standalone + orientation:landscape so installed PWA matches
+     the game's locked landscape design. -->
+<meta name="theme-color" content="#0c252b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Outdoor Guide Life">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <title>Outdoor Guide Life or no Life</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -855,8 +867,8 @@ function renderTitle(save, loading){
     <div class="day-tag" style="color:var(--gold);text-align:center;margin-top:8px">Right then</div>
     <p class="verdict" style="text-align:center">All the necessary mistakes are still ahead of you.</p>
     <div class="choices">
-      ${simpleOpt('▸','Continue', sub, !canCont, 'doContinue()')}
-      ${simpleOpt('✦','New game','Home to Kalamata, and your mother’s kitchen', false, 'renderKitchen()')}
+      ${simpleOpt('▸','Continue', sub, !canCont, 'continueGame()')}
+      ${simpleOpt('✦','New game','Home to Kalamata, and your mother’s kitchen', false, 'startNewGame()')}
     </div>
     ${hasStorage()?'':'<p style="font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:14px">Saving isn\u2019t available in this viewer, so progress won\u2019t survive a reload — but the game plays in full.</p>'}`;
   if(titleCover){
@@ -1286,16 +1298,51 @@ function showMenuBtn(on){ const b=$('menuBtn'); if(b) b.style.display = on?'bloc
 function toggleMenu(){ $('drawer').classList.contains('open')?closeMenu():openMenu(); }
 function closeMenu(){ $('drawer').classList.remove('open'); }
 function openMenu(){
+  const fs = isFullscreen();
   $('sheet').innerHTML=`<div class="grip"></div><div class="sh">Menu</div>
     <div class="choices">
       ${simpleOpt('▦','Season summary','How rich, how famous, how doomed', false, 'closeMenu(); renderSummary()')}
       ${simpleOpt('☼','5-day forecast','What the sky has lined up for you', false, 'closeMenu(); renderForecast()')}
       ${simpleOpt('❧','Logbook','Every decision, lovingly recorded', false, 'closeMenu(); renderLog()')}
+      ${simpleOpt(fs?'⌂':'◈', fs?'Leave fullscreen':'Enter fullscreen', fs?'Bring the browser chrome back':'Hide the browser chrome, give the game the screen', false, 'closeMenu(); toggleFullscreen()')}
       ${simpleOpt('⌂','Main menu','Save and slink back to the title', false, 'closeMenu(); goMenu()')}
       ${simpleOpt('✕','Close', '', false, 'closeMenu()')}
     </div>`;
   $('drawer').classList.add('open');
 }
+/* Fullscreen helpers — uses the Fullscreen API where supported; on
+   iOS Safari (which restricts requestFullscreen on arbitrary elements)
+   the user's recourse is "Add to Home Screen" — the manifest.json +
+   apple-mobile-web-app-capable meta make that launch as a full app.
+   Auto-triggered from the title screen Continue/New game buttons
+   (that's a user gesture, which the spec requires). */
+function isFullscreen(){
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+}
+function enterFullscreen(){
+  if(isFullscreen()) return;
+  const el = document.documentElement;
+  try{
+    if(el.requestFullscreen)         return void el.requestFullscreen().catch(()=>{});
+    if(el.webkitRequestFullscreen)   return void el.webkitRequestFullscreen();
+    if(el.mozRequestFullScreen)      return void el.mozRequestFullScreen();
+    if(el.msRequestFullscreen)       return void el.msRequestFullscreen();
+  }catch(e){ /* iOS Safari + others may throw — fall through silently */ }
+}
+function exitFullscreenSafe(){
+  try{
+    if(document.exitFullscreen)        return void document.exitFullscreen().catch(()=>{});
+    if(document.webkitExitFullscreen)  return void document.webkitExitFullscreen();
+    if(document.mozCancelFullScreen)   return void document.mozCancelFullScreen();
+    if(document.msExitFullscreen)      return void document.msExitFullscreen();
+  }catch(e){}
+}
+function toggleFullscreen(){ isFullscreen() ? exitFullscreenSafe() : enterFullscreen(); }
+/* Wrappers for the title-screen buttons — try fullscreen on the user
+   gesture, then proceed to the action. If fullscreen fails (iOS Safari
+   in-browser), the game runs anyway with browser chrome visible. */
+function startNewGame(){ enterFullscreen(); renderKitchen(); }
+function continueGame(){ enterFullscreen(); doContinue(); }
 function logEntryColor(t){
   if(/Hired|resigned/.test(t)) return 'var(--sea)';
   if(/Certified/.test(t)) return 'var(--gold)';
