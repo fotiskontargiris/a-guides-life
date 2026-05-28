@@ -610,10 +610,13 @@
     50%   {opacity:.8;  transform:translateY(3px);}
   }
   .scene-full-panel--choices .scene-input-label{margin-bottom:4px;}
-  /* .opt buttons inside the choices panel — override for bone bg */
+  /* .opt buttons inside the choices panel — override for bone bg.
+     More transparent so the cover image bleeds through. No pre-selected
+     "primary" highlight in dish/hero pickers (click = advance, no
+     selected state to show). Hover still gives strong feedback. */
   .scene-full-panel--choices button.opt{
-    background:rgba(255,255,255,.55);
-    border:1px solid rgba(27,27,31,.28);
+    background:rgba(255,255,255,.38);
+    border:1px solid rgba(27,27,31,.25);
     color:#1B1B1F;
     padding:9px 12px;
     font-size:13.5px;
@@ -622,29 +625,21 @@
     text-align:left;
   }
   .scene-full-panel--choices button.opt:hover{
-    background:rgba(255,255,255,.88);
+    background:rgba(255,255,255,.78);
     border-color:#1B1B1F;
     transform:translateY(-1px);
   }
   .scene-full-panel--choices button.opt.primary{
-    background:#1B1B1F;
-    color:#EEE5D2;
-    border-color:#1B1B1F;
+    background:rgba(255,255,255,.55);
+    border-color:rgba(27,27,31,.55);
   }
   .scene-full-panel--choices button.opt .mark{
     color:#1B1B1F;
-    border-color:#1B1B1F;
-  }
-  .scene-full-panel--choices button.opt.primary .mark{
-    color:#EEE5D2;
-    border-color:#EEE5D2;
+    border-color:rgba(27,27,31,.4);
   }
   .scene-full-panel--choices button.opt .b-sub{
     color:rgba(27,27,31,.62);
     font-size:11.5px;
-  }
-  .scene-full-panel--choices button.opt.primary .b-sub{
-    color:rgba(238,229,210,.75);
   }
   .scene-full-panel--choices button.opt.disabled{opacity:.35;}
   /* Action button (Go on / Step outside) in the choices panel */
@@ -1476,8 +1471,11 @@ function renderKitchenDishScene(){
     ? `<img class="scene-full-bg" src="${ASSETS['scene-kitchen']}" alt="Dinner served">`
     : '';
   const bubble = `<div class="bubble left-top">Your favourite. Eat \u2014 eat. You are clearly not eating properly out there.</div>`;
-  const opts = DISHES.map(d=>`<button class="opt ${pickedDish===d.id?'primary':''}" onclick="kitchenDish('${d.id}')">
-      <span class="mark">${pickedDish===d.id?'\u2713':'\u00b7'}</span><span class="b-main">${d.name}<span class="b-sub">${d.sub}</span></span></button>`).join('');
+  // No .primary highlight: click = advance, no selected-state to display.
+  // The default pickedDish gives a sane fallback if user skips through,
+  // but visually all options are neutral until the player picks.
+  const opts = DISHES.map(d=>`<button class="opt" onclick="kitchenDish('${d.id}')">
+      <span class="mark">\u00b7</span><span class="b-main">${d.name}<span class="b-sub">${d.sub}</span></span></button>`).join('');
   const panel = `<div class="scene-full-panel scene-full-panel--choices">
     <span class="scene-input-label">Pick a dish</span>
     ${opts}
@@ -1510,7 +1508,8 @@ function renderKitchenHeroScene(){
     ? `<img class="scene-full-bg" src="${ASSETS['scene-kitchen']}" alt="The wooden spoon waves at the shape of your life">`
     : '';
   const bubble = `<div class="bubble left-top">And the\u2026 the thing. Out there. It\u2019s finished?</div>`;
-  const opts = BACKGROUNDS.map(b=>`<button class="opt ${pickedBg===b.id?'primary':''}" onclick="kitchenHero('${b.id}')">
+  // No .primary highlight; gender glyph stays as the mark (it's meaningful info).
+  const opts = BACKGROUNDS.map(b=>`<button class="opt" onclick="kitchenHero('${b.id}')">
       <span class="mark">${b.gender==='f'?'\u2640':'\u2642'}</span><span class="b-main">${b.name}<span class="b-sub">${b.perk}</span></span></button>`).join('');
   const panel = `<div class="scene-full-panel scene-full-panel--choices">
     <span class="scene-input-label">Who you were</span>
