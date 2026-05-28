@@ -1,6 +1,6 @@
 # PHASE-ARCHITECTURE.md — the reasoning
 
-The north star for *Outdoor Guide Life — or no Life*. `OUTLINE.md` is the map (the six
+The north star for *A Guide's Life — or no Life*. `OUTLINE.md` is the map (the six
 phases at a glance); `CLAUDE.md` is the build manual (how the current code works and how to
 test it); **this document is the *why*** — the theory every phase, system, and line of prose
 should be able to point back to.

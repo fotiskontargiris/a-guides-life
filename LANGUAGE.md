@@ -171,8 +171,10 @@ Real and accurate. Accents preserved where standard:
 
 These came out of playtest and naming sessions. Treat them as canonical.
 
-- **Game title**: *Outdoor Guide Life or no Life.* Two lines on the hero — *Outdoor Guide
-  Life* in serif, *or no Life* in italic gold underneath.
+- **Game title**: *A Guide's Life or no Life.* Two lines on the hero — *A Guide's Life*
+  in serif, *or no Life* in italic gold underneath. (Renamed 2026-05-28 from the earlier
+  *Outdoor Guide Life or no Life* — dropping "Outdoor" because the game already lives in
+  the outdoor world; the keyword that earns the title is *Guide*.)
 - **Kicker** (the small all‑caps line above the hero): *A career in the outdoors, money, and
   minor catastrophes.*
 - **Tagline used in the title screen verdict**: *"You graduated from your guide course because

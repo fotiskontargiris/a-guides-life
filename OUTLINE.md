@@ -1,4 +1,4 @@
-# OUTLINE — Outdoor Guide Life *or no Life*
+# OUTLINE — A Guide's Life *or no Life*
 
 A general skeleton to navigate by. Each phase is a slot to deepen later, one at a time.
 The full reasoning behind this lives in `PHASE-ARCHITECTURE.md`; this is the map.

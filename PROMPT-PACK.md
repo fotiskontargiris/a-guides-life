@@ -179,7 +179,7 @@ Critically: the mother must be seen from behind only — no face visible to the 
 Save to: `assets/title/title-cover.png` (background layer; wordmark added separately)
 
 > **Note**: For the actual game title wordmark, generate the background below in ChatGPT
-> and composite the type (*Outdoor Guide Life* in serif, *or no Life* in italic noon gold)
+> and composite the type (*A Guide's Life* in serif, *or no Life* in italic noon gold)
 > in Figma or Affinity Designer. ChatGPT can do legible text in images, but for a
 > brand-critical wordmark, vector typography in a design tool gives sharper results.
 
@@ -194,7 +194,7 @@ Critically: no people, no figures of any kind, no text, no logo, no wordmark, no
 ```
 
 ### `title-wordmark` — SKIP in ChatGPT, use a design tool
-Use Affinity Designer / Figma / Illustrator. Two lines: *Outdoor Guide Life* in a serif
+Use Affinity Designer / Figma / Illustrator. Two lines: *A Guide's Life* in a serif
 (Fraunces or Spectral), in ink `#1B1B1F`; *or no Life* in italic, in noon gold `#E0A951`,
 slightly off‑axis below. Export as SVG to `assets/title/title-wordmark.svg`.
 

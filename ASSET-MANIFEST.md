@@ -66,7 +66,7 @@ The frames every player sees on every new game.
 
 | ID | File | Subject | Composition hook |
 |---|---|---|---|
-| `title-cover` | `assets/title/title-cover.png` | Full cover plate — *Outdoor Guide Life* in serif ink on bone; *or no Life* italic noon‑gold below, off‑axis. Beneath: the kicker line in Spline Sans Mono small caps | Bone field, terra horizon strip at the bottom (the Messinian rooftiles), ink type, one gold accent on *or no Life*. No illustration above — type carries it. |
+| `title-cover` | `assets/title/title-cover.png` | Full cover plate — *A Guide's Life* in serif ink on bone; *or no Life* italic noon‑gold below, off‑axis. Beneath: the kicker line in Spline Sans Mono small caps | Bone field, terra horizon strip at the bottom (the Messinian rooftiles), ink type, one gold accent on *or no Life*. No illustration above — type carries it. |
 | `title-wordmark` | `assets/title/title-wordmark.svg` | Wordmark alone, the same two‑line treatment, transparent background | For HUD use, header chrome, browser tab. SVG so it scales. |
 | `scene-kitchen` | `assets/scenes/scene-kitchen.png` | The kitchen table, lemons‑on‑oilcloth, oven light, a wooden spoon. *Mum from behind* at the counter | The opening shot. Five hues at work — terra (lemons + oven glow), olive (Mum's housedress), sea (the open door at the back), bone (oilcloth + plates), ink (line). No accent yet — accent enters at hero pick. |
 

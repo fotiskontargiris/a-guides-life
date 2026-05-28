@@ -1,4 +1,4 @@
-# Outdoor Guide Life or no Life
+# A Guide's Life or no Life
 
 > A career in the outdoors, money, and minor catastrophes.
 
