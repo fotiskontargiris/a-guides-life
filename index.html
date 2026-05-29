@@ -1147,11 +1147,11 @@ function renderForecast(){
         <div class="task">${weatherAdvice(w)}</div>
       </div>
     </div>`).join('');
-  setScene(`<div class="day-tag">${dayTag()} · Forecast</div>
-    <h2>The week ahead</h2>
-    <p>This is how your guides read the days and plan their routes. Save the high, exposed lines for clear weather.</p>
+  reportStage('bedroom-p1-window-summer', `<p class="trip-title">The week ahead</p>
+    <p class="report-note">How the days read from the window. Save the high, exposed lines for clear weather.</p>
     <div class="team">${cards}</div>
-    <div class="actionbar"><button class="go" onclick="${back}">Back to the day</button></div>`);
+    <button class="scene-go" onclick="${back}">Back to the day</button>`,
+    `${dayTag()} · forecast`);
 }
 
 const ROUTES=[
@@ -2287,12 +2287,11 @@ function renderLog(){
   } else {
     items='<div class="row"><span class="l">Nothing logged yet.</span><span class="v"></span></div>';
   }
-  setScene(`<div class="day-tag">${dayTag()} · Logbook</div>
-    ${imgFor('chrome-logbook', {cls:'art art-chrome', alt:'A linen-bound logbook on a taverna table'})}
-    <h2>The logbook</h2>
-    <p>Every day's doings, most recent first.${total?` <span style="color:var(--ink-faint);font-style:italic">${total} ${total===1?'entry':'entries'}</span>`:''}</p>
+  reportStage('chrome-logbook', `<p class="trip-title">The logbook</p>
+    <p class="report-note">Every day's doings, most recent first.${total?` &middot; ${total} ${total===1?'entry':'entries'}`:''}</p>
     <div class="ledger" style="max-height:none">${items}</div>
-    <div class="actionbar"><button class="go" onclick="${back}">Back to the day</button></div>`);
+    <button class="scene-go" onclick="${back}">Back to the day</button>`,
+    `${dayTag()} · logbook`);
 }
 function setSub(t){ $('sub').textContent=t; }
 function note(t){ S.history.push({d:S.day,t}); }
@@ -2454,13 +2453,11 @@ function openPhone(){
     const reason=lock||(tired?`Too exhausted — needs ${need} energy`:'');
     return optBooking(b, dis, reason, `pickBooking(${i})`);
   }).join('');
-  setScene(`
-    <div class="day-tag">${dayTag()} · the phone</div>
-    <p class="weather">${w.name}<small>${w.note}</small></p>
-    <h2>Who is paying you today?</h2>
-    <p>The morning’s bookings are on the screen. Pick a trip — or set the phone down and sort yourself out.</p>
-    <div class="choices">${cards||'<p class="verdict">Nothing new this morning. Quiet.</p>'}</div>
-    <div class="actionbar"><button class="go" onclick="renderCurrent()">Set the phone down</button></div>`);
+  reportStage('report-blank', `<p class="trip-title">Who is paying you today?</p>
+    <p class="report-note">The morning's bookings are on the screen. Pick a trip, or set the phone down and sort yourself out.</p>
+    ${cards||'<p class="report-note">Nothing new this morning. Quiet.</p>'}
+    <button class="scene-go" onclick="renderCurrent()">Set the phone down</button>`,
+    `${dayTag()} · the phone`);
 }
 function openWallet(){
   renderHUD();
@@ -2468,13 +2465,12 @@ function openWallet(){
     ? `<p>Outstanding loan: <b style="color:var(--danger)">€${Math.round(S.loan.balance||S.loan.principal||0)}</b>${S.loan.source?' · '+S.loan.source:''}.</p>`
     : '<p>No debts. Clean.</p>';
   const ys=S.yearStats||{};
-  setScene(`
-    <div class="day-tag">${dayTag()} · the wallet</div>
-    <h2>€${Math.round(S.cash||0)}</h2>
-    <p>What you have to your name this morning.</p>
+  reportStage('chrome-loan-papers', `<p class="trip-title">€${Math.round(S.cash||0)}</p>
+    <p class="report-note">What you have to your name this morning.</p>
     ${debt}
     <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--ink-faint)">This year · fees €${Math.round(ys.fees||0)} · tips €${Math.round(ys.tips||0)} · wages paid €${Math.round(ys.wages||0)}</p>
-    <div class="actionbar"><button class="go" onclick="renderCurrent()">Pocket it again</button></div>`);
+    <button class="scene-go" onclick="renderCurrent()">Pocket it again</button>`,
+    `${dayTag()} · the wallet`);
 }
 function openBackpack(){
   renderHUD();
@@ -2483,33 +2479,28 @@ function openBackpack(){
   const items = owned.length
     ? owned.map(id=>`<li><b>${ITEMS[id]||id}</b> — ${ownedTier(id)||'standard'} · ${ownedTrips(id)} trip${ownedTrips(id)===1?'':'s'} left</li>`).join('')
     : '<li>Empty but for the bag itself.</li>';
-  const right = `<h2 style="margin-top:0">The pack</h2>
-    <p>Carries up to <b>${S.packSize||4}</b> item${(S.packSize||4)===1?'':'s'} a trip. You load it at the trailhead, before you walk.</p>
-    <ul style="font-size:14px;line-height:1.6;padding-left:18px;margin:0 0 14px">${items}</ul>
-    <div class="choices"><button class="opt" onclick="openShop()"><span class="mark">▣</span><span class="b-main">Buy or refill kit<span class="b-sub">Open the catalogue</span></span></button></div>
-    <div class="actionbar"><button class="go" onclick="renderCurrent()">Sling it back down</button></div>`;
-  if(art){ setScene(`<div class="two-col"><div class="col-stage">${art}</div><div class="col-panel">${right}</div></div>`); }
-  else { setScene(`<div class="end">${right}</div>`); }
+  reportStage('backpack-phase1', `<p class="trip-title">The pack</p>
+    <p class="report-note">Carries up to <b>${S.packSize||4}</b> item${(S.packSize||4)===1?'':'s'} a trip. You load it at the trailhead, before you walk.</p>
+    <ul style="font-size:14px;line-height:1.6;padding-left:18px;margin:0 0 12px">${items}</ul>
+    <button class="opt" onclick="openShop()"><span class="mark">▣</span><span class="b-main">Buy or refill kit<span class="b-sub">Open the catalogue</span></span></button>
+    <button class="scene-go" onclick="renderCurrent()">Sling it back down</button>`,
+    `${dayTag()} · the pack`);
 }
 function openRest(){
   renderHUD();
   const full = S.energy>=100;
-  setScene(`
-    <div class="day-tag">${dayTag()} · the bed</div>
-    <h2>Sleep until tomorrow?</h2>
-    <p>${full?'You are already well rested — a day in bed would just be a day lost.':'Rest restores your energy, but it costs you the day. The bookings move on without you.'}</p>
-    <div class="choices">
-      <button class="opt ${full?'disabled':'primary'}" onclick="${full?'':'restDay()'}"><span class="mark">~</span><span class="b-main">Sleep${full?' — already rested':''}<span class="b-sub">Restore energy · advances the day</span></span></button>
-      <button class="opt" onclick="renderCurrent()"><span class="mark">·</span><span class="b-main">Not yet<span class="b-sub">Back to the room</span></span></button>
-    </div>`);
+  reportStage('report-blank', `<p class="trip-title">Sleep until tomorrow?</p>
+    <p class="report-note">${full?'You are already well rested — a day in bed would just be a day lost.':'Rest restores your energy, but it costs you the day. The bookings move on without you.'}</p>
+    <button class="opt ${full?'disabled':'primary'}" onclick="${full?'':'restDay()'}"><span class="mark">~</span><span class="b-main">Sleep${full?' — already rested':''}<span class="b-sub">Restore energy · advances the day</span></span></button>
+    <button class="opt" onclick="renderCurrent()"><span class="mark">·</span><span class="b-main">Not yet<span class="b-sub">Back to the room</span></span></button>`,
+    `${dayTag()} · the bed`);
 }
 function openCorkboard(){
   renderHUD();
-  setScene(`
-    <div class="day-tag">${dayTag()} · the corkboard</div>
-    <h2>Your people</h2>
-    <p>Old school photos, a panigíri ticket, a faded team list. For now it is just you — when you take someone on, their face goes up here.</p>
-    <div class="actionbar"><button class="go" onclick="renderCurrent()">Back to the room</button></div>`);
+  reportStage('bedroom-p1-corkboard-empty', `<p class="trip-title">Your people</p>
+    <p class="report-note">Old school photos, a panigíri ticket, a faded team list. For now it is just you — when you take someone on, their face goes up here.</p>
+    <button class="scene-go" onclick="renderCurrent()">Back to the room</button>`,
+    `${dayTag()} · the corkboard`);
 }
 /* ---------------- Hub placement editor (dev tool) ----------------
    Press E while the bedroom hub is open to drag / scale each object by hand,
