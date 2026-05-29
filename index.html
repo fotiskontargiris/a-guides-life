@@ -3118,12 +3118,12 @@ function renderPacking(){
   const lockedHTML = locked.length?`<div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:var(--ink-faint);margin-top:10px">Not in your kit: ${locked.map(id=>ITEMS[id]).join(', ')} — buy at the shop.</div>`:'';
   const emptyHTML = ownedItems.length?'':`<div style="font-style:italic;color:var(--ink-dim)">You own no kit yet — you'll head out with empty hands. Visit the shop to change that.</div>`;
   const spare=S.packSize-S.loadout.length;
-  setScene(`<div class="day-tag">${dayTag()} · Pack your bag</div>
-    <h2>${b.route}</h2>
-    <p>Word of the trail: <i>${conditionsLine(b,w)}</i></p>
-    <p style="font-family:'Spline Sans Mono',monospace;font-size:13px;color:var(--sea)">Backpack — ${S.loadout.length}/${S.packSize} slots filled</p>
-    <div class="choices">${chips}</div>${emptyHTML}${lockedHTML}
-    <div class="actionbar"><button class="go" onclick="setOff()">Set off${spare>0?` <span class="gs">${spare} slot(s) spare</span>`:''}</button></div>`);
+  reportStage('backpack-phase1', `<p class="trip-title">${b.route}</p>
+    <p class="report-note">Word of the trail: <i>${conditionsLine(b,w)}</i></p>
+    <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--sea);margin:0 0 8px">Backpack — ${S.loadout.length}/${S.packSize} slots filled</p>
+    ${chips}${emptyHTML}${lockedHTML}
+    <button class="scene-go" onclick="setOff()">Set off${spare>0?` (${spare} spare)`:''}</button>`,
+    `${dayTag()} · ${b.route} · pack your bag`);
 }
 function toggleItem(id){
   const i=S.loadout.indexOf(id);
@@ -3169,9 +3169,17 @@ function reportStage(assetId, panelHTML, tag){
     setScene((tag?`<div class="day-tag">${tag}</div>`:'')+`<div class="trip-fallback">${panelHTML}</div>`);
     return;
   }
+  let ov=document.getElementById('sceneOverlay');
+  // Same surface already up (e.g. packing re-render on an item toggle): swap the
+  // panel content only so the backdrop doesn't re-fade.
+  if(ov && ov.getAttribute('data-asset')===assetId && ov.querySelector('.scene-full-panel--report')){
+    const tg=ov.querySelector('.scene-full-tag'); if(tg) tg.innerHTML=tag||'';
+    const pn=ov.querySelector('.scene-full-panel--report'); if(pn){ const sc=pn.scrollTop; pn.innerHTML=panelHTML; pn.scrollTop=sc; }
+    return;
+  }
   removeTitleOverlay(); removeSceneOverlay(); removeStoryOverlay(); removeHubOverlay(); removeTripStage();
-  const ov=document.createElement('div'); ov.id='sceneOverlay'; ov.className='scene-full';
-  ov.innerHTML = `<img class="scene-full-bg" src="${ASSETS[assetId]}" alt="The day's report">`
+  ov=document.createElement('div'); ov.id='sceneOverlay'; ov.className='scene-full'; ov.setAttribute('data-asset', assetId);
+  ov.innerHTML = `<img class="scene-full-bg" src="${ASSETS[assetId]}" alt="">`
     + `<div class="scene-full-tag">${tag||''}</div>`
     + `<div class="scene-full-panel scene-full-panel--choices scene-full-panel--report">${panelHTML}</div>`;
   document.body.appendChild(ov); setScene('');
@@ -3435,10 +3443,9 @@ function finishPlayerTrip(){
   const reviews=makeReviews(t.repDelta||0, tip, reviewCount);
   renderHUD();
   if(checkEnd()) return;
-  const reportAsset = broken.length ? 'report-gear-damage'
-    : (t.repDelta||0) > 0 ? 'report-review-good'
-    : (t.repDelta||0) < 0 ? 'report-review-bad'
-    : 'report-blank';
+  // Variant report cards (review good/bad, gear-damage) are pending an art
+  // rework -- use the neutral ledger for every outcome for now.
+  const reportAsset = 'report-blank';
   reportStage(reportAsset, `<p class="trip-title">Back at the trailhead</p>
     <div class="res">${t.logs.map(l=>`<p class="line">${l}</p>`).join('')}</div>
     ${prepLine?`<p class="report-note">${prepLine}</p>`:''}
