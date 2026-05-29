@@ -860,6 +860,24 @@
     background:rgba(27,27,31,.42); padding:6px 15px; border-radius:20px;
     pointer-events:none; animation:hubHintFade 6s ease forwards; }
   @keyframes hubHintFade{ 0%{opacity:0;} 12%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;} }
+  /* hub placement editor (dev tool: press E while the hub is open) */
+  body.hub-edit .hub-obj, body.hub-edit .hub-region{ animation:none !important; }
+  body.hub-edit .hub-obj{ outline:1.5px dashed rgba(238,229,210,.6); cursor:move; }
+  body.hub-edit .hub-region{ outline:1.5px dashed rgba(90,200,255,.75); background:rgba(90,200,255,.10); cursor:move; }
+  body.hub-edit .hub-obj[data-label]::after, body.hub-edit .hub-region[data-label]::after{ opacity:1; }
+  body.hub-edit .hub-obj.sel, body.hub-edit .hub-region.sel{ outline:2.5px solid #ffd24a; }
+  body.hub-edit .hub-obj.sel{ filter:drop-shadow(0 0 10px rgba(255,210,74,.95)); }
+  .hub-edit-panel{ position:fixed; left:50%; bottom:8px; transform:translateX(-50%); z-index:400;
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap; max-width:97vw;
+    background:rgba(16,18,22,.95); color:#EEE5D2; border:1px solid #ffd24a; border-radius:10px;
+    padding:7px 12px; font-family:'Spline Sans Mono',monospace; font-size:12px; }
+  .hub-edit-panel b{ color:#ffd24a; font-weight:700; }
+  .hub-edit-panel .hub-ed-keys{ opacity:.55; font-size:10px; }
+  .hub-edit-panel button{ background:#2a2f35; color:#EEE5D2; border:1px solid #666; border-radius:6px;
+    padding:4px 9px; cursor:pointer; font:inherit; }
+  .hub-edit-panel button:hover{ background:#3a4047; }
+  .hub-edit-panel textarea{ width:230px; height:32px; resize:none; font:11px/1.3 monospace;
+    background:#0d0f12; color:#8fe6c0; border:1px solid #555; border-radius:6px; padding:4px; }
   /* mum's off-frame voice — left-edge bubble */
   .hub .bubble.left-edge{ position:absolute; top:30%; left:14px; max-width:42%; z-index:6; }
   .story-screen-tag{
@@ -2340,7 +2358,9 @@ function renderMorning(){
    base art is ever missing, so gameplay + tests never break. */
 function removeHubOverlay(){
   if(typeof document==='undefined' || typeof document.getElementById!=='function') return;
-  const b=document.body; if(b && b.classList && b.classList.remove) b.classList.remove('hub-cue');
+  const b=document.body; if(b && b.classList && b.classList.remove) b.classList.remove('hub-cue','hub-edit');
+  if(typeof hubEd!=='undefined' && hubEd){ hubEd.sel=null; hubEd.drag=null; }
+  const ep=document.getElementById('hubEdPanel'); if(ep && ep.parentNode) ep.parentNode.removeChild(ep);
   const ex=document.getElementById('hubOverlay'); if(ex && ex.parentNode) ex.parentNode.removeChild(ex);
 }
 function hubSpot(o){
@@ -2459,6 +2479,110 @@ function openCorkboard(){
     <h2>Your people</h2>
     <p>Old school photos, a panigíri ticket, a faded team list. For now it is just you — when you take someone on, their face goes up here.</p>
     <div class="actionbar"><button class="go" onclick="renderCurrent()">Back to the room</button></div>`);
+}
+/* ---------------- Hub placement editor (dev tool) ----------------
+   Press E while the bedroom hub is open to drag / scale each object by hand,
+   then "Copy layout" to hand the numbers back. Source of truth for "on" is the
+   body.hub-edit class so a hub teardown exits cleanly. */
+var hubEd = { sel:null, drag:null };
+function hubEditOn(){ return typeof document!=='undefined' && document.body && document.body.classList.contains('hub-edit'); }
+function hubStageRect(){ const s=document.querySelector('#hubOverlay .hub-stage'); return s?s.getBoundingClientRect():null; }
+function hubN(el,p){ return parseFloat(el.style[p])||0; }
+function hubEdSelect(el){
+  document.querySelectorAll('#hubOverlay .sel').forEach(e=>e.classList.remove('sel'));
+  hubEd.sel = el||null; if(el) el.classList.add('sel'); hubEdSync();
+}
+function hubEdSync(){
+  const info=document.getElementById('hubEdInfo'); if(!info) return;
+  const el=hubEd.sel;
+  if(!el){ info.innerHTML='<i>click an object</i>'; return; }
+  const isR=el.classList.contains('hub-region');
+  info.innerHTML='<b>'+el.getAttribute('data-label')+'</b> &nbsp;x:<b>'+hubN(el,'left').toFixed(1)
+    +'</b> y:<b>'+hubN(el,'top').toFixed(1)+'</b> w:<b>'+hubN(el,'width').toFixed(1)+'</b>'
+    +(isR?' h:<b>'+hubN(el,'height').toFixed(1)+'</b>':'');
+}
+function hubEdLayout(){
+  const out={};
+  document.querySelectorAll('#hubOverlay .hub-obj, #hubOverlay .hub-region').forEach(el=>{
+    const o={x:+hubN(el,'left').toFixed(1), y:+hubN(el,'top').toFixed(1), w:+hubN(el,'width').toFixed(1)};
+    if(el.classList.contains('hub-region')) o.h=+hubN(el,'height').toFixed(1);
+    out[el.getAttribute('data-label')]=o;
+  });
+  return out;
+}
+function hubEdCopy(){
+  const txt=JSON.stringify(hubEdLayout());
+  const ta=document.getElementById('hubEdOut'); if(ta){ ta.value=txt; ta.focus(); ta.select(); }
+  try{ if(navigator.clipboard) navigator.clipboard.writeText(txt); }catch(e){}
+}
+function toggleHubEdit(){
+  const hub=document.getElementById('hubOverlay'); if(!hub) return;
+  const on=document.body.classList.toggle('hub-edit');
+  document.body.classList.remove('hub-cue');
+  let panel=document.getElementById('hubEdPanel');
+  if(on){
+    if(!panel){
+      panel=document.createElement('div'); panel.id='hubEdPanel'; panel.className='hub-edit-panel';
+      panel.innerHTML='<span style="color:#ffd24a;font-weight:700">EDIT</span>'
+        +'<span id="hubEdInfo"><i>click an object</i></span>'
+        +'<span class="hub-ed-keys">drag &middot; wheel=scale &middot; shift+wheel=region height &middot; arrows nudge</span>'
+        +'<button id="hubEdCopyBtn">Copy layout</button>'
+        +'<textarea id="hubEdOut" readonly placeholder="layout JSON"></textarea>'
+        +'<button id="hubEdDoneBtn">Done</button>';
+      hub.appendChild(panel);
+      panel.querySelector('#hubEdCopyBtn').onclick=hubEdCopy;
+      panel.querySelector('#hubEdDoneBtn').onclick=toggleHubEdit;
+    }
+    hubEdSync();
+  } else {
+    hubEd.sel=null; hubEd.drag=null;
+    document.querySelectorAll('#hubOverlay .sel').forEach(e=>e.classList.remove('sel'));
+    if(panel) panel.remove();
+  }
+}
+if(typeof document!=='undefined' && document.addEventListener){
+  document.addEventListener('pointerdown', e=>{
+    if(!hubEditOn()) return;
+    if(e.target.closest('#hubEdPanel')) return;
+    const el=e.target.closest('#hubOverlay .hub-obj, #hubOverlay .hub-region');
+    if(!el) return;
+    e.preventDefault(); e.stopPropagation();
+    hubEdSelect(el);
+    const r=hubStageRect(); if(!r) return;
+    hubEd.drag={ el, r, offx:(e.clientX-r.left)/r.width*100 - hubN(el,'left'), offy:(e.clientY-r.top)/r.height*100 - hubN(el,'top') };
+  }, true);
+  document.addEventListener('pointermove', e=>{
+    if(!hubEditOn() || !hubEd.drag) return;
+    const d=hubEd.drag;
+    let x=(e.clientX-d.r.left)/d.r.width*100 - d.offx;
+    let y=(e.clientY-d.r.top)/d.r.height*100 - d.offy;
+    x=Math.max(0,Math.min(100,x)); y=Math.max(0,Math.min(100,y));
+    d.el.style.left=x.toFixed(1)+'%'; d.el.style.top=y.toFixed(1)+'%'; hubEdSync();
+  });
+  document.addEventListener('pointerup', ()=>{ hubEd.drag=null; });
+  document.addEventListener('click', e=>{
+    if(hubEditOn() && e.target.closest('#hubOverlay .hub-obj, #hubOverlay .hub-region')){ e.preventDefault(); e.stopPropagation(); }
+  }, true);
+  document.addEventListener('wheel', e=>{
+    if(!hubEditOn() || !hubEd.sel) return;
+    e.preventDefault();
+    const el=hubEd.sel, step=(e.deltaY<0?0.5:-0.5);
+    if(e.shiftKey && el.classList.contains('hub-region')) el.style.height=Math.max(1,hubN(el,'height')+step).toFixed(1)+'%';
+    else el.style.width=Math.max(1,hubN(el,'width')+step).toFixed(1)+'%';
+    hubEdSync();
+  }, {passive:false});
+  document.addEventListener('keydown', e=>{
+    const typing=/^(input|textarea)$/i.test((e.target&&e.target.tagName)||'');
+    if((e.key==='e'||e.key==='E') && document.getElementById('hubOverlay') && !typing){ e.preventDefault(); toggleHubEdit(); return; }
+    if(!hubEditOn() || !hubEd.sel) return;
+    const el=hubEd.sel, s=e.shiftKey?0.2:0.6; let used=true;
+    if(e.key==='ArrowLeft') el.style.left=(hubN(el,'left')-s).toFixed(1)+'%';
+    else if(e.key==='ArrowRight') el.style.left=(hubN(el,'left')+s).toFixed(1)+'%';
+    else if(e.key==='ArrowUp') el.style.top=(hubN(el,'top')-s).toFixed(1)+'%';
+    else if(e.key==='ArrowDown') el.style.top=(hubN(el,'top')+s).toFixed(1)+'%';
+    else used=false;
+    if(used){ e.preventDefault(); hubEdSync(); }
+  });
 }
 function packUpgradeOpt(){
   const next = S.packSize<6?6 : S.packSize<8?8 : null;
