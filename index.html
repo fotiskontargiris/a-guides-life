@@ -2758,16 +2758,16 @@ function openShop(){
     sections += shopSection(DISCIPLINE_SHOP_LABELS[d]||d, ids);
     if(fleetItemsFor(d).length) sections += fleetSection(d);
   }
-  setScene(`<div class="day-tag">${dayTag()} · Equipment shop</div>
-    <h2>Geo's outdoor emporium</h2>
-    <p>Three qualities for safety kit; fleet items just come in ones. <b>Pro</b> gear costs more but lasts. Cash: <b style="color:var(--gold)">€${S.cash}</b>.</p>
+  reportStage('report-blank', `<p class="trip-title">Geo's outdoor emporium</p>
+    <p class="report-note">Three qualities for safety kit; fleet items come in ones. <b>Pro</b> gear costs more but lasts. Cash: <b style="color:var(--gold)">€${S.cash}</b>.</p>
     ${sections}
     ${garageSection()}
     <div class="choices" style="margin-top:14px">
       ${packUpgradeOpt()}
       ${S.gear>=100 ? '' : simpleOpt('⚒','Service your equipment', S.cash<40?'Need €40':'€40 · +35% gear condition', S.cash<40, 'serviceGear()')}
     </div>
-    <div class="actionbar"><button class="go" onclick="renderCurrent()">Done — back to the day</button></div>`);
+    <button class="scene-go" onclick="renderCurrent()">Done — back to the room</button>`,
+    `${dayTag()} · the catalogue`);
 }
 /* Mid-summer vehicle purchase. Transport infra is the only category buyable
    outside winter — the rest (website, hotelDeal) still go through enrollInfra
