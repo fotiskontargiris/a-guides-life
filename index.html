@@ -874,6 +874,14 @@
     cursor:pointer; display:grid; place-items:center;
     -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); transition:background .2s; }
   .hub-help:hover, .hub-help.on{ background:var(--terra); }
+  /* detail-view back button — top-left, mirror of the menu button top-right */
+  .hub-back{ position:fixed; top:10px; left:10px; z-index:120;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(27,27,31,.55); color:#EEE5D2; border:1px solid rgba(238,229,210,.35);
+    font-family:'Fraunces',serif; font-size:21px; font-weight:600; line-height:1;
+    cursor:pointer; display:grid; place-items:center;
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); transition:background .2s; }
+  .hub-back:hover{ background:var(--terra); }
   /* first-time hint line, bottom-center */
   .hub-hint{ position:absolute; left:50%; bottom:56px; transform:translateX(-50%); z-index:6;
     font-family:'Fraunces',serif; font-style:italic; font-size:14px; text-align:center;
@@ -2435,7 +2443,8 @@ function renderBedroomHub(){
   const realDOM = typeof document!=='undefined' && typeof document.createElement==='function'
                   && document.body && document.body.appendChild;
   if(!realDOM || !ASSETS['bedroom-p1-base']){ renderMorning(); return; }
-  removeHubOverlay(); removeTitleOverlay(); removeSceneOverlay(); removeStoryOverlay(); removeTripStage();
+  const _outDetail=document.getElementById('sceneOverlay'), _outTrip=document.getElementById('tripStage');
+  removeHubOverlay(); removeTitleOverlay(); removeStoryOverlay();
   if($('hud'))$('hud').innerHTML=''; if($('goal'))$('goal').innerHTML=''; setSub('');
   setScene('');  // clear .scene (also tears down any stale hub overlay)
 
@@ -2479,6 +2488,7 @@ function renderBedroomHub(){
   overlay.id='hubOverlay'; overlay.className='hub';
   overlay.innerHTML = `<div class="hub-stage">${base}${win}${hilux}${spots}${tag}${status}${hint}${mum}</div>${help}`;
   document.body.appendChild(overlay);
+  fadeOutAndRemove(_outDetail, 1100); fadeOutAndRemove(_outTrip, 1100);  // cross-dissolve back from a detail
 }
 /* --- detail views reached from the hub (render into .scene; back = renderCurrent) --- */
 function openPhone(){
@@ -3151,7 +3161,7 @@ function renderPacking(){
     <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--sea);margin:0 0 8px">Backpack — ${S.loadout.length}/${S.packSize} slots filled</p>
     ${chips}${emptyHTML}${lockedHTML}
     <button class="scene-go" onclick="setOff()">Set off${spare>0?` (${spare} spare)`:''}</button>`,
-    `${dayTag()} · ${b.route} · pack your bag`);
+    `${dayTag()} · ${b.route} · pack your bag`, {noBack:true});
 }
 function toggleItem(id){
   const i=S.loadout.indexOf(id);
@@ -3191,7 +3201,16 @@ function removeTripStage(){
   if(typeof document==='undefined' || typeof document.getElementById!=='function') return;
   const ex=document.getElementById('tripStage'); if(ex && ex.parentNode) ex.parentNode.removeChild(ex);
 }
-function reportStage(assetId, panelHTML, tag){
+function fadeOutAndRemove(el, ms){
+  if(!el || !el.parentNode) return;
+  el.style.pointerEvents='none';
+  el.style.transition=`opacity ${ms}ms ease`;
+  if(typeof requestAnimationFrame==='function') requestAnimationFrame(()=>{ el.style.opacity='0'; });
+  else el.style.opacity='0';
+  setTimeout(()=>{ if(el && el.parentNode) el.parentNode.removeChild(el); }, ms+40);
+}
+function reportStage(assetId, panelHTML, tag, opts){
+  opts = opts || {};
   const realDOM = typeof document!=='undefined' && typeof document.createElement==='function' && document.body && document.body.appendChild;
   if(!realDOM || !ASSETS[assetId]){
     setScene((tag?`<div class="day-tag">${tag}</div>`:'')+`<div class="trip-fallback">${panelHTML}</div>`);
@@ -3205,12 +3224,17 @@ function reportStage(assetId, panelHTML, tag){
     const pn=ov.querySelector('.scene-full-panel--report'); if(pn){ const sc=pn.scrollTop; pn.innerHTML=panelHTML; pn.scrollTop=sc; }
     return;
   }
-  removeTitleOverlay(); removeSceneOverlay(); removeStoryOverlay(); removeHubOverlay(); removeTripStage();
+  // Keep the hub mounted so it can cross-dissolve out under the detail fading in.
+  const hub=document.getElementById('hubOverlay');
+  removeTitleOverlay(); removeStoryOverlay(); removeTripStage(); removeSceneOverlay();
+  if($('scene')) $('scene').innerHTML=''; if($('fcast')) $('fcast').innerHTML='';
+  const back = opts.noBack ? '' : `<button class="hub-back" aria-label="Back to the room" onclick="renderCurrent()">\u2190</button>`;
   ov=document.createElement('div'); ov.id='sceneOverlay'; ov.className='scene-full'; ov.setAttribute('data-asset', assetId);
   ov.innerHTML = `<img class="scene-full-bg" src="${ASSETS[assetId]}" alt="">`
-    + `<div class="scene-full-tag">${tag||''}</div>`
+    + `<div class="scene-full-tag">${tag||''}</div>` + back
     + `<div class="scene-full-panel scene-full-panel--choices scene-full-panel--report">${panelHTML}</div>`;
-  document.body.appendChild(ov); setScene('');
+  document.body.appendChild(ov);
+  fadeOutAndRemove(hub, 1100);
 }
 function startTrailhead(){
   const b=S.trip.b,w=S.weather;
@@ -3483,7 +3507,7 @@ function finishPlayerTrip(){
       ${tip?`<div class="row"><span class="l">Tips</span><span class="v" style="color:var(--gold)">+€${tip}</span></div>`:'<div class="row"><span class="l">Tips</span><span class="v">€0</span></div>'}
     </div>
     <button class="scene-go" onclick="afterPlayerTrip()">${S.phase===2?'Carry on':'End the day'}</button>`,
-    `${dayTag()} · Trip complete`);
+    `${dayTag()} · Trip complete`, {noBack:true});
 }
 function afterPlayerTrip(){ if(S.phase===2) processNext(); else nextDay(); }
 function nextDay(){ advanceDay(); }
