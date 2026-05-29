@@ -2463,7 +2463,7 @@ function renderBedroomHub(){
   const regions = [
     {region:true, label:'Forecast', action:'renderForecast()', x:49, y:33, w:36, h:44},
     {region:true, label:'Rest',     action:'openRest()',       x:21.9, y:69.9, w:16.5, h:26},
-    {region:true, label:'Leave',    action:'goMenu()',         x:95, y:52, w:9,  h:84},
+    {region:true, label:'Leave',    action:'openDoor()',       x:95, y:52, w:9,  h:84},
   ];
   const spots  = objs.concat(regions).map(hubSpot).join('');
   const tag    = `<div class="hub-tag">${dayTag()}${S.weather?' · '+S.weather.name:''}</div>`;
@@ -2541,6 +2541,13 @@ function openRest(){
     <button class="opt ${full?'disabled':'primary'}" onclick="${full?'':'restDay()'}"><span class="mark">~</span><span class="b-main">Sleep${full?' — already rested':''}<span class="b-sub">Restore energy · advances the day</span></span></button>
     <button class="opt" onclick="renderCurrent()"><span class="mark">·</span><span class="b-main">Not yet<span class="b-sub">Back to the room</span></span></button>`,
     `${dayTag()} · the bed`);
+}
+function openDoor(){
+  reportStage('report-blank', `<p class="trip-title">Out the door?</p>
+    <p class="report-note">Your season is saved — you can pick it up from the menu whenever.</p>
+    <button class="opt primary" onclick="removeSceneOverlay();goMenu()"><span class="mark">→</span><span class="b-main">Step out to the menu<span class="b-sub">Leave the room for now</span></span></button>
+    <button class="opt" onclick="renderCurrent()"><span class="mark">·</span><span class="b-main">Not yet<span class="b-sub">Stay in the room</span></span></button>`,
+    `${dayTag()} · the door`, {noBack:true});
 }
 function openCorkboard(){
   renderHUD();
