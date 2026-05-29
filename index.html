@@ -1812,7 +1812,7 @@ function renderKitchenPitchScene(){
     <div class="bubble left-bot">Kostas\u2019s boy does it, up in Sto\u00fapa. He bought a car. Tomorrow you begin. I\u2019ve told Kyr\u00eda Vo\u00fala you\u2019re in tourism now.</div>
   `;
   const panel = `<div class="scene-full-panel scene-full-panel--choices">
-    <button class="scene-go" onclick="renderSetup()">Step outside \u25b8</button>
+    <button class="scene-go" onclick="renderSetupIntro()">Step outside \u25b8</button>
   </div>`;
   if(typeof document !== 'undefined' && typeof document.createElement === 'function' && document.body && document.body.appendChild){
     const overlay = document.createElement('div');
@@ -1824,6 +1824,19 @@ function renderKitchenPitchScene(){
   } else {
     setScene(`<div class="scene-full">${cover}${bubbles}${panel}</div>`);
   }
+}
+function renderSetupIntro(){
+  // Solid-bg story beat (like the kitchen): the panigiri narrative reads
+  // undistracted, then a tap crossfades to the full scene with the picks.
+  showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('');
+  removeTitleOverlay(); removeSceneOverlay();
+  const b=BACKGROUNDS.find(x=>x.id===pickedBg)||BACKGROUNDS[0];
+  renderStoryScreen({
+    tag: 'The first night of the season',
+    text: 'Outside, the village is tuning up. It is August; down the lane a clarinet finds its note, and the smell of grilling meat is quietly winning its war with the night jasmine. The panigíri. '+b.pani,
+    onContinue: renderSetup,
+    autoMs: 13000,
+  });
 }
 function renderSetup(){
   showMenuBtn(false); $('hud').innerHTML=''; $('goal').innerHTML=''; setSub('The first night of the season');
@@ -1860,7 +1873,7 @@ function renderSetup(){
   // pick we swap only the panel's innerHTML so the image doesn't re-fade.
   const canGo = pickedKit.length>0;
   const picks = `
-    <p class="setup-lede">Outside, the village is tuning up — a clarinet finding its note, grilling meat winning its war with the night jasmine. The panigíri. ${b.pani} <b>But first — what will you guide, and what goes in the bag?</b></p>
+    <p class="setup-lede"><b>But first — what will you guide, and what goes in the bag?</b></p>
     <span class="scene-input-label">Your discipline</span>
     <div class="choices">${discChips}</div>
     ${disciplineNote}
