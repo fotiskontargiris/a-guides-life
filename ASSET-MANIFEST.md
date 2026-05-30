@@ -250,6 +250,49 @@ the renderer composes against.
 | `report-review-bad` | `assets/reports/report-review-bad.webp` | The bad‑review variant — three stars, slight ink smudge, a thumb mark in the corner |
 | `report-gear-damage` | `assets/reports/report-gear-damage.webp` | A small gear‑damage notation page — pencil sketch of a snapped pole, a wear‑score margin, the inventory's "needs replacement" stamp |
 
+### Tier M — Detail-view backdrops (3) — the painted surface behind the in-engine UI
+
+The phone / shop / backpack detail views now render proper **in-engine interfaces**
+(a real phone screen, a slot grid, a shop counter) in code. These three painted
+*backdrops* sit behind that UI to match the hub's hand-painted register. Wiring is
+already live via `detailBg()` in `index.html`: each view prefers the new id below and
+falls back to an existing asset (`report-blank` / `backpack-phase1`) until it ships, so
+adding the file + `ASSETS` entry upgrades the scene automatically — no code change.
+
+| ID | File | Subject |
+|---|---|---|
+| `phone-desk-p1` | `assets/hub/phone-desk-p1.webp` | The bedroom desk surface in close-up at morning — wood grain, a corner of the spiral notebook, a pencil, a cold coffee mug ring, the harbour soft-focus through the window beyond. **An empty clear space in the centre** where the CSS phone screen floats on top. No phone painted in (the UI is the phone); this is just the desk it lies on. 20:9 |
+| `shop-emporium-p1` | `assets/hub/shop-emporium-p1.webp` | Inside Geo's outdoor shop in Kalamata — a worn wooden counter foreground, walls of gear behind: boots on a shelf, coiled rope, hanging head-torches, folded buffs, a paddle leaning in a corner, a hand-lettered price board. Warm, cluttered, friendly. The shop UI panel sits to the right, so **keep the right third quieter** (counter / open space). 20:9 |
+| `backpack-phase1-rich` | `assets/backpack/backpack-phase1-rich.webp` | A richer re-paint of `backpack-phase1` — the small worn ~40L pack laid open on the taverna table, its compartments clearly readable as **distinct pockets/slots** (so the slot-grid UI reads as the same object), a few items half-tucked (bottle, snack bag, folded map), evening harbour in the window. 20:9 |
+
+### Tier N — Shop item icons (58) — one painted object per item
+
+The Phase 1 shop becomes a **shelf-shop**: a vertical scroll of 8 shelves (generic + the 7
+disciplines), each ~80% of the viewport tall, locked shelves dimmed. Each shelf is a row of
+painted item objects; tap one → a tier panel (cheap / standard / pro). One illustration per
+item — the tier is the buy choice, not separate art. Prompts + framing template in
+`PROMPT-PACK.md §17`. Ids match `ITEMS` in `index.html`, so the shop wires up by id (no mapping
+table). **Style:** painted single object (ink-and-watercolor with wash, not the Tier C/D line
+glyph), centred on bone-cream, consistent eye-level/scale across all 58. **Pilot:** the 4
+generic items first as the style test, then batch shelf by shelf.
+
+Files: `assets/items/item-<id>.webp`.
+
+| Shelf | Items (`item-<id>`) |
+|---|---|
+| Generic | water · snacks · sunscreen · firstaid |
+| Hiking | repellent · poles · map · shell · lamp |
+| Sea kayak | pfd · paddle · sprayskirt · drybag · bilgepump · towline · vhf · sparepaddle · paddleleash · cag · compass |
+| Canyoning | wetsuit · canyonHarness · canyonHelmet · rope · descender · throwline · canyonBag · canyonShoes · cowstails |
+| Rafting | raftThrow · raftPump · raftFlip · raftBail · raftSparePaddle |
+| Cycling | bikeRepair · bikeTubes · bikePump · bikeGPS |
+| SUP | supPump · supFin · supAnchor |
+| Climbing | quickdraws · beladevice · climbChalk · slings · climbShoesOwn *(reuses `item-rope`)* |
+| Fleet | clientkayak · clientpfd · clientwetsuit · clientharnessset · raft · raftkitset · clientbike · clientbikehelmet · clientboard · clientsupkit · clientclimbkit · clientclimbshoes |
+
+Counts: 46 personal + 12 fleet = **58** (`item-rope` shared canyon/climb, painted once → 57
+unique files).
+
 ---
 
 ## 10¾. Tier L — desk hub (see DESK-HUB.md)

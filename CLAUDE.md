@@ -169,6 +169,13 @@ Balance is a **first pass** — these are the dials to turn for a balance featur
 - `DISCIPLINES.md` — the full gear/shop catalogue + worked content for all 7 disciplines
   (hiking, sea kayak, canyon, raft, cycle, SUP, climb): gear lines, routes, weather rules,
   in-voice events, certs; plus the outdoor-shop system and the extended weather palette.
+- `EQUIPMENT.md` — the **gear bible**: every item across all disciplines reconciled between
+  the implemented constants in `index.html` (`ITEMS`/`ITEM_COST`/`ITEM_LIFETIME`/
+  `ITEM_ACTIVITY`/`FLEET_ITEMS`/`TIER_MULT`/`recommended()`/`CERTS`/`INFRA`, authoritative)
+  and the `DISCIPLINES.md` design wishlist. Per-discipline kit tables (cost/lifetime/when-
+  recommended), fleet/capacity, cert ladders, transport gates, tier math. Marks **✓ in the
+  build** vs **◐ designed**. The single source of truth for gear numbers — update when the
+  code constants change.
 - `CATASTROPHES.md` — the catastrophe-heartbeat seedbank (tiered, in-voice).
 - `BUILD-PHASE-1.md` — the implementation brief: read order, first vertical slice, guardrails.
 

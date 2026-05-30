@@ -19,6 +19,7 @@ standalone scene illustrations that don't sit on a single surface.
 | `reports/` | **Day report** | Day-report backgrounds and surfaces — receipts, review cards, ledger pages | WebP | `report-{slug}.webp` |
 | `scenes/` | special set pieces | Moments that aren't bound to one surface — kitchen (the *pre-desk* opening), Hilux dawn (pathos), panigíri (parody-lift), first-hire (transition), radio-crisis (Phase 2 beat) | WebP | `scene-{slug}.webp` |
 | `chrome/` | UI flat-lays | Single-object flat-lays placed inside other screens — logbook, certificate, loan papers | WebP | `chrome-{slug}.webp` |
+| `items/` | **Shop shelves** | One painted object per shop item (58: generic + per-discipline + fleet) — browsed on the shelf-shop; tier chosen on tap | WebP | `item-{id}.webp` (id matches `ITEMS`) |
 | `disciplines/` | glyph chrome | The seven discipline icons (ink-line) | WebP | `glyph-discipline-{slug}.webp` |
 | `weather/` | glyph chrome | The six weather state icons | WebP | `glyph-weather-{slug}.webp` |
 | `title/` | cover / wordmark | Title screen cover image + wordmark | WebP + SVG | `title-cover.webp`, `title-wordmark.svg` |

@@ -969,6 +969,197 @@ Subject: A small notation page from the gear logbook, lying on the wooden table 
 No legible text — the handwritten check-list and headers are real-shape but illegible. No people. Match the reference's surface and palette, just slightly cooler with the rain-grey accent in the stamp ink. No anime, no cartoon, no photoreal, no 3D, no vector flat design.
 ```
 
+### Tier M — Detail-view backdrops (3)
+
+The phone / shop / backpack detail views render their *interface* in code now (a real
+phone screen, a slot grid, a shop counter). These three paintings are the **surface
+behind that UI** — they bring the hub's hand-painted register into the screens you tap
+into. The in-engine UI is layered on top, so each prompt below reserves a quiet zone for
+it. Wiring is already live (`detailBg()`); save the file, add the id to `ASSETS`, done.
+
+#### `phone-desk-p1` — the desk the phone lies on · noon-gold accent
+Save to: `assets/hub/phone-desk-p1.webp`
+
+```
+[§3 style anchor — verbatim]
+
+Frame as a wide landscape composition, about 20:9 ratio (modern phone landscape). A close, slightly-from-above view of a desk surface in the central 16:9 safe zone, the surrounding wood and window light filling out to 20:9.
+
+Subject: A close-up of the same worn wooden school desk from the Phase 1 bedroom (match the bedroom hub reference) in soft morning light — visible wood grain, the corner of a spiral notebook and a pencil at one edge, a faint cold-coffee mug ring, a scrap of paper. The wide window onto Kalamata harbour sits soft-focus in the upper background. IMPORTANT: leave the CENTRE of the frame an empty, uncluttered patch of desk — a clear rectangular space where a phone would lie. Do NOT paint a phone, screen, or any rectangular device in the frame; that empty desk space is where the interface is composited on top in code.
+
+No people. No phone, no screen, no tablet. Match the warm Mediterranean register, the layered-objects-on-a-surface physicality, and the morning light of the reference image. No anime, no cartoon, no photoreal, no 3D, no vector flat design.
+```
+
+#### `shop-emporium-p1` — inside Geo's outdoor shop · noon-gold accent
+Save to: `assets/hub/shop-emporium-p1.webp`
+
+```
+[§3 style anchor — verbatim]
+
+Frame as a wide landscape composition, about 20:9 ratio (modern phone landscape), with the busy gear wall to the LEFT and centre and the RIGHT THIRD kept quieter (open counter, a patch of wall) — a UI panel is composited over the right third, so leave it visually calm.
+
+Subject: The cluttered, friendly interior of Geo's small outdoor shop in Kalamata. A worn wooden sales counter runs along the foreground. Behind and around it, walls of gear: hiking boots paired on a shelf, coils of climbing rope on pegs, a row of head-torches hanging, folded buffs and base-layers stacked, a sea-kayak paddle leaning in a corner, a hand-lettered chalk price board, a dusty potted basil on the counter. Warm afternoon light through a shopfront window. The shop of a man who owes your father a favour — generous, slightly chaotic, well-loved.
+
+No people. Keep the right third calm and uncluttered for the overlaid panel. Match the warm Mediterranean register and physical surface feel of the reference image. No anime, no cartoon, no photoreal, no 3D, no vector flat design.
+```
+
+#### `backpack-phase1-rich` — the open pack, slots readable · noon-gold accent
+Save to: `assets/backpack/backpack-phase1-rich.webp`
+
+```
+[§3 style anchor — verbatim]
+
+Frame as a wide landscape composition, about 20:9 ratio (modern phone landscape) — the open pack in the central 16:9 safe zone, the surrounding taverna table filling out to 20:9.
+
+Subject: A richer re-paint of the small worn ~40-litre outdoor backpack, laid OPEN on the wooden taverna table from the reference image, viewed slightly from above. The pack's interior reads clearly as a set of DISTINCT pockets/compartments — four or so defined slots, so it visually matches a slot grid laid over it. A few items are half-tucked into slots: a water bottle, a small bag of trail snacks, a thin first-aid pouch, a folded paper map; one or two slots left visibly empty. Dusty olive canvas, sun-and-salt-faded leather straps. A pencil and small notebook beside it. The window shows the harbour at evening.
+
+No people. Match the warm Mediterranean register and the layered-objects-on-a-surface physicality of the reference image. No anime, no cartoon, no photoreal, no 3D, no vector flat design.
+```
+
+---
+
+## 17. Tier N — shop item icons (58) — one painted object per item
+
+The Phase 1 shop becomes **shelves of real objects you browse**: a generic shelf plus one per
+discipline (hike, sea kayak, canyon, raft, cycle, SUP, climb), each ~80% of the screen tall,
+scrolled vertically; locked shelves dimmed. You tap an item, then a panel offers the three
+**tiers** (cheap / standard / pro). So we need **one illustration per item** — the tier is a
+buy choice, not a separate picture.
+
+These are **painted objects**, not the line-only pictograms of Tier C/D — "the usual style of
+the game" (ink-and-watercolor with wash), a single object on bone-cream paper so it cuts out
+cleanly onto a shelf card. Consistency across the 58 is everything: same eye-level, same light,
+same scale-on-the-page, so a shelf of them reads as one set. Use the **reference-image lock**
+(§5) and generate in batches per shelf within one conversation so the style holds.
+
+**Framing template — change only the `Subject:` line.**
+
+```
+[§3 style anchor — verbatim]
+
+Frame as a single product object, centred, on warm limestone bone-cream paper with the paper showing through around it (no scene, no background fill, no shelf, no surface line). Square-ish 1:1 composition. Slight three-quarter view at a steady eye level, the object filling most of the frame with a little breathing room. One soft wash shadow directly beneath. The same observed sketch energy as the reference image — loose ink line, wet translucent wash, never tightly rendered.
+
+Subject: <ITEM SUBJECT — see table>
+
+No text, no label, no price tag, no other objects in the frame, no border or card edge, no hands or people. This is ONE object, ink and watercolor on bone-cream paper — not a photo, not 3D, not a flat vector icon, not a cartoon.
+```
+
+Naming: `item-<id>` → `assets/items/item-<id>.webp`. The ids match `ITEMS` in `index.html`, so
+the shop wires up by id with no mapping table. **Pilot first:** do the 4 generic items as the
+style test (they appear for every player); once they sit together as a set, batch the rest.
+
+### Generic shelf (every discipline)
+
+| ID | Subject |
+|---|---|
+| `item-water` | a battered aluminium water bottle, lightly scratched, the screw cap on a short cord |
+| `item-snacks` | a small paper bag of trail food spilling a few almonds, dried figs, and a wrapped cereal bar |
+| `item-sunscreen` | a well-used tube of sun cream, cap off, a smear of white at the nozzle |
+| `item-firstaid` | a small soft first-aid pouch with a faded cross on the front, zip half open |
+
+### Hiking shelf
+
+| ID | Subject |
+|---|---|
+| `item-repellent` | a small pump-spray bottle of insect repellent, the paper label peeling at one corner |
+| `item-poles` | a pair of telescoping aluminium trekking poles crossed in an X, cork grips, worn baskets |
+| `item-map` | a folded topographic map with a small brass baseplate compass resting on top |
+| `item-shell` | a packable hooded rain shell, half-stuffed, lightweight nylon catching the light |
+| `item-lamp` | a head-torch with an elastic head strap looped beside it, lens facing forward |
+
+### Sea-kayak shelf
+
+| ID | Subject |
+|---|---|
+| `item-pfd` | a paddling buoyancy-aid lifejacket, sun-faded red, side buckles hanging open |
+| `item-paddle` | a sea-kayak paddle with asymmetric blades, a black drip-ring on the shaft |
+| `item-sprayskirt` | a neoprene kayak spray-skirt, the grab-loop at the front, deck cord around the rim |
+| `item-drybag` | a roll-top dry bag rolled closed with the buckle clipped, air valve on the side |
+| `item-bilgepump` | a hand bilge pump with a yellow foam float collar near the top |
+| `item-towline` | a kayak tow-line coiled into a small deck bag, a carabiner clipped to the tail |
+| `item-vhf` | a chunky handheld marine VHF radio, stubby rubber antenna, waterproof seams |
+| `item-sparepaddle` | a two-piece split spare paddle, the join ferrule visible at the centre |
+| `item-paddleleash` | a coiled stretchy paddle leash with a velcro cuff and a small clip |
+| `item-cag` | a paddling cag (light neoprene-cuffed splash top), folded loosely |
+| `item-compass` | a round deck-mount boat compass sitting beside a folded nautical chart |
+
+### Canyoning shelf
+
+| ID | Subject |
+|---|---|
+| `item-wetsuit` | a folded canyoning wetsuit with reinforced patches at the knees and seat |
+| `item-canyonHarness` | a canyoning harness with a thick protective seat patch, leg loops open |
+| `item-canyonHelmet` | a vented white water-sports helmet with a chin strap |
+| `item-rope` | a neatly coiled static rope (warm sand colour) with a butterfly coil tie *(shared: the climbing shelf reuses `item-rope`)* |
+| `item-descender` | a figure-eight / canyon descender device clipped to a screwgate carabiner |
+| `item-throwline` | a small throw-bag with the rope tail poking out of the drawstring top |
+| `item-canyonBag` | a small barrel-shaped canyon keg / dry bag with a clip lid |
+| `item-canyonShoes` | a pair of wet canyoning shoes, deep-lugged soles, drainage mesh |
+| `item-cowstails` | a pair of cowstail lanyards of webbing, each with a carabiner at the end |
+
+### Rafting shelf
+
+| ID | Subject |
+|---|---|
+| `item-raftThrow` | a river throw-bag, drawstring top, a loop of rope coiled inside |
+| `item-raftPump` | a barrel foot-pump with a small patch-and-glue repair kit beside it |
+| `item-raftFlip` | a flip line — a loop of flat webbing with a carabiner |
+| `item-raftBail` | a cut-down plastic bailing bucket on a short cord |
+| `item-raftSparePaddle` | a spare raft paddle with a T-grip handle and a scuffed blade |
+
+### Cycling shelf
+
+| ID | Subject |
+|---|---|
+| `item-bikeRepair` | a small unrolled bike repair kit — tyre levers, patches, quick-link chain pieces |
+| `item-bikeTubes` | a coiled spare inner tube beside a folded spare tyre |
+| `item-bikePump` | a mini frame pump lying next to a folding multitool |
+| `item-bikeGPS` | a handlebar GPS cycle computer, a faint route line on the small screen |
+
+### SUP shelf
+
+| ID | Subject |
+|---|---|
+| `item-supPump` | a tall double-action SUP hand pump with a coiled inflation hose |
+| `item-supFin` | a single spare SUP fin beside a small repair patch |
+| `item-supAnchor` | a small folding grapnel anchor with a coil of line |
+
+### Climbing shelf
+
+| ID | Subject |
+|---|---|
+| `item-quickdraws` | a rack of quickdraws (sling + two carabiners each) hung on a gear sling |
+| `item-beladevice` | a tube-style belay device on a pear-shaped screwgate carabiner |
+| `item-climbChalk` | a climbing chalk bag dusted white at the rim, a small brush tucked in |
+| `item-slings` | two nylon slings looped together with a couple of spare carabiners |
+| `item-climbShoesOwn` | a pair of approach shoes, sticky rubber rand, laces loose |
+
+*(Climbing also uses `item-rope` from the canyoning shelf — paint it once.)*
+
+### Fleet items (per-client kit; sold in ones — these set the group-size cap)
+
+Paint these to read as *client* / spare kit — a single clean rental object, or a small grouped
+set where the item is "a set."
+
+| ID | Shelf | Subject |
+|---|---|---|
+| `item-clientkayak` | sea kayak | a sit-on-top client kayak seen at a three-quarter angle, moulded seat, scupper holes, a carry handle |
+| `item-clientpfd` | sea kayak | a client paddle-and-buoyancy-aid set — a lifejacket with a paddle laid across it |
+| `item-clientwetsuit` | canyon | a client wetsuit, plain, folded neatly as rental stock |
+| `item-clientharnessset` | canyon | a client harness with a white helmet nested inside the leg loops |
+| `item-raft` | raft | a grey-and-yellow inflatable river raft at a three-quarter angle, thwarts and grab-lines visible |
+| `item-raftkitset` | raft | a raft kit set grouped together — a T-grip paddle, a PFD, and a helmet |
+| `item-clientbike` | cycle | a hardtail client mountain bike in clean side profile |
+| `item-clientbikehelmet` | cycle | a vented cycling helmet, straps buckled |
+| `item-clientboard` | SUP | an inflatable stand-up paddleboard with a paddle laid diagonally across it |
+| `item-clientsupkit` | SUP | a SUP kit grouped — a paddle, a coiled ankle leash, and a buoyancy aid |
+| `item-clientclimbkit` | climb | a client climbing harness with a helmet resting beside it |
+| `item-clientclimbshoes` | climb | a pair of velcro rental climbing shoes, downturned toes |
+
+**Wall test (per §767 ethos):** lay the 4 generic items in a row first. If they look like one
+shop's stock — same light, same scale, same hand — proceed shelf by shelf. If any one looks
+like a different game, re-roll it before batching the rest.
+
 ---
 
 ## Cross‑references
