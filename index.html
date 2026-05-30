@@ -939,6 +939,33 @@
     background:rgba(27,27,31,.42); padding:6px 15px; border-radius:20px;
     pointer-events:none; animation:hubHintFade 6s ease forwards; }
   @keyframes hubHintFade{ 0%{opacity:0;} 12%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;} }
+  /* mum's guided-tour overlay (sequenced onboarding — one nudge at a time) */
+  .hub-nudge{ position:absolute; left:50%; bottom:104px; z-index:7;
+    max-width:78%; text-align:center; pointer-events:none;
+    font-family:'Fraunces',serif; font-style:italic; font-size:15px; line-height:1.5;
+    color:#F2E8D3; text-shadow:0 1px 6px rgba(0,0,0,.95);
+    background:rgba(20,26,32,.78); padding:9px 16px 11px; border-radius:14px;
+    border-left:2px solid #6FB0AD;
+    animation:nudgeIn .55s cubic-bezier(.2,.7,.2,1) both;
+    transform-origin:bottom center; }
+  .hub-nudge::before{ content:'From the kitchen door'; display:block;
+    font-family:'Spline Sans Mono',monospace; font-style:normal; font-size:9.5px;
+    letter-spacing:.22em; text-transform:uppercase; color:#6FB0AD; margin-bottom:5px; }
+  @keyframes nudgeIn{
+    from{ opacity:0; transform:translate(-50%, 10px); }
+    to  { opacity:1; transform:translate(-50%, 0); }
+  }
+  /* the spot mum is pointing at — gentle amber pulse */
+  .hub-obj.tut-cued, .hub-region.tut-cued{
+    animation:tutPulse 2.2s ease-in-out infinite;
+    border-radius:8px;
+    transition:box-shadow .3s ease;
+  }
+  .hub-obj.tut-cued[data-label]::after, .hub-region.tut-cued[data-label]::after{ opacity:1 !important; }
+  @keyframes tutPulse{
+    0%,100%{ box-shadow:0 0 0 2px rgba(232,168,81,.35), 0 0 14px 3px rgba(232,168,81,.22); }
+    50%   { box-shadow:0 0 0 3px rgba(232,168,81,.7),  0 0 28px 8px rgba(232,168,81,.5); }
+  }
   /* hub placement editor (dev tool: press E while the hub is open) */
   body.hub-edit .hub-obj, body.hub-edit .hub-region{ animation:none !important; }
   body.hub-edit .hub-obj{ outline:1.5px dashed rgba(238,229,210,.6); cursor:move; }
@@ -1221,6 +1248,7 @@ function renderForecast(){
     </div>`;
   }).join('');
   reportStage('bedroom-p1-window-summer', `<p class="trip-title">The week ahead</p>
+    ${mumDoor('window', "Look at the sky before you say yes to anyone, "+mumDim()+". Your uncle Spyros says the wind tells you what the day will be — and he is at sea forty years.")}
     <p class="report-note">How the days read from the window. Save the high, exposed lines for clear weather.</p>
     <div class="team">${cards}</div>
     <button class="scene-go" onclick="${back}">Back to the day</button>`,
@@ -2457,6 +2485,7 @@ function renderLog(){
     items='<div class="row"><span class="l">Nothing logged yet.</span><span class="v"></span></div>';
   }
   reportStage('chrome-logbook', `<p class="trip-title">The logbook</p>
+    ${mumDoor('notebook', "The notebook, "+mumDim()+". Write what happened each day — the good and the not-good. That is how you become better at this.")}
     <p class="report-note">Every day's doings, most recent first.${total?` &middot; ${total} ${total===1?'entry':'entries'}`:''}</p>
     <div class="ledger" style="max-height:none">${items}</div>
     <button class="scene-go" onclick="${back}">Back to the day</button>`,
@@ -2566,9 +2595,29 @@ function removeHubOverlay(){
 function hubSpot(o){
   const pos = o.region ? `left:${o.x}%;top:${o.y}%;width:${o.w}%;height:${o.h}%;`
                        : `left:${o.x}%;top:${o.y}%;width:${o.w}%;`;
-  const cls = o.region ? 'hub-region' : 'hub-obj';
+  const cls = (o.region ? 'hub-region' : 'hub-obj') + (o.cued ? ' tut-cued' : '');
   const art = o.region ? '' : (imgFor(o.asset, {cls:'', alt:o.label}) || '');
   return `<button class="${cls}" style="${pos}" data-label="${o.label}" aria-label="${o.label}" onclick="${o.action}">${art}</button>`;
+}
+/* Guided onboarding tour: mum nudges one hub element at a time. Each step's flag
+   in S.tut[] flips when the player visits the matching detail view (mumDoor()),
+   so returning to the hub naturally reveals the next nudge. Order matters —
+   it's the logical first-day arc of a guide. */
+const HUB_TUT_ORDER = [
+  {key:'phone',     label:'Phone',    nudge: () => 'Your phone — go on, look at it. Yiannis has been putting your name about.' },
+  {key:'window',    label:'Forecast', nudge: () => 'Before you say yes to anyone, look at the sky.' },
+  {key:'shop',      label:'Shop',     nudge: () => "Geo's leaflet is on the table — go and see what your bag needs." },
+  {key:'backpack',  label:'Pack',     nudge: () => 'And your pack — what is in it?' },
+  {key:'wallet',    label:'Wallet',   nudge: () => 'Look in your wallet, '+mumDim()+'. See what you have.' },
+  {key:'notebook',  label:'Logbook',  nudge: () => 'There is a notebook there. Write each day, the good and the not-good.' },
+  {key:'corkboard', label:'People',   nudge: () => 'The corkboard, '+mumDim()+'. Empty for now. Look once.' },
+  {key:'rest',      label:'Rest',     nudge: () => 'And when you are tired, sit. The mountain is still there tomorrow.' },
+  {key:'door',      label:'Leave',    nudge: () => 'And the door. Come back whenever — the kitchen does not close.' },
+];
+function currentHubTut(){
+  if(!S.tut) S.tut={};
+  for(const step of HUB_TUT_ORDER){ if(!S.tut[step.key]) return step; }
+  return null;
 }
 function toggleHubCue(){
   if(!document.body) return;
@@ -2649,6 +2698,12 @@ function renderBedroomHub(){
     {region:true, label:'Rest',     action:'openRest()',       x:21.9, y:69.9, w:16.5, h:26},
     {region:true, label:'Leave',    action:'openDoor()',       x:95, y:52, w:9,  h:84},
   ];
+  // Guided tour — if a tut step is pending, mark the matching spot so it pulses.
+  const _tut = currentHubTut();
+  if(_tut){
+    objs.forEach(o => { if(o.label===_tut.label) o.cued=true; });
+    regions.forEach(o => { if(o.label===_tut.label) o.cued=true; });
+  }
   const spots  = objs.concat(regions).map(hubSpot).join('');
   const tag = hudTagHTML();
   const status = hudStatsHTML();
@@ -2669,7 +2724,8 @@ function renderBedroomHub(){
     ? `<img class="hub-window" src="${ASSETS['bedroom-p1-window-hilux']}" alt="" style="left:49%;top:30%;width:50%">` : '';
   const overlay = document.createElement('div');
   overlay.id='hubOverlay'; overlay.className='hub';
-  overlay.innerHTML = `<div class="hub-stage">${base}${win}${hilux}${spots}${tag}${status}${hint}${mum}</div>${help}`;
+  const nudge = _tut ? `<div class="hub-nudge">${_tut.nudge()}</div>` : '';
+  overlay.innerHTML = `<div class="hub-stage">${base}${win}${hilux}${spots}${tag}${status}${hint}${mum}${nudge}</div>${help}`;
   document.body.appendChild(overlay);
   fadeOutAndRemove(_outDetail, 1100); fadeOutAndRemove(_outTrip, 1100);  // cross-dissolve back from a detail
 }
@@ -2684,6 +2740,7 @@ function openPhone(){
     return optBooking(b, dis, reason, `pickBooking(${i})`);
   }).join('');
   reportStage('report-blank', `<p class="trip-title">Who is paying you today?</p>
+    ${mumDoor('phone', "Your phone — finally. Yiannis from the kafeneío has been telling everyone you are in tourism now. Whoever wants a guide, calls him first. So look at what is on it each morning.")}
     <p class="report-note">The morning's bookings are on the screen. Pick a trip, or set the phone down and sort yourself out.</p>
     ${cards||'<p class="report-note">Nothing new this morning. Quiet.</p>'}
     <button class="scene-go" onclick="renderCurrent()">Set the phone down</button>`,
@@ -2696,6 +2753,7 @@ function openWallet(){
     : '<p>No debts. Clean.</p>';
   const ys=S.yearStats||{};
   reportStage('chrome-loan-papers', `<p class="trip-title">€${Math.round(S.cash||0)}</p>
+    ${mumDoor('wallet', "Two hundred euros and your father’s good wishes. It is not a lot, "+mumDim()+". Spend it like you wanted it to last.")}
     <p class="report-note">What you have to your name this morning.</p>
     ${debt}
     <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--ink-faint)">This year · fees €${Math.round(ys.fees||0)} · tips €${Math.round(ys.tips||0)} · wages paid €${Math.round(ys.wages||0)}</p>
@@ -2710,6 +2768,7 @@ function openBackpack(){
     ? owned.map(id=>`<li><b>${ITEMS[id]||id}</b> — ${ownedTier(id)||'standard'} · ${ownedTrips(id)} trip${ownedTrips(id)===1?'':'s'} left</li>`).join('')
     : '<li>Empty but for the bag itself.</li>';
   reportStage('backpack-phase1', `<p class="trip-title">The pack</p>
+    ${mumDoor('backpack', "Look at the pack. Empty, mostly. The bag holds four things, no more. Water always. The rest depends on the day.")}
     <p class="report-note">Carries up to <b>${S.packSize||4}</b> item${(S.packSize||4)===1?'':'s'} a trip. You load it at the trailhead, before you walk.</p>
     <ul style="font-size:14px;line-height:1.6;padding-left:18px;margin:0 0 12px">${items}</ul>
     <button class="opt" onclick="openShop()"><span class="mark">▣</span><span class="b-main">Buy or refill kit<span class="b-sub">Open the catalogue</span></span></button>
@@ -2728,6 +2787,7 @@ function openRest(){
 }
 function openDoor(){
   reportStage('report-blank', `<p class="trip-title">Out the door?</p>
+    ${mumDoor('door', "The door, "+mumDim()+". Out you go. Come back whenever — the kitchen does not close.")}
     <p class="report-note">Your season is saved — you can pick it up from the menu whenever.</p>
     <button class="opt primary" onclick="removeSceneOverlay();goMenu()"><span class="mark">→</span><span class="b-main">Step out to the menu<span class="b-sub">Leave the room for now</span></span></button>
     <button class="opt" onclick="renderCurrent()"><span class="mark">·</span><span class="b-main">Not yet<span class="b-sub">Stay in the room</span></span></button>`,
@@ -2736,6 +2796,7 @@ function openDoor(){
 function openCorkboard(){
   renderHUD();
   reportStage('bedroom-p1-corkboard-empty', `<p class="trip-title">Your people</p>
+    ${mumDoor('corkboard', "The corkboard is empty for now. When you take someone on, you put their photo here — so you remember who is on the mountain with you.")}
     <p class="report-note">Old school photos, a panigíri ticket, a faded team list. For now it is just you — when you take someone on, their face goes up here.</p>
     <button class="scene-go" onclick="renderCurrent()">Back to the room</button>`,
     `${dayTag()} · the corkboard`);
@@ -3432,7 +3493,7 @@ function reportStage(assetId, panelHTML, tag, opts){
   const hub=document.getElementById('hubOverlay');
   removeTitleOverlay(); removeStoryOverlay(); removeTripStage(); removeSceneOverlay();
   if($('scene')) $('scene').innerHTML=''; if($('fcast')) $('fcast').innerHTML='';
-  const back = opts.noBack ? '' : `<button class="hub-back" aria-label="Back to the room" onclick="renderCurrent()">\u2190</button>`;
+  const back = opts.noBack ? '' : `<button class="hub-back" aria-label="Back" onclick="${opts.back||'renderCurrent()'}">\u2190</button>`;
   ov=document.createElement('div'); ov.id='sceneOverlay'; ov.className='scene-full'; ov.setAttribute('data-asset', assetId);
   ov.innerHTML = `<img class="scene-full-bg" src="${ASSETS[assetId]}" alt="">`
     + hudTagHTML() + hudStatsHTML() + back
@@ -4275,7 +4336,7 @@ function renderSummary(){
     </div>
     <p class="report-note" style="margin-top:10px">Tips are the truest sign you went above and beyond — clients only reach into their pockets when a day was special.</p>
     ${S.phase===2?`<div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(27,27,31,.5);margin:4px 0 7px">The team</div><div class="ledger">${roster}</div>`:''}`,
-    '', {});
+    `${dayTag()} · season summary`, {back});
 }
 
 /* ---------------- gear & trailhead ---------------- */
