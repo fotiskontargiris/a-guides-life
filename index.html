@@ -401,6 +401,21 @@
   button.opt .b-sub{display:block; font-size:12.5px; color:var(--ink-faint); font-style:italic; margin-top:2px;}
   button.opt.disabled{opacity:.4; pointer-events:none; filter:grayscale(.5);}
   button.opt.primary{border-color:rgba(210,117,74,.55); background:linear-gradient(180deg, rgba(210,117,74,.16), rgba(0,0,0,.05));}
+  /* settings on/off pill (Music, Fullscreen) */
+  .opt .sw{font-family:'Spline Sans Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.1em;
+    padding:3px 9px; border-radius:999px; border:1px solid var(--edge); color:var(--ink-faint); flex:none;}
+  .opt .sw.on{color:#0c272c; background:var(--gold); border-color:var(--gold);}
+  /* credits page (rendered in the menu sheet) */
+  .credits{max-height:52vh; overflow-y:auto; padding:0 2px 2px; margin-bottom:12px; text-align:left;}
+  .credits h3{font-family:'Fraunces',serif; font-weight:600; font-size:21px; margin:2px 0 6px; color:var(--ink);}
+  .credits h3 em{color:var(--gold); font-style:italic; font-weight:500;}
+  .credits .credits-lede{font-family:'Spectral',serif; font-style:italic; font-size:14px; color:var(--ink-dim); margin:0 0 15px; line-height:1.55;}
+  .credits .credits-roll{display:flex; flex-direction:column; gap:9px; margin:0 0 15px;}
+  .credits .credits-roll > div{display:flex; justify-content:space-between; gap:14px; align-items:baseline; border-bottom:1px solid var(--edge); padding-bottom:8px;}
+  .credits .credits-roll span{font-family:'Spline Sans Mono',monospace; font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint);}
+  .credits .credits-roll b{font-family:'Fraunces',serif; font-weight:600; font-size:14px; color:var(--ink); text-align:right;}
+  .credits .credits-note{font-size:13.5px; color:var(--ink-dim); line-height:1.6; margin:0;}
+  .credits .credits-note em{color:var(--ink-faint); font-style:italic;}
 
   .booking{display:flex; flex-direction:column; align-items:flex-start; gap:2px;}
   .booking .route{font-family:'Fraunces',serif; font-size:16px; font-weight:600;}
@@ -870,7 +885,7 @@
     opacity:0; transition:opacity .2s; pointer-events:none; }
   body.hub-cue .hub-obj[data-label]::after, body.hub-cue .hub-region[data-label]::after{ opacity:1; }
   /* top-center date / weather plate — frosted ink pill + watercolor weather glyph */
-  .hub-tag{ position:absolute; top:13px; left:50%; transform:translateX(-50%); z-index:5;
+  .hub-tag{ position:absolute; top:13px; right:64px; z-index:120;
     display:flex; align-items:center; gap:10px; pointer-events:none; white-space:nowrap;
     padding:5px 15px; border-radius:999px;
     background:rgba(18,26,28,.52); border:1px solid rgba(227,184,99,.34);
@@ -885,7 +900,7 @@
   .hub-wx-name{ font-family:'Spline Sans Mono',monospace; font-size:11px; font-weight:700;
     letter-spacing:.13em; text-transform:uppercase; text-shadow:0 1px 4px rgba(0,0,0,.55); }
   /* bottom-left status — three frosted chips with fountain-pen line icons */
-  .hub-status{ position:absolute; left:13px; bottom:12px; z-index:5;
+  .hub-status{ position:absolute; left:54px; top:14px; z-index:120;
     display:flex; gap:7px; align-items:center; pointer-events:none; }
   .hub-stat{ display:inline-flex; align-items:center; gap:5px;
     padding:5px 11px 5px 9px; border-radius:999px;
@@ -1092,6 +1107,8 @@
 <div class="drawer" id="drawer" onclick="if(event.target===this)closeMenu()">
   <div class="sheet" id="sheet"></div>
 </div>
+<!-- background music: toggled from Settings; default off. Drop a loop at assets/audio/theme.mp3 -->
+<audio id="bgm" loop preload="none"></audio>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -1607,7 +1624,7 @@ function preloadEarly(){
   const ids = ['scene-kitchen','scene-panigiri'].concat(Object.keys(ASSETS).filter(k => k.indexOf('bedroom-p1')===0));
   ids.forEach(id=>{ const src=ASSETS[id]; if(src){ const im=new Image(); im.decoding='async'; im.src=src; } });
 }
-async function boot(){ renderTitle(null,true); const save=await loadSave(); cachedSave=save; renderTitle(save,false); preloadEarly(); }
+async function boot(){ renderTitle(null,true); const save=await loadSave(); cachedSave=save; renderTitle(save,false); preloadEarly(); armMusic(); }
 function removeTitleOverlay(){
   const ex = document.getElementById('titleOverlay');
   if(ex && ex.parentNode) ex.parentNode.removeChild(ex);
@@ -1692,6 +1709,8 @@ function renderTitle(save, loading){
   const controls = `<div class="title-full-controls">
     ${btn('▸','Continue', sub, !canCont, 'continueGame()')}
     ${btn('✦','New game','Home to Kalamata', false, 'startNewGame()')}
+    ${btn('⚙︎','Settings','Music · fullscreen', false, "openSettings('title')")}
+    ${btn('❦','Credits','About the game', false, "openCredits('title')")}
   </div>`;
   const footnote = hasStorage()
     ? ''
@@ -2268,19 +2287,91 @@ function setScene(html){
 // Permanent hamburger (see #menuBtn CSS). Kept as a no-op for compat
 // with existing render functions that still call showMenuBtn(true/false).
 function showMenuBtn(on){ /* no-op: button is always visible */ }
+/* ---------- settings (persist independent of the save) + background music ----------
+   The Music toggle is wired now; default OFF (browsers block autoplay-with-sound
+   anyway). Drop a loop into assets/audio/theme.mp3 and it plays when toggled on. */
+const SETTINGS_KEY='agl_settings';
+const BGM_SRC='assets/audio/theme.mp3';
+let SETTINGS=loadSettings();
+let _menuFrom=null;   // which menu opened Settings: 'title' | 'menu'
+function loadSettings(){
+  try{ const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}'); return {music:!!s.music}; }
+  catch(e){ return {music:false}; }
+}
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY,JSON.stringify(SETTINGS)); }catch(e){} }
+function bgmEl(){
+  let a=document.getElementById('bgm');
+  if(!a && document.body){ a=document.createElement('audio'); a.id='bgm'; a.loop=true; a.preload='none'; a.volume=0.5; document.body.appendChild(a); }
+  return a;
+}
+function applyMusic(){
+  const a=bgmEl(); if(!a) return;
+  if(SETTINGS.music){ if(!a.getAttribute('src')) a.src=BGM_SRC; const p=a.play&&a.play(); if(p&&p.catch)p.catch(()=>{}); }
+  else { try{ a.pause(); }catch(e){} }
+}
+function toggleMusic(){ SETTINGS.music=!SETTINGS.music; saveSettings(); applyMusic(); return SETTINGS.music; }
+/* resume persisted music on the first user gesture (autoplay policy), and keep the
+   Settings panel's Fullscreen row in sync when fullscreen state changes. */
+function armMusic(){
+  if(typeof document==='undefined') return;
+  const go=()=>{ if(SETTINGS.music) applyMusic(); document.removeEventListener('pointerdown',go); document.removeEventListener('keydown',go); };
+  document.addEventListener('pointerdown',go); document.addEventListener('keydown',go);
+  const sync=()=>{ if(_menuFrom!=null && $('drawer') && $('drawer').classList.contains('open')) openSettings(_menuFrom); };
+  document.addEventListener('fullscreenchange',sync); document.addEventListener('webkitfullscreenchange',sync);
+}
+
+/* ---------- the menu surfaces (title + in-game share one Settings / Credits) ---------- */
 function toggleMenu(){ $('drawer').classList.contains('open')?closeMenu():openMenu(); }
-function closeMenu(){ $('drawer').classList.remove('open'); }
+function closeMenu(){ $('drawer').classList.remove('open'); _menuFrom=null; }
+function toggleRow(mark,label,sub,on,onclick){
+  return `<button class="opt" onclick="${onclick}">
+    <span class="mark">${mark}</span>
+    <span class="b-main" style="flex:1">${label}${sub?`<span class="b-sub">${sub}</span>`:''}</span>
+    <span class="sw ${on?'on':''}">${on?'ON':'OFF'}</span></button>`;
+}
 function openMenu(){
-  const fs = isFullscreen();
+  _menuFrom=null;
+  const onTitle = typeof document!=='undefined' && !!document.getElementById('titleOverlay');
+  const items = onTitle
+    ? `${simpleOpt('⚙︎','Settings','Music · fullscreen', false, "openSettings('menu')")}
+       ${simpleOpt('❦','Credits','About the game', false, "openCredits('menu')")}
+       ${simpleOpt('‹','Close','', false, "closeMenu()")}`
+    : `${simpleOpt('‹','Resume','Back to the day', false, "closeMenu()")}
+       ${simpleOpt('▦','Season summary','How rich, how famous, how doomed', false, "closeMenu(); renderSummary()")}
+       ${simpleOpt('⚙︎','Settings','Music · fullscreen', false, "openSettings('menu')")}
+       ${simpleOpt('❦','Credits','About the game', false, "openCredits('menu')")}
+       ${simpleOpt('⌂','Main menu','Save and slink back to the title', false, "closeMenu(); goMenu()")}`;
   $('sheet').innerHTML=`<div class="grip"></div><div class="sh">Menu</div>
+    <div class="choices">${items}</div>`;
+  $('drawer').classList.add('open');
+}
+function openSettings(from){
+  _menuFrom=from;
+  const back = from==='menu' ? "openMenu()" : "closeMenu()";
+  $('sheet').innerHTML=`<div class="grip"></div><div class="sh">Settings</div>
     <div class="choices">
-      ${simpleOpt('▦','Season summary','How rich, how famous, how doomed', false, 'closeMenu(); renderSummary()')}
-      ${simpleOpt('☼','5-day forecast','What the sky has lined up for you', false, 'closeMenu(); renderForecast()')}
-      ${simpleOpt('❧','Logbook','Every decision, lovingly recorded', false, 'closeMenu(); renderLog()')}
-      ${simpleOpt(fs?'⌂':'◈', fs?'Leave fullscreen':'Enter fullscreen', fs?'Bring the browser chrome back':'Hide the browser chrome, give the game the screen', false, 'closeMenu(); toggleFullscreen()')}
-      ${simpleOpt('⌂','Main menu','Save and slink back to the title', false, 'closeMenu(); goMenu()')}
-      ${simpleOpt('✕','Close', '', false, 'closeMenu()')}
+      ${toggleRow('♪','Music','A loop for the long days', SETTINGS.music, "toggleMusic(); openSettings('"+from+"')")}
+      ${toggleRow('⛶','Fullscreen','Give the game the whole screen', isFullscreen(), "toggleFullscreen()")}
+      ${simpleOpt('‹','Back','', false, back)}
     </div>`;
+  $('drawer').classList.add('open');
+}
+function openCredits(from){
+  _menuFrom=null;
+  const back = from==='menu' ? "openMenu()" : "closeMenu()";
+  $('sheet').innerHTML=`<div class="grip"></div><div class="sh">Credits</div>
+    <div class="credits">
+      <h3>A Guide&rsquo;s Life <em>&mdash; or no Life</em></h3>
+      <p class="credits-lede">A career in the outdoors, money and minor catastrophes &mdash; one season at a time, from a childhood bedroom in Kalam&aacute;ta.</p>
+      <div class="credits-roll">
+        <div><span>Design, writing &amp; code</span><b>Fotis Kontargiris</b></div>
+        <div><span>Setting</span><b>Messin&iacute;a, Greece</b></div>
+        <div><span>Art</span><b>Ink &amp; watercolour, AI-assisted</b></div>
+        <div><span>Built with</span><b>Vanilla HTML, CSS &amp; JS</b></div>
+      </div>
+      <p class="credits-note">A one-file game, made for the love of the mountains and the sea &mdash; and for everyone who came home with a good story instead of a fortune. <em>(Your note goes here &mdash; how it started, what it&rsquo;s about, where it&rsquo;s going.)</em></p>
+    </div>
+    <div class="choices">${simpleOpt('‹','Back','', false, back)}</div>`;
   $('drawer').classList.add('open');
 }
 /* Fullscreen helpers — uses the Fullscreen API where supported; on
@@ -2502,6 +2593,34 @@ function hubWindowSeason(){
   if(p==='late' || p==='closing') return 'autumn';
   return 'summer';                                // building / peak -> the base default
 }
+/* shared full-screen HUD chrome — the date/weather plate + money/energy/rep chips.
+   Rendered identically on the hub, detail views (reportStage) and trip beats
+   (tripStage) so the top bar looks the same across the whole game. */
+function hudTagHTML(extra){
+  const w=S.weather;
+  const gid=w ? ((w.stability!=null && w.stability<50) ? 'glyph-weather-unstable' : WEATHER_GLYPH[w.short]) : null;
+  const g=gid ? imgFor(gid,{cls:'hub-wx-glyph', alt:w.short}) : '';
+  return `<div class="hub-tag">${g}<span class="hub-date">${dayTag()}</span>`
+    + (w ? `<span class="sep"></span><span class="hub-wx-name" style="color:${w.col}">${w.short}</span>` : '')
+    + (extra ? `<span class="sep"></span><span class="hub-wx-name" style="color:var(--ink-dim)">${extra}</span>` : '')
+    + `</div>`;
+}
+function hudStatsHTML(){
+  const icCoin=`<svg viewBox="0 0 20 20" aria-hidden="true" style="color:var(--gold)"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12.6 7.1a3.3 3.3 0 1 0 0 5.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 9.2h5M6.3 11.1h4.7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+  const icBolt=`<svg viewBox="0 0 20 20" aria-hidden="true" style="color:var(--terra-bright)"><path d="M11 2 L4.6 11 H9 l-1.4 7 L15.4 8.6 H11 z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+  const icStar=`<svg viewBox="0 0 20 20" aria-hidden="true" style="color:var(--gold)"><path d="M10 2.4 l2.13 4.55 5 .55 -3.7 3.36 1 4.94 -4.43-2.48 -4.43 2.48 1-4.94 -3.7-3.36 5-.55 z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
+  const r=Math.round;
+  return `<div class="hub-status">`
+    + `<span class="hub-stat" role="img" aria-label="Money, ${r(S.cash||0)} euro">${icCoin}<span class="hub-stat-l">Money</span><b>${r(S.cash||0)}</b></span>`
+    + `<span class="hub-stat" role="img" aria-label="Energy, ${r(S.energy||0)}">${icBolt}<span class="hub-stat-l">Energy</span><b>${r(S.energy||0)}</b></span>`
+    + `<span class="hub-stat" role="img" aria-label="Reputation, ${r(S.rep||0)}">${icStar}<span class="hub-stat-l">Rep</span><b>${r(S.rep||0)}</b></span>`
+    + `</div>`;
+}
+function refreshHud(ov){  // swap the HUD bars in-place for fresh stats (reuse paths)
+  if(!ov) return;
+  const t=ov.querySelector('.hub-tag'); if(t){ t.insertAdjacentHTML('beforebegin', hudTagHTML()); t.remove(); }
+  const s=ov.querySelector('.hub-status'); if(s){ s.insertAdjacentHTML('beforebegin', hudStatsHTML()); s.remove(); }
+}
 function renderBedroomHub(){
   const realDOM = typeof document!=='undefined' && typeof document.createElement==='function'
                   && document.body && document.body.appendChild;
@@ -2529,21 +2648,8 @@ function renderBedroomHub(){
     {region:true, label:'Leave',    action:'openDoor()',       x:95, y:52, w:9,  h:84},
   ];
   const spots  = objs.concat(regions).map(hubSpot).join('');
-  const _w = S.weather;
-  const _gid = _w ? ((_w.stability!=null && _w.stability<50) ? 'glyph-weather-unstable' : WEATHER_GLYPH[_w.short]) : null;
-  const _wxg = _gid ? imgFor(_gid, {cls:'hub-wx-glyph', alt:_w.short}) : '';
-  const tag = `<div class="hub-tag">${_wxg}<span class="hub-date">${dayTag()}</span>`
-    + (_w ? `<span class="sep"></span><span class="hub-wx-name" style="color:${_w.col}">${_w.short}</span>` : '')
-    + `</div>`;
-  // fountain-pen line icons (coin / bolt / star), themed from the palette
-  const icCoin = `<svg viewBox="0 0 20 20" aria-hidden="true" style="color:var(--gold)"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12.6 7.1a3.3 3.3 0 1 0 0 5.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M6.5 9.2h5M6.3 11.1h4.7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
-  const icBolt = `<svg viewBox="0 0 20 20" aria-hidden="true" style="color:var(--terra-bright)"><path d="M11 2 L4.6 11 H9 l-1.4 7 L15.4 8.6 H11 z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
-  const icStar = `<svg viewBox="0 0 20 20" aria-hidden="true" style="color:var(--gold)"><path d="M10 2.4 l2.13 4.55 5 .55 -3.7 3.36 1 4.94 -4.43-2.48 -4.43 2.48 1-4.94 -3.7-3.36 5-.55 z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
-  const status = `<div class="hub-status">`
-    + `<span class="hub-stat" role="img" aria-label="Money, ${Math.round(S.cash||0)} euro">${icCoin}<span class="hub-stat-l">Money</span><b>${Math.round(S.cash||0)}</b></span>`
-    + `<span class="hub-stat" role="img" aria-label="Energy, ${Math.round(S.energy||0)}">${icBolt}<span class="hub-stat-l">Energy</span><b>${Math.round(S.energy||0)}</b></span>`
-    + `<span class="hub-stat" role="img" aria-label="Reputation, ${Math.round(S.rep||0)}">${icStar}<span class="hub-stat-l">Rep</span><b>${Math.round(S.rep||0)}</b></span>`
-    + `</div>`;
+  const tag = hudTagHTML();
+  const status = hudStatsHTML();
   let hint='';
   if(!S.hubSeen){ hint=`<div class="hub-hint">Tap the things around you.</div>`; S.hubSeen=true; saveGame(); }
   let mum='';
@@ -3271,12 +3377,13 @@ function tripStage(panelHTML, opts){
     removeTitleOverlay(); removeSceneOverlay(); removeStoryOverlay(); removeHubOverlay();
     ov = document.createElement('div'); ov.id='tripStage'; ov.className='scene-full'; ov.setAttribute('data-asset', assetId);
     ov.innerHTML = `<img class="scene-full-bg" src="${ASSETS[assetId]}" alt="${(b.route||'').replace(/"/g,'&quot;')}">`
-      + `<div class="scene-full-tag" id="tripTag"></div>`
+      + hudTagHTML() + hudStatsHTML()
       + `<div class="scene-full-panel scene-full-panel--choices scene-full-panel--trip" id="tripPanel"></div>`;
     document.body.appendChild(ov);
     setScene('');
+  } else {
+    refreshHud(ov);  // same backdrop, next beat — keep the HUD bars current
   }
-  const tg=document.getElementById('tripTag'); if(tg) tg.innerHTML = opts.tag || '';
   const pn=document.getElementById('tripPanel'); if(pn){ pn.innerHTML = panelHTML; pn.scrollTop=0; }
 }
 function removeTripStage(){
@@ -3302,7 +3409,7 @@ function reportStage(assetId, panelHTML, tag, opts){
   // Same surface already up (e.g. packing re-render on an item toggle): swap the
   // panel content only so the backdrop doesn't re-fade.
   if(ov && ov.getAttribute('data-asset')===assetId && ov.querySelector('.scene-full-panel--report')){
-    const tg=ov.querySelector('.scene-full-tag'); if(tg) tg.innerHTML=tag||'';
+    refreshHud(ov);  // cash/energy may have changed (e.g. a shop buy)
     const pn=ov.querySelector('.scene-full-panel--report'); if(pn){ const sc=pn.scrollTop; pn.innerHTML=panelHTML; pn.scrollTop=sc; }
     return;
   }
@@ -3313,7 +3420,7 @@ function reportStage(assetId, panelHTML, tag, opts){
   const back = opts.noBack ? '' : `<button class="hub-back" aria-label="Back to the room" onclick="renderCurrent()">\u2190</button>`;
   ov=document.createElement('div'); ov.id='sceneOverlay'; ov.className='scene-full'; ov.setAttribute('data-asset', assetId);
   ov.innerHTML = `<img class="scene-full-bg" src="${ASSETS[assetId]}" alt="">`
-    + `<div class="scene-full-tag">${tag||''}</div>` + back
+    + hudTagHTML() + hudStatsHTML() + back
     + `<div class="scene-full-panel scene-full-panel--choices scene-full-panel--report">${panelHTML}</div>`;
   document.body.appendChild(ov);
   fadeOutAndRemove(hub, 1100);
@@ -4060,13 +4167,13 @@ function showDailyReport(w, quit){
   const rows=S.dayReports.map(r=>`<div class="row"><span class="l">${r.line}</span>${r.earned!=null?`<span class="v pos">+€${r.earned}</span>`:''}</div>`).join('')
     || '<div class="row"><span class="l">A quiet day — no trips ran.</span><span class="v"></span></div>';
   const quitTxt = quit.length?`<div class="row"><span class="l" style="color:var(--danger)">${quit.map(g=>g.name).join(', ')} resigned.</span><span class="v"></span></div>`:'';
-  setScene(`<div class="day-tag">${dayTag()} · Day's end</div><h2>The books</h2>
+  reportStage('report-blank', `<p class="trip-title">The books</p>
     <div class="ledger">${rows}${quitTxt}
       <div class="row"><span class="l">Wages paid</span><span class="v neg">−€${w}</span></div>
       <div class="row"><span class="l">In the bank</span><span class="v ${S.cash>=0?'pos':'neg'}">€${S.cash}</span></div>
       <div class="row"><span class="l">Reputation</span><span class="v">${S.rep}</span></div>
     </div>
-    <div class="choices"><button class="opt primary" onclick="nextDay()"><span class="mark">☾</span><span class="b-main">On to tomorrow</span></button></div>`);
+    <button class="scene-go" onclick="nextDay()">On to tomorrow ☾</button>`, '', {noBack:true});
 }
 
 /* ---------------- endings ---------------- */
@@ -4134,9 +4241,8 @@ function renderSummary(){
   const net = st.earned - st.wagesPaid;
   const certList = (S.certs&&S.certs.length) ? S.certs.map(certName).join(', ') : 'None yet';
   const ownCount = Object.keys(S.owned||{}).length;
-  setScene(`<div class="day-tag">${dayTag()} · Season summary</div>
-    <h2>${S.you?S.you.name:'Your'} season</h2>
-    <p style="font-style:italic;color:var(--ink-dim);margin-bottom:14px">${S.you?S.you.spec:''} · ${S.phase===2?'running a Messinia outfit':'building a name in Messinia'}</p>
+  reportStage('chrome-logbook', `<p class="trip-title">${S.you?S.you.name:'Your'} season</p>
+    <p class="report-note">${S.you?S.you.spec:''} · ${S.phase===2?'running a Messinia outfit':'building a name in Messinia'}</p>
     <div class="ledger">
       <div class="row"><span class="l">Days guided</span><span class="v">${S.day}</span></div>
       <div class="row"><span class="l">In the bank</span><span class="v ${S.cash>=0?'pos':'neg'}">€${S.cash}</span></div>
@@ -4148,9 +4254,9 @@ function renderSummary(){
       ${S.phase===2?`<div class="row"><span class="l">Trips your guides led</span><span class="v">${st.tripsGuides}</span></div><div class="row"><span class="l">Guides hired</span><span class="v">${st.hires}</span></div><div class="row"><span class="l">Gear depot value</span><span class="v">€${depotValue()}</span></div>`:`<div class="row"><span class="l">Backpack · gear owned</span><span class="v">${S.packSize} slots · ${ownCount} items</span></div>`}
       <div class="row"><span class="l">Certifications</span><span class="v">${certList}</span></div>
     </div>
-    <p style="font-size:12.5px;font-style:italic;color:var(--ink-faint);margin-top:10px">Tips are the truest sign you went above and beyond — clients only reach into their pockets when a day was special.</p>
-    ${S.phase===2?`<div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin:4px 0 7px">The team</div><div class="ledger">${roster}</div>`:''}
-    <div class="actionbar"><button class="go" onclick="${back}">Back to the day</button></div>`);
+    <p class="report-note" style="margin-top:10px">Tips are the truest sign you went above and beyond — clients only reach into their pockets when a day was special.</p>
+    ${S.phase===2?`<div style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(27,27,31,.5);margin:4px 0 7px">The team</div><div class="ledger">${roster}</div>`:''}`,
+    '', {});
 }
 
 /* ---------------- gear & trailhead ---------------- */
