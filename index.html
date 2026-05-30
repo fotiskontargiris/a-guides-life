@@ -1747,6 +1747,7 @@ async function doContinue(){
   S.year=S.year||1; S.seasonDay=S.seasonDay||S.day||1; S.season=S.season||'summer';
   S.yearLogs=S.yearLogs||[]; if(S.phase3Ready==null) S.phase3Ready=false;
   if(S.dish===undefined) S.dish=null;
+  S.tut = S.tut || {};
   S.stats=S.stats||{earned:0,fees:0,tips:0,wagesPaid:0,retainersPaid:0,tripsYou:0,tripsGuides:0,hires:0,bestRep:S.rep,yearsCompleted:0};
   ['fees','tips','retainersPaid','yearsCompleted'].forEach(k=>{ if(S.stats[k]==null) S.stats[k]=0; });
   S.yearStats=S.yearStats||freshYearStats();
@@ -2045,7 +2046,7 @@ function initGame(name, bgId, kit, discipline, loanSourceId, dishId){
       stats:{earned:0, fees:0, tips:0, wagesPaid:0, retainersPaid:0, tripsYou:0, tripsGuides:0, hires:0, bestRep:50, yearsCompleted:0},
       yearStats:freshYearStats(),
       you:{id:'you', name:name, isYou:true, skill:90, morale:100, wage:0, spec:bg.name, perk:(bg.tag||bg.id), heroId:bg.id, gender:bg.gender, task:null},
-      guides:[], queue:null, dayReports:[], trip:null, yearLogs:[] };
+      guides:[], queue:null, dayReports:[], trip:null, yearLogs:[], tut:{} };
   // Hero start-grants (the simple, safe part of each model; deeper hooks live in events via perkIs).
   if(bg.id==='medic'  && !ownsItem('firstaid')) S.owned.firstaid=freshOwned('firstaid','standard');
   if(bg.id==='chef'   && !ownsItem('snacks'))   S.owned.snacks=freshOwned('snacks','standard');
@@ -2537,6 +2538,7 @@ function renderMorning(){
     <div class="day-tag">${dayTag()} · Dawn</div>
     <p class="weather">${w.name}${w.stability!=null?` <span style="color:${stabilityHint(w.stability).col};font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;vertical-align:middle">· ${stabilityHint(w.stability).label}</span>`:''}<small>${w.note}</small></p>
     <h2>Right, who is paying you today?</h2>
+    ${mumDoor('morning', "Your phone will buzz, "+mumDim()+". It is Yiannis from the kafeneío — he is putting your name about, so anyone who wants a guide calls him first. Check it each morning. And before you say yes to anyone, look at the sky. Your uncle Spyros has been at sea forty years and he says the wind tells you what the day will be.")}
     <p>Pick a trip — or, below, sort yourself out instead.</p>
     <div class="choices">${cards}</div>
     ${certChip}
@@ -2718,6 +2720,7 @@ function openRest(){
   renderHUD();
   const full = S.energy>=100;
   reportStage('report-blank', `<p class="trip-title">Sleep until tomorrow?</p>
+    ${mumDoor('rest', "Rest, "+mumDim()+". Drink water. Sit when you can. The mountain is still there tomorrow.")}
     <p class="report-note">${full?'You are already well rested — a day in bed would just be a day lost.':'Rest restores your energy, but it costs you the day. The bookings move on without you.'}</p>
     <button class="opt ${full?'disabled':'primary'}" onclick="${full?'':'restDay()'}"><span class="mark">~</span><span class="b-main">Sleep${full?' — already rested':''}<span class="b-sub">Restore energy · advances the day</span></span></button>
     <button class="opt" onclick="renderCurrent()"><span class="mark">·</span><span class="b-main">Not yet<span class="b-sub">Back to the room</span></span></button>`,
@@ -2940,6 +2943,7 @@ function openShop(){
     if(fleetItemsFor(d).length) sections += fleetSection(d);
   }
   reportStage('report-blank', `<p class="trip-title">Geo's outdoor emporium</p>
+    ${mumDoor('shop', "There is a leaflet on the table from Geo's outdoor shop — he owes your father a favour, so go. A bag is not full because of what you packed yesterday, "+mumDim()+". Buy what the day will ask of you.")}
     <p class="report-note">Three qualities for safety kit; fleet items come in ones. <b>Pro</b> gear costs more but lasts. Cash: <b style="color:var(--gold)">€${S.cash}</b>.</p>
     ${sections}
     ${garageSection()}
@@ -3119,6 +3123,16 @@ function optBooking(b, dis, reason, onclick){
 function simpleOpt(mark,label,sub,dis,onclick){
   return `<button class="opt ${dis?'disabled':''}" onclick="${dis?'':onclick}">
     <span class="mark">${mark}</span><span class="b-main">${label}<span class="b-sub">${sub}</span></span></button>`;
+}
+/* Mum's voice from the kitchen door — diegetic just-in-time onboarding.
+   Each line fires the first time the player meets an interactive element,
+   then never again. The S.tut[key] flag persists in the save. */
+function mumDoor(key, line){
+  if(!S.tut) S.tut={};
+  if(S.tut[key]) return '';
+  S.tut[key] = true;
+  return `<div style="border-left:2px solid var(--sea);background:rgba(63,126,126,0.08);padding:10px 14px;margin:0 0 12px;border-radius:0 8px 8px 0;font-style:italic;color:var(--sea);font-size:13.5px;line-height:1.55">
+    <span style="font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sea);font-style:normal;display:block;margin-bottom:4px">From the kitchen door</span>${line}</div>`;
 }
 function logStrip(){
   if(!S.history.length) return '';
@@ -3345,6 +3359,7 @@ function renderPacking(){
   const emptyHTML = ownedItems.length?'':`<div style="font-style:italic;color:var(--ink-dim)">You own no kit yet — you'll head out with empty hands. Visit the shop to change that.</div>`;
   const spare=S.packSize-S.loadout.length;
   reportStage('backpack-phase1', `<p class="trip-title">${b.route}</p>
+    ${mumDoor('pack', "The bag holds only four things, so choose them like you mean it. Water always. The rest depends on where you are going and what the sky said.")}
     <p class="report-note">Word of the trail: <i>${conditionsLine(b,w)}</i></p>
     <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--sea);margin:0 0 8px">Backpack — ${S.loadout.length}/${S.packSize} slots filled</p>
     ${chips}${emptyHTML}${lockedHTML}
@@ -3434,6 +3449,7 @@ function startTrailhead(){
   const choices=ev.choices.filter(c=>!c.need || S.loadout.includes(c.need));
   S.trip.meetChoices=choices;
   const panel = `<p class="trip-title">${ev.title}</p><p class="trip-text">${ev.text(b,S)}</p>
+    ${mumDoor('trip', "On the path, things will happen, and people will ask you what to do. Answer like you mean it — they have to believe you, otherwise why are they paying.")}
     ${choices.map((c,i)=>`<button class="opt ${i===0?'primary':''}" onclick="resolveMeet(${i})">
       <span class="mark">${i+1}</span><span class="b-main">${c.label}<span class="b-sub">${c.hint||''}</span></span></button>`).join('')}`;
   tripStage(panel, {tag:`${dayTag()} · ${b.route} · the trailhead`});
@@ -3688,6 +3704,7 @@ function finishPlayerTrip(){
   // rework -- use the neutral ledger for every outcome for now.
   const reportAsset = 'report-blank';
   reportStage(reportAsset, `<p class="trip-title">Back at the trailhead</p>
+    ${mumDoor('tips', "At the end, if they put something in your hand, take it. Don't refuse twice — the second time is rude. The first time is Greek.")}
     <div class="res">${t.logs.map(l=>`<p class="line">${l}</p>`).join('')}</div>
     ${prepLine?`<p class="report-note">${prepLine}</p>`:''}
     ${reviewsHTML(reviews)}
@@ -3858,6 +3875,7 @@ function renderOffSeason(){
   setScene(`<div class="day-tag">Year ${S.year} · Winter</div>
     <h2>The winter office</h2>
     <p>Five quiet months. Long enough to take a course, fix the truck, or develop a serious drinking problem. You have <b>${left}</b> week${left===1?'':'s'} before April pretends to be warm again. Cash <b style="color:var(--gold)">€${S.cash}</b>${S.cash<0?' — and you are in the red':''}.</p>
+    ${mumDoor('winter', "October ends and you come home and we use the winter properly. The HATEOA office runs the courses — papers matter in this country. And the truck needs looking at. October is not the end, it is when you fix what you broke in August.")}
     <div style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin:8px 0 2px">Cert school</div>
     ${imgFor('chrome-certificate', {cls:'art art-chrome', alt:'A HATEOA guide certification document'})}
     <div class="choices">${certsHTML}</div>
@@ -4168,6 +4186,7 @@ function showDailyReport(w, quit){
     || '<div class="row"><span class="l">A quiet day — no trips ran.</span><span class="v"></span></div>';
   const quitTxt = quit.length?`<div class="row"><span class="l" style="color:var(--danger)">${quit.map(g=>g.name).join(', ')} resigned.</span><span class="v"></span></div>`:'';
   reportStage('report-blank', `<p class="trip-title">The books</p>
+    ${mumDoor('day', "At the end of every day you come home and tell me what happened. The good and the not-good. That is how you become better at this.")}
     <div class="ledger">${rows}${quitTxt}
       <div class="row"><span class="l">Wages paid</span><span class="v neg">−€${w}</span></div>
       <div class="row"><span class="l">In the bank</span><span class="v ${S.cash>=0?'pos':'neg'}">€${S.cash}</span></div>
