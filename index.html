@@ -433,6 +433,17 @@
   .credits .credits-roll b{font-family:'Fraunces',serif; font-weight:600; font-size:14px; color:var(--ink); text-align:right;}
   .credits .credits-note{font-size:13.5px; color:var(--ink-dim); line-height:1.6; margin:0;}
   .credits .credits-note em{color:var(--ink-faint); font-style:italic;}
+  /* version history (rendered in the menu sheet, like credits) */
+  .changelog{max-height:54vh; overflow-y:auto; padding:0 2px 2px; margin-bottom:12px; text-align:left;}
+  .changelog .cl-entry{margin:0 0 17px;}
+  .changelog .cl-head{display:flex; align-items:baseline; gap:9px; margin-bottom:6px; flex-wrap:wrap;}
+  .changelog .cl-v{font-family:'Spline Sans Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.05em; color:#0c272c; background:var(--gold); padding:2px 8px; border-radius:999px;}
+  .changelog .cl-title{font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:var(--ink);}
+  .changelog .cl-date{font-family:'Spline Sans Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-left:auto;}
+  .changelog ul{margin:0; padding:0; list-style:none;}
+  .changelog li{position:relative; padding:3px 0 3px 15px; font-size:13.5px; color:var(--ink-dim); line-height:1.5;}
+  .changelog li::before{content:'·'; position:absolute; left:3px; top:2px; color:var(--terra); font-weight:700;}
+  .changelog em{color:var(--ink); font-style:italic;}
 
   .booking{display:flex; flex-direction:column; align-items:flex-start; gap:2px;}
   .booking .route{font-family:'Fraunces',serif; font-size:16px; font-weight:600;}
@@ -569,6 +580,17 @@
     text-shadow:0 1px 3px rgba(0,0,0,.6);
     padding:0 16px;
   }
+  /* tappable version badge — bottom-right of the title, opens the changelog */
+  .title-version{
+    position:absolute; bottom:13px; right:15px; z-index:3;
+    font-family:'Spline Sans Mono',monospace; font-size:10px; font-weight:600;
+    letter-spacing:.08em; color:rgba(238,229,210,.62);
+    background:rgba(18,26,28,.42); border:1px solid rgba(238,229,210,.2);
+    padding:4px 10px; border-radius:999px; cursor:pointer;
+    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+    transition:color .2s, border-color .2s, background .2s;
+  }
+  .title-version:hover{ color:#1B1B1F; background:var(--gold); border-color:var(--gold); }
 
   /* SCENE-FULL — fullscreen body-level overlay for any scene that
      wants the cover-image-fills-everything treatment (kitchen, etc.).
@@ -1881,6 +1903,7 @@ function renderTitle(save, loading){
   const footnote = hasStorage()
     ? ''
     : '<div class="title-footnote">Saving isn’t available in this viewer — but the game plays in full.</div>';
+  const version = `<button class="title-version" aria-label="Version history" onclick="openChangelog('title')">v${GAME_VERSION}</button>`;
   // Append at body level so the overlay escapes .scene's containment.
   // The test harness uses a fake document without createElement, so
   // fall back to the old setScene path there.
@@ -1888,11 +1911,11 @@ function renderTitle(save, loading){
     const overlay = document.createElement('div');
     overlay.id = 'titleOverlay';
     overlay.className = 'title-full';
-    overlay.innerHTML = `${cover}${controls}${footnote}`;
+    overlay.innerHTML = `${cover}${controls}${footnote}${version}`;
     document.body.appendChild(overlay);
     setScene(''); // clear the scene so nothing peeks through
   } else {
-    setScene(`<div class="title-full">${cover}${controls}${footnote}</div>`);
+    setScene(`<div class="title-full">${cover}${controls}${footnote}${version}</div>`);
   }
 }
 async function doContinue(){
@@ -2483,6 +2506,43 @@ function showMenuBtn(on){ /* no-op: button is always visible */ }
 /* ---------- settings (persist independent of the save) + background music ----------
    The Music toggle is wired now; default OFF (browsers block autoplay-with-sound
    anyway). Drop a loop into assets/audio/theme.mp3 and it plays when toggled on. */
+/* ---------- version + changelog (the game's own record of its evolution) ----------
+   Bump GAME_VERSION and prepend a CHANGELOG entry whenever a release lands.
+   Surfaced on the title screen (the vN.N.N badge) and in Credits > Version history. */
+const GAME_VERSION='0.6.0';
+const CHANGELOG=[
+  { v:'0.6.0', date:'May 2026', title:'A proper game', notes:[
+    'A cold-open intro film plays behind the title.',
+    'A game-wide HUD — coin / energy / reputation chips and a watercolour weather plate on every screen.',
+    'A proper menu: Settings (music &amp; fullscreen), Credits, and this version history.',
+    'A guided first day — your mother walks you around the room, one thing at a time.',
+    'The equipment gear-bible and a clearer first loan.',
+  ]},
+  { v:'0.5.0', date:'May 2026', title:'The bedroom', notes:[
+    'Your childhood bedroom in Kalam&aacute;ta becomes the home screen — the room <em>is</em> the menu.',
+    'Every screen goes full-bleed ink-and-watercolour: the phone, the wallet, the shop, the pack, the window forecast, the trail.',
+    'Mum&rsquo;s voice drifts in from the kitchen door.',
+  ]},
+  { v:'0.4.0', date:'May 2026', title:'The look', notes:[
+    'The whole game turns visual — hand-painted ink-and-watercolour scenes, landscape and full-screen.',
+    'An animated cold open, a cover painting, and the kitchen-table opening.',
+    'Renamed to &ldquo;A Guide&rsquo;s Life &mdash; or no Life&rdquo;.',
+  ]},
+  { v:'0.3.0', date:'May 2026', title:'Home to Kalam&aacute;ta', notes:[
+    'Year 1 is the grind at home — no car, no escape, the bus always late.',
+    'The kitchen-table intro and ten fallen heroes who came back to their mothers.',
+    'Weather that can turn on you in the middle of a trip.',
+  ]},
+  { v:'0.2.0', date:'May 2026', title:'Depth &amp; disciplines', notes:[
+    'Seven disciplines — hiking, sea-kayak, canyoning, rafting, cycling, SUP and climbing.',
+    'The Peloponnese route map, equipment tiers, real financing, and demand-based hiring.',
+    'A four-movement year: pre-season, season, post-season, winter.',
+  ]},
+  { v:'0.1.0', date:'May 2026', title:'The prototype', notes:[
+    'The core loop — one season of guiding in Messin&iacute;a, April to October.',
+    'Off-season planning and a win condition built for the long career.',
+  ]},
+];
 const SETTINGS_KEY='agl_settings';
 const BGM_SRC='assets/audio/theme.mp3';
 let SETTINGS=loadSettings();
@@ -2561,9 +2621,28 @@ function openCredits(from){
         <div><span>Setting</span><b>Messin&iacute;a, Greece</b></div>
         <div><span>Art</span><b>Ink &amp; watercolour, AI-assisted</b></div>
         <div><span>Built with</span><b>Vanilla HTML, CSS &amp; JS</b></div>
+        <div><span>Version</span><b>v${GAME_VERSION}</b></div>
       </div>
-      <p class="credits-note">A one-file game, made for the love of the mountains and the sea &mdash; and for everyone who came home with a good story instead of a fortune. <em>(Your note goes here &mdash; how it started, what it&rsquo;s about, where it&rsquo;s going.)</em></p>
+      <p class="credits-note">A one-file game, hand-built between real seasons &mdash; for the love of the mountains and the sea, and for everyone who came home with a good story instead of a fortune.</p>
     </div>
+    <div class="choices">
+      ${simpleOpt('v'+GAME_VERSION,'Version history','How the game has grown', false, "openChangelog('credits-"+(from==='title'?'title':'menu')+"')")}
+      ${simpleOpt('‹','Back','', false, back)}
+    </div>`;
+  $('drawer').classList.add('open');
+}
+function openChangelog(ret){
+  _menuFrom=null;
+  const back = ret==='credits-title' ? "openCredits('title')"
+             : ret==='credits-menu'  ? "openCredits('menu')"
+             : ret==='menu'          ? "openMenu()"
+             : "closeMenu()";
+  const items = CHANGELOG.map(c=>`<div class="cl-entry">
+      <div class="cl-head"><span class="cl-v">v${c.v}</span><span class="cl-title">${c.title}</span><span class="cl-date">${c.date}</span></div>
+      <ul>${c.notes.map(n=>`<li>${n}</li>`).join('')}</ul>
+    </div>`).join('');
+  $('sheet').innerHTML=`<div class="grip"></div><div class="sh">Version history</div>
+    <div class="changelog">${items}</div>
     <div class="choices">${simpleOpt('‹','Back','', false, back)}</div>`;
   $('drawer').classList.add('open');
 }
